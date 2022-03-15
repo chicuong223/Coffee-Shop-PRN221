@@ -17,7 +17,7 @@ namespace WebApp.Models
         public bool? IsRead { get; set; }
         public DateTime? NotificationDate { get; set; }
 
-        public virtual staff SenderNavigation { get; set; }
+        public virtual Staff SenderNavigation { get; set; }
         public virtual ICollection<NotificationDetail> NotificationDetails { get; set; }
     }
 }

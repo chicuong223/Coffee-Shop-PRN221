@@ -5,9 +5,9 @@ using System.Collections.Generic;
 
 namespace WebApp.Models
 {
-    public partial class staff
+    public partial class Staff
     {
-        public staff()
+        public Staff()
         {
             Bills = new HashSet<Bill>();
             Notifications = new HashSet<Notification>();

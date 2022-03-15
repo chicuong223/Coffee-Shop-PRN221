@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using WebApp.Repository;
 
 namespace WebApp
 {
@@ -25,6 +26,7 @@ namespace WebApp
         {
             services.AddRazorPages();
             services.AddSession(options => options.IdleTimeout = TimeSpan.FromMinutes(30));
+            services.AddScoped<ICategoryRepository, CategoryRepository>(); 
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -9,13 +9,13 @@ namespace WebApp.Models
     {
         public Category()
         {
-            Products = new HashSet<Product>();
+            Products = new List<Product>();
         }
 
         public int Id { get; set; }
         public string CategoryName { get; set; }
         public bool? Status { get; set; }
 
-        public virtual ICollection<Product> Products { get; set; }
+        public virtual IList<Product> Products { get; set; }
     }
 }

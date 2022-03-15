@@ -1,0 +1,63 @@
+﻿@page
+@model WebApp.Pages.Categories.IndexModel
+@using X.PagedList
+@using X.PagedList.Mvc.Core
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Categories[0].CategoryName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Categories[0].Status)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.Categories) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.CategoryName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+Page @(Model.Categories.PageCount < Model.Categories.PageNumber ? 0 : Model.Categories.PageNumber) of @Model.Categories.PageCount
+
+@Html.PagedListPager( Model.Categories, pageIndex => Url.Page("Index", new { pageIndex }) )
+@*{
+    var prevDisabled = !Model.Categories.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.Categories.HasNextPage ? "disabled" : "";
+}*@
+
+@*<a asp-page="./Index"
+   asp-route-pageIndex="@(Model.Categories.PageNumber - 1)"
+   class="btn btn-primary @prevDisabled">
+    Previous
+</a>
+<a asp-page="./Index"
+   asp-route-pageIndex="@(Model.Categories.PageNumber + 1)"
+   class="btn btn-primary @nextDisabled">
+    Next
+</a>*@
