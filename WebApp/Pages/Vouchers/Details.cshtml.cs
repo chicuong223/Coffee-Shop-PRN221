@@ -6,21 +6,19 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using WebApp.Models;
-using WebApp.Repository;
-using WebApp.RepositoryInterface;
 
-namespace WebApp.Pages.Categories
+namespace WebApp.Pages.Vouchers
 {
     public class DetailsModel : PageModel
     {
-        private readonly IBaseRepository<Category> _context;
+        private readonly WebApp.Models.CoffeeShopDBContext _context;
 
-        public DetailsModel(IBaseRepository<Category> context)
+        public DetailsModel(WebApp.Models.CoffeeShopDBContext context)
         {
             _context = context;
         }
 
-        public Category Category { get; set; }
+        public Voucher Voucher { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -29,9 +27,9 @@ namespace WebApp.Pages.Categories
                 return NotFound();
             }
 
-            Category = await _context.GetByID(id, true);
+            Voucher = await _context.Vouchers.FirstOrDefaultAsync(m => m.Id == id);
 
-            if (Category == null)
+            if (Voucher == null)
             {
                 return NotFound();
             }

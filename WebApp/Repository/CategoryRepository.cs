@@ -14,13 +14,19 @@ namespace WebApp.Repository
     {
         private readonly CoffeeShopDBContext _context = new CoffeeShopDBContext();
 
-        public async Task<IPagedList<Category>> GetList(Expression<Func<Category, bool>>? expression, bool? isDeep = false, int? page = 1)
+        public async Task<IPagedList<Category>> GetList(Expression<Func<Category, bool>> expression, bool? isDeep = false, int? page = 1)
         {
             var pageNumber = page ?? 1;
             IPagedList<Category> list;
-            if (isDeep.HasValue && isDeep.Value) {
+            if(expression == null)
+            {
+                list = await _context.Categories
+                    .ToPagedListAsync(pageNumber, 2);
+            }
+            else if (isDeep.HasValue && isDeep.Value)
+            {
                 list = await _context.Categories.Where(expression)
-                    .Include(i=>i.Products)
+                    .Include(i => i.Products)
                     .ToPagedListAsync(pageNumber, 2);
             }
             else
@@ -29,21 +35,6 @@ namespace WebApp.Repository
                     .ToPagedListAsync(pageNumber, 2);
             }
             return list;
-        }
-
-        public async Task<Category> GetByID(int id, bool? isDeep = true)
-        {
-            Category result;
-            if (isDeep.HasValue && isDeep.Value)
-            {
-                result = await _context.Categories.Include(c => c.Products)
-                .FirstOrDefaultAsync(ca => ca.Id == id);
-            }
-            else
-            {
-                result = await _context.Categories.FirstOrDefaultAsync(ca => ca.Id == id);
-            }
-            return result;
         }
 
         public Task<int> Count(Expression<Func<Category, bool>> expression)
@@ -58,20 +49,35 @@ namespace WebApp.Repository
             return entity;
         }
 
-        public async Task Delete(int id)
-        {
-            var category = await _context.Categories.FindAsync(id);
-            category.Status = false;
-            _context.Entry(category).State = EntityState.Detached;
-            _context.Entry(category).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
-        }
-
         public async Task<Category> Update(Category entity)
         {
             _context.Entry(entity).State = EntityState.Modified;
             await _context.SaveChangesAsync();
             return entity;
+        }
+
+        public async Task<Category> GetByID(object key, bool? isDeep = true)
+        {
+            Category result;
+            if (isDeep.HasValue && isDeep.Value)
+            {
+                result = await _context.Categories.Include(c => c.Products)
+                .FirstOrDefaultAsync(ca => ca.Id == (int)key);
+            }
+            else
+            {
+                result = await _context.Categories.FirstOrDefaultAsync(ca => ca.Id == (int)key);
+            }
+            return result;
+        }
+
+        public async Task Delete(object key)
+        {
+            var category = await _context.Categories.FindAsync((int)key);
+            category.Status = false;
+            _context.Entry(category).State = EntityState.Detached;
+            _context.Entry(category).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
         }
     }
 }

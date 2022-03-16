@@ -1,4 +1,5 @@
 ﻿@page
+@using X.PagedList.Mvc.Core
 @model WebApp.Pages.Products.IndexModel
 
 @{
@@ -14,25 +15,26 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Product[0].ProductName)
+                @Html.DisplayNameFor(model => model.Products[0].ProductName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Product[0].Price)
+                @Html.DisplayNameFor(model => model.Products[0].Price)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Product[0].Stock)
+                @Html.DisplayNameFor(model => model.Products[0].Stock)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Product[0].Status)
+                @Html.DisplayNameFor(model => model.Products[0].Status)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Product[0].Category)
+                @Html.DisplayNameFor(model => model.Products[0].Category)
             </th>
+            <th>Image</th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.Product) {
+@foreach (var item in Model.Products) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.ProductName)
@@ -47,7 +49,11 @@
                 @Html.DisplayFor(modelItem => item.Status)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Category.Id)
+                @Html.DisplayFor(modelItem => item.Category.CategoryName)
+            </td>
+            <td>
+                <img src="~/Images/@item.ImageURL" alt="@item.ProductName" 
+                    class="img-thumbnail img-fluid" style="max-width:50%;"/>
             </td>
             <td>
                 <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
@@ -58,3 +64,7 @@
 }
     </tbody>
 </table>
+
+Page @(Model.Products.PageCount < Model.Products.PageNumber ? 0 : Model.Products.PageNumber) of @Model.Products.PageCount
+
+@Html.PagedListPager( Model.Products, pageIndex => Url.Page("Index", new { pageIndex }) )

@@ -8,7 +8,9 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using WebApp.Models;
 using WebApp.Repository;
+using WebApp.RepositoryInterface;
 
 namespace WebApp
 {
@@ -26,7 +28,12 @@ namespace WebApp
         {
             services.AddRazorPages();
             services.AddSession(options => options.IdleTimeout = TimeSpan.FromMinutes(30));
-            services.AddScoped<ICategoryRepository, CategoryRepository>(); 
+            services.AddDbContext<CoffeeShopDBContext>();
+            services.AddScoped<IBaseRepository<Category>, CategoryRepository>(); 
+            services.AddScoped<IBaseRepository<Product>, ProductRepository>(); 
+            services.AddScoped<IBaseRepository<Staff>, StaffRepository>(); 
+            services.AddScoped<IBaseRepository<Bill>, BillRepository>(); 
+            services.AddScoped<IBaseRepository<BillDetail>, BillDetailRepository>(); 
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -6,21 +6,19 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using WebApp.Models;
-using WebApp.Repository;
-using WebApp.RepositoryInterface;
 
-namespace WebApp.Pages.Categories
+namespace WebApp.Pages.Notifications
 {
     public class DetailsModel : PageModel
     {
-        private readonly IBaseRepository<Category> _context;
+        private readonly WebApp.Models.CoffeeShopDBContext _context;
 
-        public DetailsModel(IBaseRepository<Category> context)
+        public DetailsModel(WebApp.Models.CoffeeShopDBContext context)
         {
             _context = context;
         }
 
-        public Category Category { get; set; }
+        public Notification Notification { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -29,9 +27,10 @@ namespace WebApp.Pages.Categories
                 return NotFound();
             }
 
-            Category = await _context.GetByID(id, true);
+            Notification = await _context.Notifications
+                .Include(n => n.SenderNavigation).FirstOrDefaultAsync(m => m.Id == id);
 
-            if (Category == null)
+            if (Notification == null)
             {
                 return NotFound();
             }
