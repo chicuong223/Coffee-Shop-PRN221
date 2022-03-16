@@ -1,18 +1,61 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using WebApp.Models;
+using WebApp.RepositoryInterface;
 using X.PagedList;
 
 namespace WebApp.Repository
 {
-    public class CategoryRepository : ICategoryRepository
+    public class CategoryRepository : IBaseRepository<Category>
     {
         private readonly CoffeeShopDBContext _context = new CoffeeShopDBContext();
-        public async Task<Category> Create(Category category)
+
+        public async Task<IPagedList<Category>> GetList(Expression<Func<Category, bool>>? expression, bool? isDeep = false, int? page = 1)
         {
-            _context.Categories.Add(category);
+            var pageNumber = page ?? 1;
+            IPagedList<Category> list;
+            if (isDeep.HasValue && isDeep.Value) {
+                list = await _context.Categories.Where(expression)
+                    .Include(i=>i.Products)
+                    .ToPagedListAsync(pageNumber, 2);
+            }
+            else
+            {
+                list = await _context.Categories.Where(expression)
+                    .ToPagedListAsync(pageNumber, 2);
+            }
+            return list;
+        }
+
+        public async Task<Category> GetByID(int id, bool? isDeep = true)
+        {
+            Category result;
+            if (isDeep.HasValue && isDeep.Value)
+            {
+                result = await _context.Categories.Include(c => c.Products)
+                .FirstOrDefaultAsync(ca => ca.Id == id);
+            }
+            else
+            {
+                result = await _context.Categories.FirstOrDefaultAsync(ca => ca.Id == id);
+            }
+            return result;
+        }
+
+        public Task<int> Count(Expression<Func<Category, bool>> expression)
+        {
+            return _context.Categories.Where(expression).CountAsync();
+        }
+
+        public async Task<Category> Create(Category entity)
+        {
+            _context.Categories.Add(entity);
             await _context.SaveChangesAsync();
-            return category;
+            return entity;
         }
 
         public async Task Delete(int id)
@@ -24,26 +67,11 @@ namespace WebApp.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task<Category> GetByID(int id)
+        public async Task<Category> Update(Category entity)
         {
-            var result = await _context.Categories.Include(c => c.Products)
-                .FirstOrDefaultAsync(ca => ca.Id == id);
-            return result;
-        }
-
-        public async Task<IPagedList<Category>> GetCategories(int? page = 1)
-        {
-            var categories = _context.Categories;
-            var pageNumber = page ?? 1;
-            var result = await categories.ToPagedListAsync(pageNumber, 2);
-            return result;
-        }
-
-        public async Task<Category> Update(Category category)
-        {
-            _context.Entry(category).State = EntityState.Modified;
+            _context.Entry(entity).State = EntityState.Modified;
             await _context.SaveChangesAsync();
-            return category;
+            return entity;
         }
     }
 }
