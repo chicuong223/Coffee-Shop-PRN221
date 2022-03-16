@@ -6,14 +6,15 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using WebApp.Models;
+using WebApp.RepositoryInterface;
 
 namespace WebApp.Pages.Products
 {
     public class DeleteModel : PageModel
     {
-        private readonly WebApp.Models.CoffeeShopDBContext _context;
+        private readonly IBaseRepository<Product> _context;
 
-        public DeleteModel(WebApp.Models.CoffeeShopDBContext context)
+        public DeleteModel(IBaseRepository<Product> context)
         {
             _context = context;
         }
@@ -28,8 +29,10 @@ namespace WebApp.Pages.Products
                 return NotFound();
             }
 
-            Product = await _context.Products
-                .Include(p => p.Category).FirstOrDefaultAsync(m => m.Id == id);
+            //Product = await _context.Products
+            //    .Include(p => p.Category).FirstOrDefaultAsync(m => m.Id == id);
+
+            Product = await _context.GetByID(id);
 
             if (Product == null)
             {
@@ -45,12 +48,20 @@ namespace WebApp.Pages.Products
                 return NotFound();
             }
 
-            Product = await _context.Products.FindAsync(id);
+            //Product = await _context.Products.FindAsync(id);
+
+            Product = await _context.GetByID(id.Value);
 
             if (Product != null)
             {
-                _context.Products.Remove(Product);
-                await _context.SaveChangesAsync();
+                if(!Product.Status.Value)
+                {
+                    TempData["Error"] = "This product is already inactive!";
+                    return await OnGetAsync(Product.Id);
+                }
+                //_context.Products.Remove(Product);
+                //await _context.SaveChangesAsync();
+                await _context.Delete(Product.Id);
             }
 
             return RedirectToPage("./Index");

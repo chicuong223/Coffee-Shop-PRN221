@@ -26,6 +26,11 @@ namespace WebApp.Repository
             throw new NotImplementedException();
         }
 
+        public Task<IEnumerable<BillDetail>> GetAll(Expression<Func<BillDetail, bool>> expression)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<BillDetail> GetByID(object key, bool? isDeep = true)
         {
             throw new NotImplementedException();

@@ -87,6 +87,8 @@ namespace WebApp.Models
 
                 entity.Property(e => e.SubTotal).HasColumnType("money");
 
+                entity.Property(e => e.UnitPrice).HasColumnType("money");
+
                 entity.HasOne(d => d.Bill)
                     .WithMany(p => p.BillDetails)
                     .HasForeignKey(d => d.BillId)

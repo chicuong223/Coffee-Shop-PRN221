@@ -6,14 +6,15 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using WebApp.Models;
+using WebApp.RepositoryInterface;
 
 namespace WebApp.Pages.Products
 {
     public class DetailsModel : PageModel
     {
-        private readonly WebApp.Models.CoffeeShopDBContext _context;
+        private readonly IBaseRepository<Product> _context;
 
-        public DetailsModel(WebApp.Models.CoffeeShopDBContext context)
+        public DetailsModel(IBaseRepository<Product> context)
         {
             _context = context;
         }
@@ -27,8 +28,7 @@ namespace WebApp.Pages.Products
                 return NotFound();
             }
 
-            Product = await _context.Products
-                .Include(p => p.Category).FirstOrDefaultAsync(m => m.Id == id);
+            Product = await _context.GetByID(id, true);
 
             if (Product == null)
             {

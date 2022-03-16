@@ -69,10 +69,10 @@ namespace WebApp.Repository
 
         public async Task Delete(object key)
         {
-            var category = await _context.Products.FindAsync((int)key);
-            category.Status = false;
-            _context.Entry(category).State = EntityState.Detached;
-            _context.Entry(category).State = EntityState.Modified;
+            var product = await _context.Products.FindAsync((int)key);
+            product.Status = false;
+            _context.Entry(product).State = EntityState.Detached;
+            _context.Entry(product).State = EntityState.Modified;
             await _context.SaveChangesAsync();
         }
 
@@ -81,6 +81,16 @@ namespace WebApp.Repository
             _context.Entry(category).State = EntityState.Modified;
             await _context.SaveChangesAsync();
             return category;
+        }
+
+        public Task<IEnumerable<Product>> GetAll()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<Product>> GetAll(Expression<Func<Product, bool>> expression)
+        {
+            throw new NotImplementedException();
         }
     }
 }

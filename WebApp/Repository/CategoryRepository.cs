@@ -79,5 +79,10 @@ namespace WebApp.Repository
             _context.Entry(category).State = EntityState.Modified;
             await _context.SaveChangesAsync();
         }
+
+        public async Task<IEnumerable<Category>> GetAll(Expression<Func<Category, bool>> expression)
+        {
+            return await _context.Categories.Where(expression).ToListAsync();
+        }
     }
 }
