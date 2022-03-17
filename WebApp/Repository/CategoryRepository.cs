@@ -51,6 +51,7 @@ namespace WebApp.Repository
 
         public async Task<Category> Update(Category entity)
         {
+            _context.Entry(entity).State = EntityState.Detached;
             _context.Entry(entity).State = EntityState.Modified;
             await _context.SaveChangesAsync();
             return entity;
@@ -83,6 +84,11 @@ namespace WebApp.Repository
         public async Task<IEnumerable<Category>> GetAll(Expression<Func<Category, bool>> expression)
         {
             return await _context.Categories.Where(expression).ToListAsync();
+        }
+
+        public Task<Category> GetSingle(Expression<Func<Category, bool>> expression)
+        {
+            throw new NotImplementedException();
         }
     }
 }

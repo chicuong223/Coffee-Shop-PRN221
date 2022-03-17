@@ -38,13 +38,13 @@ namespace WebApp.Repository
             if (isDeep.HasValue && isDeep.Value)
             {
                 result = await _context.Vouchers
-                    .Include(c => c.Bills)
-                    .FirstOrDefaultAsync(ca => ca.Id == (int)key);
+                    .Include(v => v.Bills)
+                    .FirstOrDefaultAsync(v => v.Id == key.ToString());
             }
             else
             {
                 result = await _context.Vouchers
-                    .FirstOrDefaultAsync(ca => ca.Id == (int)key);
+                    .FirstOrDefaultAsync(v => v.Id == key.ToString());
             }
             return result;
         }
@@ -83,6 +83,11 @@ namespace WebApp.Repository
         }
 
         public Task<IEnumerable<Voucher>> GetAll(Expression<Func<Voucher, bool>> expression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Voucher> GetSingle(Expression<Func<Voucher, bool>> expression)
         {
             throw new NotImplementedException();
         }

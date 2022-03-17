@@ -6,14 +6,15 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using WebApp.Models;
+using WebApp.RepositoryInterface;
 
 namespace WebApp.Pages.Categories
 {
     public class CreateModel : PageModel
     {
-        private readonly WebApp.Models.CoffeeShopDBContext _context;
+        private readonly IBaseRepository<Category> _context;
 
-        public CreateModel(WebApp.Models.CoffeeShopDBContext context)
+        public CreateModel(IBaseRepository<Category> context)
         {
             _context = context;
         }
@@ -34,8 +35,11 @@ namespace WebApp.Pages.Categories
                 return Page();
             }
 
-            _context.Categories.Add(Category);
-            await _context.SaveChangesAsync();
+            Category.Status = true;
+
+            //_context.Categories.Add(Category);
+            //await _context.SaveChangesAsync();
+            await _context.Create(Category);
 
             return RedirectToPage("./Index");
         }

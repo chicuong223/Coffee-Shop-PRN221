@@ -22,7 +22,7 @@ namespace WebApp.Pages.Vouchers
         [BindProperty]
         public Voucher Voucher { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(int? id)
+        public async Task<IActionResult> OnGetAsync(string id)
         {
             if (id == null)
             {
@@ -68,7 +68,7 @@ namespace WebApp.Pages.Vouchers
             return RedirectToPage("./Index");
         }
 
-        private bool VoucherExists(int id)
+        private bool VoucherExists(string id)
         {
             return _context.Vouchers.Any(e => e.Id == id);
         }

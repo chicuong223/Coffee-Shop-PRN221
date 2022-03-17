@@ -85,5 +85,10 @@ namespace WebApp.Repository
         {
             throw new NotImplementedException();
         }
+
+        public Task<Notification> GetSingle(Expression<Func<Notification, bool>> expression)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

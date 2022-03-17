@@ -1,4 +1,5 @@
 ﻿@page
+@using X.PagedList.Mvc.Core
 @model WebApp.Pages.Bills.IndexModel
 
 @{
@@ -14,25 +15,25 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Bill[0].BillDate)
+                @Html.DisplayNameFor(model => model.Bills[0].BillDate)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Bill[0].Discount)
+                @Html.DisplayNameFor(model => model.Bills[0].Discount)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Bill[0].Status)
+                @Html.DisplayNameFor(model => model.Bills[0].Status)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Bill[0].StaffUsernameNavigation)
+                @Html.DisplayNameFor(model => model.Bills[0].StaffUsernameNavigation)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Bill[0].Voucher)
+                @Html.DisplayNameFor(model => model.Bills[0].Voucher)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.Bill) {
+@foreach (var item in Model.Bills) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.BillDate)
@@ -58,3 +59,8 @@
 }
     </tbody>
 </table>
+
+<br />
+Page @(Model.Bills.PageCount < Model.Bills.PageNumber ? 0 : Model.Bills.PageNumber) of @Model.Bills.PageCount
+
+@Html.PagedListPager( Model.Bills, pageIndex => Url.Page("Index", new { pageIndex }) )

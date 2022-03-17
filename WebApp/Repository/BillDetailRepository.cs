@@ -41,6 +41,11 @@ namespace WebApp.Repository
             throw new NotImplementedException();
         }
 
+        public Task<BillDetail> GetSingle(Expression<Func<BillDetail, bool>> expression)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<BillDetail> Update(BillDetail t)
         {
             throw new NotImplementedException();

@@ -7,14 +7,15 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WebApp.Models;
+using WebApp.RepositoryInterface;
 
 namespace WebApp.Pages.Categories
 {
     public class EditModel : PageModel
     {
-        private readonly WebApp.Models.CoffeeShopDBContext _context;
+        private readonly IBaseRepository<Category> _context;
 
-        public EditModel(WebApp.Models.CoffeeShopDBContext context)
+        public EditModel(IBaseRepository<Category> context)
         {
             _context = context;
         }
@@ -29,7 +30,9 @@ namespace WebApp.Pages.Categories
                 return NotFound();
             }
 
-            Category = await _context.Categories.FirstOrDefaultAsync(m => m.Id == id);
+            //Category = await _context.Categories.FirstOrDefaultAsync(m => m.Id == id);
+
+            Category = await _context.GetByID(id, false);
 
             if (Category == null)
             {
@@ -47,11 +50,14 @@ namespace WebApp.Pages.Categories
                 return Page();
             }
 
-            _context.Attach(Category).State = EntityState.Modified;
+            //_context.Attach(Category).State = EntityState.Modified;
 
             try
             {
-                await _context.SaveChangesAsync();
+                //await _context.SaveChangesAsync();
+                var category = await _context.GetByID(Category.Id, false);
+                category.CategoryName = Category.CategoryName;
+                await _context.Update(category);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -70,7 +76,8 @@ namespace WebApp.Pages.Categories
 
         private bool CategoryExists(int id)
         {
-            return _context.Categories.Any(e => e.Id == id);
+            //return _context.Categories.Any(e => e.Id == id);
+            return _context.GetByID(id, false) != null;
         }
     }
 }

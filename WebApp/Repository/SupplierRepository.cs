@@ -86,5 +86,10 @@ namespace WebApp.Repository
         {
             throw new NotImplementedException();
         }
+
+        public Task<Supplier> GetSingle(Expression<Func<Supplier, bool>> expression)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

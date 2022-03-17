@@ -21,7 +21,7 @@ namespace WebApp.Pages.Vouchers
         [BindProperty]
         public Voucher Voucher { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(int? id)
+        public async Task<IActionResult> OnGetAsync(string id)
         {
             if (id == null)
             {
@@ -37,7 +37,7 @@ namespace WebApp.Pages.Vouchers
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync(int? id)
+        public async Task<IActionResult> OnPostAsync(string id)
         {
             if (id == null)
             {

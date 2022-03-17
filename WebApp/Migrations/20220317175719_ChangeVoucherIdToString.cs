@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace WebApp.Migrations
 {
-    public partial class IdendityID : Migration
+    public partial class ChangeVoucherIdToString : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -13,7 +13,7 @@ namespace WebApp.Migrations
                 {
                     ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CategoryName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CategoryName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Status = table.Column<bool>(type: "bit", nullable: true)
                 },
                 constraints: table =>
@@ -57,12 +57,12 @@ namespace WebApp.Migrations
                 name: "Voucher",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Percentage = table.Column<double>(type: "float", nullable: true),
-                    ExpirationDate = table.Column<DateTime>(type: "date", nullable: true),
-                    UsageCount = table.Column<int>(type: "int", nullable: true),
+                    ID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Percentage = table.Column<double>(type: "float", nullable: false),
+                    ExpirationDate = table.Column<DateTime>(type: "date", nullable: false),
+                    UsageCount = table.Column<int>(type: "int", nullable: false),
                     Status = table.Column<bool>(type: "bit", nullable: true)
                 },
                 constraints: table =>
@@ -76,11 +76,12 @@ namespace WebApp.Migrations
                 {
                     ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ProductName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Price = table.Column<decimal>(type: "money", nullable: true),
-                    CategoryID = table.Column<int>(type: "int", nullable: true),
-                    Stock = table.Column<int>(type: "int", nullable: true),
-                    Status = table.Column<bool>(type: "bit", nullable: true)
+                    ProductName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Price = table.Column<decimal>(type: "money", nullable: false),
+                    CategoryID = table.Column<int>(type: "int", nullable: false),
+                    Stock = table.Column<int>(type: "int", nullable: false),
+                    Status = table.Column<bool>(type: "bit", nullable: true),
+                    ImageURL = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -90,7 +91,7 @@ namespace WebApp.Migrations
                         column: x => x.CategoryID,
                         principalTable: "Category",
                         principalColumn: "ID",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -123,7 +124,7 @@ namespace WebApp.Migrations
                     BillDate = table.Column<DateTime>(type: "date", nullable: true),
                     StaffUsername = table.Column<string>(type: "varchar(32)", unicode: false, maxLength: 32, nullable: true),
                     Discount = table.Column<double>(type: "float", nullable: true),
-                    VoucherID = table.Column<int>(type: "int", nullable: true),
+                    VoucherID = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     Status = table.Column<bool>(type: "bit", nullable: true)
                 },
                 constraints: table =>
@@ -200,7 +201,8 @@ namespace WebApp.Migrations
                 {
                     BillID = table.Column<int>(type: "int", nullable: false),
                     ProductID = table.Column<int>(type: "int", nullable: false),
-                    Quantity = table.Column<int>(type: "int", nullable: true),
+                    Quantity = table.Column<int>(type: "int", nullable: false),
+                    UnitPrice = table.Column<decimal>(type: "money", nullable: true),
                     SubTotal = table.Column<decimal>(type: "money", nullable: true)
                 },
                 constraints: table =>

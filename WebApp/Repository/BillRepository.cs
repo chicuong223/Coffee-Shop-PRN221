@@ -14,11 +14,16 @@ namespace WebApp.Repository
     {
         private readonly CoffeeShopDBContext _context = new CoffeeShopDBContext();
 
-        public async Task<IPagedList<Bill>> GetList(Expression<Func<Bill, bool>>? expression, bool? isDeep = false, int? page = 1)
+        public async Task<IPagedList<Bill>> GetList(Expression<Func<Bill, bool>> expression, bool? isDeep = false, int? page = 1)
         {
             var pageNumber = page ?? 1;
             IPagedList<Bill> list;
-            if (isDeep.HasValue && isDeep.Value)
+            if (expression == null)
+            {
+                list = await _context.Bills
+                    .ToPagedListAsync(pageNumber, 2);
+            }
+            else if (isDeep.HasValue && isDeep.Value)
             {
                 list = await _context.Bills.Where(expression)
                     .Include(i => i.Voucher)
@@ -84,6 +89,11 @@ namespace WebApp.Repository
         }
 
         public Task<IEnumerable<Bill>> GetAll(Expression<Func<Bill, bool>> expression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Bill> GetSingle(Expression<Func<Bill, bool>> expression)
         {
             throw new NotImplementedException();
         }

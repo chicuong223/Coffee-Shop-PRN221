@@ -42,8 +42,8 @@ namespace WebApp.Migrations
                     b.Property<bool?>("Status")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("VoucherId")
-                        .HasColumnType("int")
+                    b.Property<string>("VoucherId")
+                        .HasColumnType("nvarchar(450)")
                         .HasColumnName("VoucherID");
 
                     b.HasKey("Id");
@@ -278,27 +278,32 @@ namespace WebApp.Migrations
 
             modelBuilder.Entity("WebApp.Models.Voucher", b =>
                 {
-                    b.Property<int>("Id")
-                        .HasColumnType("int")
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)")
                         .HasColumnName("ID");
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("ExpirationDate")
+                        .IsRequired()
                         .HasColumnType("date");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
                     b.Property<double?>("Percentage")
+                        .IsRequired()
                         .HasColumnType("float");
 
                     b.Property<bool?>("Status")
                         .HasColumnType("bit");
 
                     b.Property<int?>("UsageCount")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.HasKey("Id");

@@ -16,7 +16,7 @@ namespace WebApp.Models
         public DateTime? BillDate { get; set; }
         public string StaffUsername { get; set; }
         public double? Discount { get; set; }
-        public int? VoucherId { get; set; }
+        public string VoucherId { get; set; }
         public bool? Status { get; set; }
 
         public virtual Staff StaffUsernameNavigation { get; set; }

@@ -6,25 +6,28 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using WebApp.Models;
+using WebApp.RepositoryInterface;
+using X.PagedList;
 
 namespace WebApp.Pages.Bills
 {
     public class IndexModel : PageModel
     {
-        private readonly WebApp.Models.CoffeeShopDBContext _context;
+        private readonly IBaseRepository<Bill> _context;
 
-        public IndexModel(WebApp.Models.CoffeeShopDBContext context)
+        public IndexModel(IBaseRepository<Bill> context)
         {
             _context = context;
         }
 
-        public IList<Bill> Bill { get;set; }
+        public IPagedList<Bill> Bills { get;set; }
 
-        public async Task OnGetAsync()
+        public async Task OnGetAsync(int? page)
         {
-            Bill = await _context.Bills
-                .Include(b => b.StaffUsernameNavigation)
-                .Include(b => b.Voucher).ToListAsync();
+            //Bill = await _context.Bills
+            //    .Include(b => b.StaffUsernameNavigation)
+            //    .Include(b => b.Voucher).ToListAsync();
+            Bills = await _context.GetList(null, true, page);
         }
     }
 }

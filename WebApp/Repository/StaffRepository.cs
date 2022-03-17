@@ -75,14 +75,16 @@ namespace WebApp.Repository
             return category;
         }
 
-        public Task<IEnumerable<Staff>> GetAll()
+        public Task<IEnumerable<Staff>> GetAll(Expression<Func<Staff, bool>> expression)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<Staff>> GetAll(Expression<Func<Staff, bool>> expression)
+        public async Task<Staff> GetSingle(Expression<Func<Staff, bool>> expression)
         {
-            throw new NotImplementedException();
+            var result = await _context.Staff
+                .SingleOrDefaultAsync(expression) ?? null;
+            return result;
         }
     }
 }
