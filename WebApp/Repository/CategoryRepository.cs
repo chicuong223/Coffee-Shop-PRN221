@@ -31,17 +31,17 @@ namespace WebApp.Repository
             return list;
         }
 
-        public async Task<Category> GetByID(int id, bool? isDeep = true)
+        public async Task<Category> GetByID(object id, bool? isDeep = true)
         {
             Category result;
             if (isDeep.HasValue && isDeep.Value)
             {
                 result = await _context.Categories.Include(c => c.Products)
-                .FirstOrDefaultAsync(ca => ca.Id == id);
+                .FirstOrDefaultAsync(ca => ca.Id == (int)id);
             }
             else
             {
-                result = await _context.Categories.FirstOrDefaultAsync(ca => ca.Id == id);
+                result = await _context.Categories.FirstOrDefaultAsync(ca => ca.Id == (int)id);
             }
             return result;
         }
@@ -58,9 +58,9 @@ namespace WebApp.Repository
             return entity;
         }
 
-        public async Task Delete(int id)
+        public async Task Delete(object key)
         {
-            var category = await _context.Categories.FindAsync(id);
+            var category = await _context.Categories.FindAsync((int)key);
             category.Status = false;
             _context.Entry(category).State = EntityState.Detached;
             _context.Entry(category).State = EntityState.Modified;

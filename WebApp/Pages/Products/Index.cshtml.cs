@@ -6,24 +6,26 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using WebApp.Models;
+using WebApp.RepositoryInterface;
+using X.PagedList;
 
 namespace WebApp.Pages.Products
 {
     public class IndexModel : PageModel
     {
-        private readonly WebApp.Models.CoffeeShopDBContext _context;
+        private readonly IRepoWrapper _context;
 
-        public IndexModel(WebApp.Models.CoffeeShopDBContext context)
+        public IndexModel(IRepoWrapper context)
         {
             _context = context;
         }
 
-        public IList<Product> Product { get;set; }
+        public IPagedList<Product> Product { get;set; }
 
         public async Task OnGetAsync()
         {
-            Product = await _context.Products
-                .Include(p => p.Category).ToListAsync();
+            Product = await _context.Products.GetList((p => true));
+                
         }
     }
 }

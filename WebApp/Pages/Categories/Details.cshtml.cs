@@ -7,14 +7,15 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using WebApp.Models;
 using WebApp.Repository;
+using WebApp.RepositoryInterface;
 
 namespace WebApp.Pages.Categories
 {
     public class DetailsModel : PageModel
     {
-        private readonly ICategoryRepository _context;
+        private readonly IRepoWrapper _context;
 
-        public DetailsModel(ICategoryRepository context)
+        public DetailsModel(IRepoWrapper context)
         {
             _context = context;
         }
@@ -28,7 +29,7 @@ namespace WebApp.Pages.Categories
                 return NotFound();
             }
 
-            Category = await _context.GetByID(id.Value);
+            Category = await _context.Categories.GetByID(id.Value);
 
             if (Category == null)
             {

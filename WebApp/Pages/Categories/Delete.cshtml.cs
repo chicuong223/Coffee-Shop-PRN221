@@ -6,14 +6,15 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using WebApp.Models;
+using WebApp.RepositoryInterface;
 
 namespace WebApp.Pages.Categories
 {
     public class DeleteModel : PageModel
     {
-        private readonly WebApp.Models.CoffeeShopDBContext _context;
+        private readonly IRepoWrapper _context;
 
-        public DeleteModel(WebApp.Models.CoffeeShopDBContext context)
+        public DeleteModel(IRepoWrapper context)
         {
             _context = context;
         }
@@ -28,7 +29,7 @@ namespace WebApp.Pages.Categories
                 return NotFound();
             }
 
-            Category = await _context.Categories.FirstOrDefaultAsync(m => m.Id == id);
+            Category = await _context.Categories.GetByID(id);
 
             if (Category == null)
             {
@@ -44,12 +45,11 @@ namespace WebApp.Pages.Categories
                 return NotFound();
             }
 
-            Category = await _context.Categories.FindAsync(id);
+            Category = await _context.Categories.GetByID(id);
 
             if (Category != null)
             {
-                _context.Categories.Remove(Category);
-                await _context.SaveChangesAsync();
+                await _context.Categories.Delete(Category);
             }
 
             return RedirectToPage("./Index");

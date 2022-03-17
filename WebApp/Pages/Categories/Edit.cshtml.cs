@@ -7,14 +7,15 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WebApp.Models;
+using WebApp.RepositoryInterface;
 
 namespace WebApp.Pages.Categories
 {
     public class EditModel : PageModel
     {
-        private readonly WebApp.Models.CoffeeShopDBContext _context;
+        private readonly IRepoWrapper _context;
 
-        public EditModel(WebApp.Models.CoffeeShopDBContext context)
+        public EditModel(IRepoWrapper context)
         {
             _context = context;
         }
@@ -29,7 +30,7 @@ namespace WebApp.Pages.Categories
                 return NotFound();
             }
 
-            Category = await _context.Categories.FirstOrDefaultAsync(m => m.Id == id);
+            Category = await _context.Categories.GetByID(id);
 
             if (Category == null)
             {
@@ -47,11 +48,10 @@ namespace WebApp.Pages.Categories
                 return Page();
             }
 
-            _context.Attach(Category).State = EntityState.Modified;
 
             try
             {
-                await _context.SaveChangesAsync();
+                await _context.Categories.Update(Category);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -70,7 +70,7 @@ namespace WebApp.Pages.Categories
 
         private bool CategoryExists(int id)
         {
-            return _context.Categories.Any(e => e.Id == id);
+            return _context.Categories.GetByID(id)!=null;
         }
     }
 }
