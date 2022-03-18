@@ -28,12 +28,10 @@ namespace WebApp
         {
             services.AddRazorPages();
             services.AddSession(options => options.IdleTimeout = TimeSpan.FromMinutes(30));
-            services.AddDbContext<CoffeeShopDBContext>();
-            services.AddScoped<IBaseRepository<Category>, CategoryRepository>(); 
-            services.AddScoped<IBaseRepository<Product>, ProductRepository>(); 
-            services.AddScoped<IBaseRepository<Staff>, StaffRepository>(); 
-            services.AddScoped<IBaseRepository<Bill>, BillRepository>(); 
-            services.AddScoped<IBaseRepository<BillDetail>, BillDetailRepository>(); 
+
+            //services.AddScoped<ICategoryRepository, CategoryRepository>(); 
+            services.AddSingleton<IRepoWrapper, RepoWrapper>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

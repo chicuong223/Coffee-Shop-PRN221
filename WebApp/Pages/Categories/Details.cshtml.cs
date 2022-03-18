@@ -13,9 +13,9 @@ namespace WebApp.Pages.Categories
 {
     public class DetailsModel : PageModel
     {
-        private readonly IBaseRepository<Category> _context;
+        private readonly IRepoWrapper _context;
 
-        public DetailsModel(IBaseRepository<Category> context)
+        public DetailsModel(IRepoWrapper context)
         {
             _context = context;
         }
@@ -29,7 +29,7 @@ namespace WebApp.Pages.Categories
                 return NotFound();
             }
 
-            Category = await _context.GetByID(id, true);
+            Category = await _context.Categories.GetByID(id.Value);
 
             if (Category == null)
             {

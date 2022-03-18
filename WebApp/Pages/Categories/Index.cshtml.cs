@@ -14,9 +14,9 @@ namespace WebApp.Pages.Categories
 {
     public class IndexModel : PageModel
     {
-        private readonly IBaseRepository<Category> _context;
+        private readonly IRepoWrapper _context;
 
-        public IndexModel(IBaseRepository<Category> context)
+        public IndexModel(IRepoWrapper context)
         {
             _context = context;
         }
@@ -25,7 +25,7 @@ namespace WebApp.Pages.Categories
 
         public async Task OnGetAsync(int? pageIndex)
         {
-            Categories = await _context.GetList(null, true, pageIndex);
+            Categories = await _context.Categories.GetList(null, true, pageIndex);
         }
     }
 }

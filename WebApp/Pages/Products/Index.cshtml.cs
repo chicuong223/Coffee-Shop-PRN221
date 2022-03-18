@@ -13,9 +13,9 @@ namespace WebApp.Pages.Products
 {
     public class IndexModel : PageModel
     {
-        private readonly IBaseRepository<Product> _context;
+        private readonly IRepoWrapper _context;
 
-        public IndexModel(IBaseRepository<Product> context)
+        public IndexModel(IRepoWrapper context)
         {
             _context = context;
         }
@@ -24,7 +24,8 @@ namespace WebApp.Pages.Products
 
         public async Task OnGetAsync(int? pageIndex)
         {
-            Products = await _context.GetList(null, true, pageIndex);
+            Product = await _context.Products.GetList(null, true, pageIndex);
+                
         }
     }
 }

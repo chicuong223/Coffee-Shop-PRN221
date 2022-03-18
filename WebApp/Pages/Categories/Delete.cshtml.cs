@@ -12,9 +12,9 @@ namespace WebApp.Pages.Categories
 {
     public class DeleteModel : PageModel
     {
-        private readonly IBaseRepository<Category> _context;
+        private readonly IRepoWrapper _context;
 
-        public DeleteModel(IBaseRepository<Category> context)
+        public DeleteModel(IRepoWrapper context)
         {
             _context = context;
         }
@@ -29,8 +29,7 @@ namespace WebApp.Pages.Categories
                 return NotFound();
             }
 
-            //Category = await _context.Categories.FirstOrDefaultAsync(m => m.Id == id);
-            Category = await _context.GetByID(id, false);
+            Category = await _context.Categories.GetByID(id, false);
 
             if (Category == null)
             {
@@ -46,14 +45,11 @@ namespace WebApp.Pages.Categories
                 return NotFound();
             }
 
-            //Category = await _context.Categories.FindAsync(id);
-            Category = await _context.GetByID(id, false);
+            Category = await _context.Categories.GetByID(id);
 
             if (Category != null)
             {
-                //_context.Categories.Remove(Category);
-                //await _context.SaveChangesAsync();
-                await _context.Delete(Category.Id);
+                await _context.Categories.Delete(Category);
             }
 
             return RedirectToPage("./Index");

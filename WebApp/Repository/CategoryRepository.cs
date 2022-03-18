@@ -29,10 +29,20 @@ namespace WebApp.Repository
                     .Include(i => i.Products)
                     .ToPagedListAsync(pageNumber, 2);
             }
+            return list;
+        }
+
+        public async Task<Category> GetByID(object id, bool? isDeep = true)
+        {
+            Category result;
+            if (isDeep.HasValue && isDeep.Value)
+            {
+                result = await _context.Categories.Include(c => c.Products)
+                .FirstOrDefaultAsync(ca => ca.Id == (int)id);
+            }
             else
             {
-                list = await _context.Categories.Where(expression)
-                    .ToPagedListAsync(pageNumber, 2);
+                result = await _context.Categories.FirstOrDefaultAsync(ca => ca.Id == (int)id);
             }
             return list;
         }
@@ -55,21 +65,6 @@ namespace WebApp.Repository
             _context.Entry(entity).State = EntityState.Modified;
             await _context.SaveChangesAsync();
             return entity;
-        }
-
-        public async Task<Category> GetByID(object key, bool? isDeep = true)
-        {
-            Category result;
-            if (isDeep.HasValue && isDeep.Value)
-            {
-                result = await _context.Categories.Include(c => c.Products)
-                .FirstOrDefaultAsync(ca => ca.Id == (int)key);
-            }
-            else
-            {
-                result = await _context.Categories.FirstOrDefaultAsync(ca => ca.Id == (int)key);
-            }
-            return result;
         }
 
         public async Task Delete(object key)

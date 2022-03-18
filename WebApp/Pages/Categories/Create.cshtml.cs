@@ -12,9 +12,9 @@ namespace WebApp.Pages.Categories
 {
     public class CreateModel : PageModel
     {
-        private readonly IBaseRepository<Category> _context;
+        private readonly IRepoWrapper _context;
 
-        public CreateModel(IBaseRepository<Category> context)
+        public CreateModel(IRepoWrapper context)
         {
             _context = context;
         }
@@ -35,11 +35,7 @@ namespace WebApp.Pages.Categories
                 return Page();
             }
 
-            Category.Status = true;
-
-            //_context.Categories.Add(Category);
-            //await _context.SaveChangesAsync();
-            await _context.Create(Category);
+            await _context.Categories.Create(Category);
 
             return RedirectToPage("./Index");
         }
