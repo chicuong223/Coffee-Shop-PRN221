@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DataAccess.RepositoryInterface;
 using DataObject.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -21,6 +22,17 @@ namespace WebApp.Pages.BillDetails
 
         public async Task<IActionResult> OnGet([FromQuery(Name = "billid")] int? billId)
         {
+            ISession session = HttpContext.Session;
+            var currentUsername = session.GetString("Username");
+            var role = session.GetString("Role");
+            if (string.IsNullOrEmpty(currentUsername) || string.IsNullOrEmpty(role))
+            {
+                return RedirectToPage("../Authenticate/Login");
+            }
+            if (!role.Equals("Staff"))
+            {
+                return RedirectToPage("../Error");
+            }
             if (billId == null)
             {
                 return RedirectToPage("../Error");
@@ -43,8 +55,17 @@ namespace WebApp.Pages.BillDetails
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync(int? billId)
         {
-            Console.WriteLine(billId.Value);
-            Console.WriteLine(ModelState.IsValid);
+            ISession session = HttpContext.Session;
+            var currentUsername = session.GetString("Username");
+            var role = session.GetString("Role");
+            if (string.IsNullOrEmpty(currentUsername) || string.IsNullOrEmpty(role))
+            {
+                return RedirectToPage("../Authenticate/Login");
+            }
+            if (!role.Equals("Staff"))
+            {
+                return RedirectToPage("../Error");
+            }
             if (!ModelState.IsValid)
             {
                 TempData["Error"] = "Please fill in all fields";

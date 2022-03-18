@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DataObject.Models;
 using DataAccess.RepositoryInterface;
+using Microsoft.AspNetCore.Http;
 
 namespace WebApp.Pages.BillDetails
 {
@@ -23,21 +24,31 @@ namespace WebApp.Pages.BillDetails
         [BindProperty]
         public BillDetail BillDetail { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(int? id)
+        public async Task<IActionResult> OnGetAsync(int? billid, int? productid)
         {
-            if (id == null)
+            ISession session = HttpContext.Session;
+            var currentUsername = session.GetString("Username");
+            var role = session.GetString("Role");
+            if (string.IsNullOrEmpty(currentUsername) || string.IsNullOrEmpty(role))
+            {
+                return RedirectToPage("../Authenticate/Login");
+            }
+            if (!role.Equals("Staff"))
+            {
+                return RedirectToPage("../Error");
+            }
+            if (billid == null || productid == null)
             {
                 return NotFound();
             }
 
-            BillDetail = await _context.BillDetails.GetByID(id);
+            BillDetail = await _context.BillDetails.GetByID((billid.Value, productid.Value));
 
             if (BillDetail == null)
             {
                 return NotFound();
             }
-           ViewData["BillId"] = new SelectList(_context.Bills.GetAll(null).Result.ToList(), "Id", "Id");
-           ViewData["ProductId"] = new SelectList(_context.Products.GetAll(null).Result.ToList(), "Id", "ProductName");
+            ViewData["ProductId"] = new SelectList(_context.Products.GetAll(null).Result.ToList(), "Id", "ProductName");
             return Page();
         }
 
@@ -45,6 +56,17 @@ namespace WebApp.Pages.BillDetails
         // For more details, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
+            ISession session = HttpContext.Session;
+            var currentUsername = session.GetString("Username");
+            var role = session.GetString("Role");
+            if (string.IsNullOrEmpty(currentUsername) || string.IsNullOrEmpty(role))
+            {
+                return RedirectToPage("../Authenticate/Login");
+            }
+            if (!role.Equals("Staff"))
+            {
+                return RedirectToPage("../Error");
+            }
             if (!ModelState.IsValid)
             {
                 return Page();
@@ -52,26 +74,22 @@ namespace WebApp.Pages.BillDetails
 
             try
             {
+                var product = await _context.Products.GetByID(BillDetail.ProductId);
+                if (product == null)
+                {
+                    return RedirectToPage("../Error");
+                }
+                BillDetail.SubTotal = product.Price * BillDetail.Quantity;
+                BillDetail.UnitPrice = product.Price;
                 await _context.BillDetails.Update(BillDetail);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!BillDetailExists(BillDetail.BillId))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                throw;
+
             }
 
-            return RedirectToPage("./Index");
-        }
-
-        private bool BillDetailExists(int id)
-        {
-            return _context.BillDetails.GetByID(id, false)!=null;
+            return RedirectToPage("../Bills/Edit", new { id = BillDetail.BillId });
         }
     }
 }

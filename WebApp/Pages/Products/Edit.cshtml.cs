@@ -31,6 +31,17 @@ namespace WebApp.Pages.Products
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
+            ISession session = HttpContext.Session;
+            var currentUsername = session.GetString("Username");
+            var role = session.GetString("Role");
+            if (string.IsNullOrEmpty(currentUsername) || string.IsNullOrEmpty(role))
+            {
+                return RedirectToPage("../Authenticate/Login");
+            }
+            if (!role.Equals("Admin"))
+            {
+                return RedirectToPage("../Error");
+            }
             if (id == null)
             {
                 return NotFound();
@@ -52,6 +63,17 @@ namespace WebApp.Pages.Products
         // For more details, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync(IFormFile image)
         {
+            ISession session = HttpContext.Session;
+            var currentUsername = session.GetString("Username");
+            var role = session.GetString("Role");
+            if (string.IsNullOrEmpty(currentUsername) || string.IsNullOrEmpty(role))
+            {
+                return RedirectToPage("../Authenticate/Login");
+            }
+            if (!role.Equals("Admin"))
+            {
+                return RedirectToPage("../Error");
+            }
             if (!ModelState.IsValid)
             {
                 return Page();

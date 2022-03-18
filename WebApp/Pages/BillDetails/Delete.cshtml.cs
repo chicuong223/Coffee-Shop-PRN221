@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using DataObject.Models;
 using DataAccess.RepositoryInterface;
+using Microsoft.AspNetCore.Http;
 
 namespace WebApp.Pages.BillDetails
 {
@@ -22,14 +23,25 @@ namespace WebApp.Pages.BillDetails
         [BindProperty]
         public BillDetail BillDetail { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(int? id)
+        public async Task<IActionResult> OnGetAsync(int? billid, int? productid)
         {
-            if (id == null)
+            ISession session = HttpContext.Session;
+            var currentUsername = session.GetString("Username");
+            var role = session.GetString("Role");
+            if (string.IsNullOrEmpty(currentUsername) || string.IsNullOrEmpty(role))
+            {
+                return RedirectToPage("../Authenticate/Login");
+            }
+            if (!role.Equals("Staff"))
+            {
+                return RedirectToPage("../Error");
+            }
+            if (billid == null || productid == null)
             {
                 return NotFound();
             }
 
-            BillDetail = await _context.BillDetails.GetByID(id);
+            BillDetail = await _context.BillDetails.GetByID((billid.Value, productid.Value));
 
             if (BillDetail == null)
             {
@@ -38,21 +50,32 @@ namespace WebApp.Pages.BillDetails
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync(int? id)
+        public async Task<IActionResult> OnPostAsync(int? billid, int? productid)
         {
-            if (id == null)
+            ISession session = HttpContext.Session;
+            var currentUsername = session.GetString("Username");
+            var role = session.GetString("Role");
+            if (string.IsNullOrEmpty(currentUsername) || string.IsNullOrEmpty(role))
+            {
+                return RedirectToPage("../Authenticate/Login");
+            }
+            if (!role.Equals("Staff"))
+            {
+                return RedirectToPage("../Error");
+            }
+            if (billid == null || productid == null)
             {
                 return NotFound();
             }
 
-            BillDetail = await _context.BillDetails.GetByID(id, false);
+            BillDetail = await _context.BillDetails.GetByID((billid.Value, productid.Value), false);
 
             if (BillDetail != null)
             {
-                await _context.BillDetails.Delete(BillDetail);
+                await _context.BillDetails.Delete((billid.Value, productid.Value));
             }
 
-            return RedirectToPage("./Index");
+            return RedirectToPage("../Bills/Edit", new { id = BillDetail.BillId });
         }
     }
 }

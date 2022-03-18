@@ -22,7 +22,18 @@ namespace WebApp.Pages.Bills
 
         public IActionResult OnGet()
         {
-        //ViewData["StaffUsername"] = new SelectList(_context.Staff, "Username", "Username");
+            ISession session = HttpContext.Session;
+            var currentUsername = session.GetString("Username");
+            var role = session.GetString("Role");
+            if (string.IsNullOrEmpty(currentUsername) || string.IsNullOrEmpty(role))
+            {
+                return RedirectToPage("../Authenticate/Login");
+            }
+            if (!role.Equals("Staff"))
+            {
+                return RedirectToPage("../Error");
+            }
+            //ViewData["StaffUsername"] = new SelectList(_context.Staff, "Username", "Username");
             //ViewData["VoucherId"] = new SelectList(await _context.Vouchers.GetAll(null), "Id", "Id");
             return Page();
         }

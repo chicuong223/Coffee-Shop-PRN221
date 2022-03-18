@@ -44,8 +44,6 @@
     </dl>
 </div>
 
-<!-- Table for bill details -->
-<a asp-page="../BillDetails/Create" asp-route-billId="@Model.Bill.Id">Create new detail</a>
 <table class="table">
     <thead>
         <tr>
@@ -64,7 +62,6 @@
             <th>
                 @Html.DisplayNameFor(model => model.Bill.BillDetails[0].Product)
             </th>
-            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -84,11 +81,6 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Product.ProductName)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
             </td>
         </tr>
 }

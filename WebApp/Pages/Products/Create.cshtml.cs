@@ -27,6 +27,17 @@ namespace WebApp.Pages.Products
 
         public async Task<IActionResult> OnGetAsync()
         {
+            ISession session = HttpContext.Session;
+            var currentUsername = session.GetString("Username");
+            var role = session.GetString("Role");
+            if (string.IsNullOrEmpty(currentUsername) || string.IsNullOrEmpty(role))
+            {
+                return RedirectToPage("../Authenticate/Login");
+            }
+            if (!role.Equals("Admin"))
+            {
+                return RedirectToPage("../Error");
+            }
             var categories = await _context.Categories.GetAll(ca => ca.Status == true);
             ViewData["CategoryId"] = new SelectList(categories, "Id", "CategoryName");
             return Page();
@@ -38,6 +49,17 @@ namespace WebApp.Pages.Products
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync(IFormFile image)
         {
+            ISession session = HttpContext.Session;
+            var currentUsername = session.GetString("Username");
+            var role = session.GetString("Role");
+            if (string.IsNullOrEmpty(currentUsername) || string.IsNullOrEmpty(role))
+            {
+                return RedirectToPage("../Authenticate/Login");
+            }
+            if (!role.Equals("Admin"))
+            {
+                return RedirectToPage("../Error");
+            }
             if (!ModelState.IsValid)
             {
                 return Page();
