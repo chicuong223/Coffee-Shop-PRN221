@@ -78,5 +78,15 @@ namespace WebApp.Repository
             await _context.SaveChangesAsync();
             return category;
         }
+
+        public Task<IEnumerable<BillDetail>> GetAll(Expression<Func<BillDetail, bool>> expression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<BillDetail> GetSingle(Expression<Func<BillDetail, bool>> expression)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

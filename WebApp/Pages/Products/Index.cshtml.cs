@@ -24,7 +24,7 @@ namespace WebApp.Pages.Products
 
         public async Task OnGetAsync(int? pageIndex)
         {
-            Product = await _context.Products.GetList(null, true, pageIndex);
+            Products = await _context.Products.GetList(null, true, pageIndex);
                 
         }
     }

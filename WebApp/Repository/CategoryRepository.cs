@@ -23,10 +23,15 @@ namespace WebApp.Repository
                 list = await _context.Categories
                     .ToPagedListAsync(pageNumber, 2);
             }
-            else if (isDeep.HasValue && isDeep.Value)
+            if (isDeep.HasValue && isDeep.Value)
             {
                 list = await _context.Categories.Where(expression)
                     .Include(i => i.Products)
+                    .ToPagedListAsync(pageNumber, 2);
+            }
+            else
+            {
+                list = await _context.Categories.Where(expression)
                     .ToPagedListAsync(pageNumber, 2);
             }
             return list;
@@ -44,7 +49,7 @@ namespace WebApp.Repository
             {
                 result = await _context.Categories.FirstOrDefaultAsync(ca => ca.Id == (int)id);
             }
-            return list;
+            return result;
         }
 
         public Task<int> Count(Expression<Func<Category, bool>> expression)
