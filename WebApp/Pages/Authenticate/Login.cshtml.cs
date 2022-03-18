@@ -28,8 +28,6 @@ namespace WebApp.Pages.Authenticate
         {
             var admin = _dbContext.Admin();
             string hashedPassword = PasswordUtility.HashPassword(password);
-            System.Console.WriteLine(admin.Password);
-            System.Console.WriteLine(hashedPassword);
             ISession session = HttpContext.Session; 
             if(username.Equals(admin.Username) && hashedPassword.Equals(admin.Password))
             {
@@ -38,6 +36,7 @@ namespace WebApp.Pages.Authenticate
                 return RedirectToPage("../Index");
             }
             var staff = await _staffRepository.GetSingle(s => s.Username.Equals(username) && s.Password.Equals(hashedPassword));
+
             if(staff == null)
             {
                 ViewData["BadCredentials"] = "Incorrect Username or Password";
