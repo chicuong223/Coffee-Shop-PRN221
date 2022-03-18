@@ -6,23 +6,25 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using DataObject.Models;
+using DataAccess.RepositoryInterface;
+using X.PagedList;
 
 namespace DataAccess.Pages.Suppliers
 {
     public class IndexModel : PageModel
     {
-        private readonly CoffeeShopDBContext _context;
+        private readonly IRepoWrapper _context;
 
-        public IndexModel(CoffeeShopDBContext context)
+        public IndexModel(IRepoWrapper context)
         {
             _context = context;
         }
 
-        public IList<Supplier> Supplier { get;set; }
+        public IPagedList<Supplier> Supplier { get;set; }
 
-        public async Task OnGetAsync()
+        public async Task OnGetAsync(int? pageIndex)
         {
-            Supplier = await _context.Suppliers.ToListAsync();
+            Supplier = await _context.Suppliers.GetList(null, null, pageIndex);
         }
     }
 }

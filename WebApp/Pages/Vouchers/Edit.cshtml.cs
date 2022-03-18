@@ -7,14 +7,15 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DataObject.Models;
+using DataAccess.RepositoryInterface;
 
 namespace DataAccess.Pages.Vouchers
 {
     public class EditModel : PageModel
     {
-        private readonly CoffeeShopDBContext _context;
+        private readonly IRepoWrapper _context;
 
-        public EditModel(CoffeeShopDBContext context)
+        public EditModel(IRepoWrapper context)
         {
             _context = context;
         }
@@ -29,7 +30,7 @@ namespace DataAccess.Pages.Vouchers
                 return NotFound();
             }
 
-            Voucher = await _context.Vouchers.FirstOrDefaultAsync(m => m.Id == id);
+            Voucher = await _context.Vouchers.GetByID(id, false);
 
             if (Voucher == null)
             {
@@ -47,11 +48,10 @@ namespace DataAccess.Pages.Vouchers
                 return Page();
             }
 
-            _context.Attach(Voucher).State = EntityState.Modified;
 
             try
             {
-                await _context.SaveChangesAsync();
+                await _context.Vouchers.Update(Voucher);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -70,7 +70,7 @@ namespace DataAccess.Pages.Vouchers
 
         private bool VoucherExists(string id)
         {
-            return _context.Vouchers.Any(e => e.Id == id);
+            return _context.Vouchers.GetByID(id, false) != null;
         }
     }
 }

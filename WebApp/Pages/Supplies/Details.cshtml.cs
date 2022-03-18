@@ -6,14 +6,15 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using DataObject.Models;
+using DataAccess.RepositoryInterface;
 
 namespace DataAccess.Pages.Supplies
 {
     public class DetailsModel : PageModel
     {
-        private readonly CoffeeShopDBContext _context;
+        private readonly IRepoWrapper _context;
 
-        public DetailsModel(CoffeeShopDBContext context)
+        public DetailsModel(IRepoWrapper context)
         {
             _context = context;
         }
@@ -27,9 +28,7 @@ namespace DataAccess.Pages.Supplies
                 return NotFound();
             }
 
-            Supply = await _context.Supplies
-                .Include(s => s.Product)
-                .Include(s => s.Supplier).FirstOrDefaultAsync(m => m.ProductId == id);
+            Supply = await _context.Supplies.GetByID(id, false);
 
             if (Supply == null)
             {
