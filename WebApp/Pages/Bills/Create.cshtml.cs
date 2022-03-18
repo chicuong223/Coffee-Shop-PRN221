@@ -6,22 +6,23 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using WebApp.Models;
+using WebApp.RepositoryInterface;
 
 namespace WebApp.Pages.Bills
 {
     public class CreateModel : PageModel
     {
-        private readonly WebApp.Models.CoffeeShopDBContext _context;
+        private readonly IRepoWrapper _context;
 
-        public CreateModel(WebApp.Models.CoffeeShopDBContext context)
+        public CreateModel(IRepoWrapper context)
         {
             _context = context;
         }
 
-        public IActionResult OnGet()
+        public async Task<IActionResult> OnGetAsync()
         {
-        ViewData["StaffUsername"] = new SelectList(_context.Staff, "Username", "Username");
-        ViewData["VoucherId"] = new SelectList(_context.Vouchers, "Id", "Id");
+        //ViewData["StaffUsername"] = new SelectList(_context.Staff, "Username", "Username");
+            ViewData["VoucherId"] = new SelectList(await _context.Vouchers.GetAll(null), "Id", "Id");
             return Page();
         }
 
@@ -36,8 +37,7 @@ namespace WebApp.Pages.Bills
                 return Page();
             }
 
-            _context.Bills.Add(Bill);
-            await _context.SaveChangesAsync();
+            await _context.Bills.Create(Bill);
 
             return RedirectToPage("./Index");
         }

@@ -11,9 +11,9 @@ namespace WebApp.Pages.Authenticate
     public class LoginModel : PageModel
     {
         private readonly CoffeeShopDBContext _dbContext;
-        private readonly IBaseRepository<Staff> _staffRepository;
+        private readonly IRepoWrapper _staffRepository;
 
-        public LoginModel(CoffeeShopDBContext context, IBaseRepository<Staff> staffRepository)
+        public LoginModel(CoffeeShopDBContext context, IRepoWrapper staffRepository)
         {
             _dbContext = context;
             _staffRepository = staffRepository;
@@ -35,7 +35,7 @@ namespace WebApp.Pages.Authenticate
                 session.SetString("Role", "Admin");
                 return RedirectToPage("../Index");
             }
-            var staff = await _staffRepository.GetSingle(s => s.Username.Equals(username) && s.Password.Equals(hashedPassword));
+            var staff = await _staffRepository.Staffs.GetSingle(s => s.Username.Equals(username) && s.Password.Equals(hashedPassword));
 
             if(staff == null)
             {

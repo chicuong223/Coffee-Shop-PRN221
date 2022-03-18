@@ -13,9 +13,9 @@ namespace WebApp.Pages.Bills
 {
     public class IndexModel : PageModel
     {
-        private readonly IBaseRepository<Bill> _context;
+        private readonly IRepoWrapper _context;
 
-        public IndexModel(IBaseRepository<Bill> context)
+        public IndexModel(IRepoWrapper context)
         {
             _context = context;
         }
@@ -27,7 +27,7 @@ namespace WebApp.Pages.Bills
             //Bill = await _context.Bills
             //    .Include(b => b.StaffUsernameNavigation)
             //    .Include(b => b.Voucher).ToListAsync();
-            Bills = await _context.GetList(null, true, page);
+            Bills = await _context.Bills.GetList(null, true, page);
         }
     }
 }

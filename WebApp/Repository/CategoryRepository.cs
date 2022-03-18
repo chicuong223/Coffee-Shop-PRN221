@@ -20,8 +20,9 @@ namespace WebApp.Repository
             IPagedList<Category> list;
             if(expression == null)
             {
-                list = await _context.Categories
-                    .ToPagedListAsync(pageNumber, 2);
+                expression = a => true;
+                //list = await _context.Categories
+                //    .ToPagedListAsync(pageNumber, 2);
             }
             if (isDeep.HasValue && isDeep.Value)
             {
