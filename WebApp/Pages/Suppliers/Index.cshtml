@@ -1,4 +1,5 @@
 ﻿@page
+@using X.PagedList.Mvc.Core
 @model Pages.Suppliers.IndexModel
 
 @{
@@ -26,23 +27,27 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.Supplier) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Phone)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model.Supplier)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Phone)
+                </td>
+                <td>
+                    @(item.Status?"Active":"Disabled")
+                </td>
+                <td>
+                    <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-page="./Delete" asp-route-id="@item.Id">Deactivate</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+Page @(Model.Supplier.PageCount < Model.Supplier.PageNumber ? 0 : Model.Supplier.PageNumber) of @Model.Supplier.PageCount
+
+@Html.PagedListPager(Model.Supplier, pageIndex => Url.Page("Index", new { pageIndex }))
