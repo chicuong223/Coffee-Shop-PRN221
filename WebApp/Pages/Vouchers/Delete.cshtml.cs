@@ -5,15 +5,15 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using WebApp.Models;
+using DataObject.Models;
 
-namespace WebApp.Pages.Vouchers
+namespace DataAccess.Pages.Vouchers
 {
     public class DeleteModel : PageModel
     {
-        private readonly WebApp.Models.CoffeeShopDBContext _context;
+        private readonly CoffeeShopDBContext _context;
 
-        public DeleteModel(WebApp.Models.CoffeeShopDBContext context)
+        public DeleteModel(CoffeeShopDBContext context)
         {
             _context = context;
         }

@@ -5,16 +5,16 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using WebApp.Models;
-using WebApp.RepositoryInterface;
+using DataObject.Models;
+using DataAccess.RepositoryInterface;
 
-namespace WebApp.Pages.Products
+namespace DataAccess.Pages.Products
 {
     public class DetailsModel : PageModel
     {
-        private readonly IBaseRepository<Product> _context;
+        private readonly IRepoWrapper _context;
 
-        public DetailsModel(IBaseRepository<Product> context)
+        public DetailsModel(IRepoWrapper context)
         {
             _context = context;
         }
@@ -28,7 +28,7 @@ namespace WebApp.Pages.Products
                 return NotFound();
             }
 
-            Product = await _context.GetByID(id, true);
+            Product = await _context.Products.GetByID(id, true);
 
             if (Product == null)
             {

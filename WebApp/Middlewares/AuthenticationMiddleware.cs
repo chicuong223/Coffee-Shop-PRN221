@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 
-namespace WebApp.Middlewares
+namespace DataAccess.Middlewares
 {
     public class AuthenticationMiddleware
     {

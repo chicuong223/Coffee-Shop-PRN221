@@ -2,21 +2,21 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Threading.Tasks;
-using WebApp.Models;
-using WebApp.RepositoryInterface;
-using WebApp.Utilities;
+using DataObject.Models;
+using DataAccess.RepositoryInterface;
+using DataAccess.Utilities;
 
-namespace WebApp.Pages.Authenticate
+namespace DataAccess.Pages.Authenticate
 {
     public class LoginModel : PageModel
     {
         private readonly CoffeeShopDBContext _dbContext;
-        private readonly IRepoWrapper _staffRepository;
+        private readonly IRepoWrapper _context;
 
         public LoginModel(CoffeeShopDBContext context, IRepoWrapper staffRepository)
         {
             _dbContext = context;
-            _staffRepository = staffRepository;
+            _context = staffRepository;
         }
 
         public IActionResult OnGet()
@@ -35,7 +35,7 @@ namespace WebApp.Pages.Authenticate
                 session.SetString("Role", "Admin");
                 return RedirectToPage("../Index");
             }
-            var staff = await _staffRepository.Staffs.GetSingle(s => s.Username.Equals(username) && s.Password.Equals(hashedPassword));
+            var staff = await _context.Staffs.GetSingle(s => s.Username.Equals(username) && s.Password.Equals(hashedPassword));
 
             if(staff == null)
             {

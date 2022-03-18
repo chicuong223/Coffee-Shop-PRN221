@@ -1,7 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 
-namespace WebApp.Utilities
+namespace DataAccess.Utilities
 {
     public static class PasswordUtility
     {

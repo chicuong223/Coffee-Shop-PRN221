@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace WebApp.Utilities
+namespace DataAccess.Utilities
 {
     public static class FileUtility
     {

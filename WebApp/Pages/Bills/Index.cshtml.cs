@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using WebApp.Models;
-using WebApp.RepositoryInterface;
+using DataObject.Models;
+using DataAccess.RepositoryInterface;
 using X.PagedList;
 
-namespace WebApp.Pages.Bills
+namespace DataAccess.Pages.Bills
 {
     public class IndexModel : PageModel
     {

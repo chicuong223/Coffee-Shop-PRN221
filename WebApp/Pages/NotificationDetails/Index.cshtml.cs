@@ -5,15 +5,15 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using WebApp.Models;
+using DataObject.Models;
 
-namespace WebApp.Pages.NotificationDetails
+namespace DataAccess.Pages.NotificationDetails
 {
     public class IndexModel : PageModel
     {
-        private readonly WebApp.Models.CoffeeShopDBContext _context;
+        private readonly CoffeeShopDBContext _context;
 
-        public IndexModel(WebApp.Models.CoffeeShopDBContext context)
+        public IndexModel(CoffeeShopDBContext context)
         {
             _context = context;
         }

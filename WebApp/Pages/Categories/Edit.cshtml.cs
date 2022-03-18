@@ -6,10 +6,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using WebApp.Models;
-using WebApp.RepositoryInterface;
+using DataObject.Models;
+using DataAccess.RepositoryInterface;
 
-namespace WebApp.Pages.Categories
+namespace DataAccess.Pages.Categories
 {
     public class EditModel : PageModel
     {

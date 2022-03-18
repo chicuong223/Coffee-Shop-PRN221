@@ -7,32 +7,27 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using WebApp.Models;
-using WebApp.RepositoryInterface;
-using WebApp.Utilities;
+using DataObject.Models;
+using DataAccess.RepositoryInterface;
+using DataAccess.Utilities;
 
-namespace WebApp.Pages.Products
+namespace DataAccess.Pages.Products
 {
     public class CreateModel : PageModel
     {
-        private readonly IBaseRepository<Product> _context;
-
-        private readonly IBaseRepository<Category> _categoryRepository;
-
+        private readonly IRepoWrapper _context;
         private readonly IWebHostEnvironment _environment;
 
-        public CreateModel(IBaseRepository<Product> context
-            , IBaseRepository<Category> categoryRepository
+        public CreateModel(IRepoWrapper context
             , IWebHostEnvironment environment)
         {
             _context = context;
-            _categoryRepository = categoryRepository;
             _environment = environment;
         }
 
         public async Task<IActionResult> OnGetAsync()
         {
-            var categories = await _categoryRepository.GetAll(ca => ca.Status == true);
+            var categories = await _context.Categories.GetAll(ca => ca.Status == true);
             ViewData["CategoryId"] = new SelectList(categories, "Id", "CategoryName");
             return Page();
         }
@@ -56,7 +51,7 @@ namespace WebApp.Pages.Products
 
             Product.Status = true;
 
-            await _context.Create(Product);
+            await _context.Products.Create(Product);
 
             return RedirectToPage("./Index");
         }

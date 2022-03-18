@@ -2,18 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DataObject.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using WebApp.Models;
 
-namespace WebApp.Pages.Notifications
+namespace DataAccess.Pages.Notifications
 {
     public class CreateModel : PageModel
     {
-        private readonly WebApp.Models.CoffeeShopDBContext _context;
+        private readonly CoffeeShopDBContext _context;
 
-        public CreateModel(WebApp.Models.CoffeeShopDBContext context)
+        public CreateModel(CoffeeShopDBContext context)
         {
             _context = context;
         }

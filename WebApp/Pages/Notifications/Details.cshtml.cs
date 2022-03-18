@@ -5,15 +5,15 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using WebApp.Models;
+using DataObject.Models;
 
-namespace WebApp.Pages.Notifications
+namespace DataAccess.Pages.Notifications
 {
     public class DetailsModel : PageModel
     {
-        private readonly WebApp.Models.CoffeeShopDBContext _context;
+        private readonly CoffeeShopDBContext _context;
 
-        public DetailsModel(WebApp.Models.CoffeeShopDBContext context)
+        public DetailsModel(CoffeeShopDBContext context)
         {
             _context = context;
         }

@@ -5,15 +5,15 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using WebApp.Models;
+using DataObject.Models;
 
-namespace WebApp.Pages.NotificationDetails
+namespace DataAccess.Pages.NotificationDetails
 {
     public class CreateModel : PageModel
     {
-        private readonly WebApp.Models.CoffeeShopDBContext _context;
+        private readonly CoffeeShopDBContext _context;
 
-        public CreateModel(WebApp.Models.CoffeeShopDBContext context)
+        public CreateModel(CoffeeShopDBContext context)
         {
             _context = context;
         }

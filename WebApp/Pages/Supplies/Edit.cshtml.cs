@@ -6,15 +6,15 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using WebApp.Models;
+using DataObject.Models;
 
-namespace WebApp.Pages.Supplies
+namespace DataAccess.Pages.Supplies
 {
     public class EditModel : PageModel
     {
-        private readonly WebApp.Models.CoffeeShopDBContext _context;
+        private readonly CoffeeShopDBContext _context;
 
-        public EditModel(WebApp.Models.CoffeeShopDBContext context)
+        public EditModel(CoffeeShopDBContext context)
         {
             _context = context;
         }

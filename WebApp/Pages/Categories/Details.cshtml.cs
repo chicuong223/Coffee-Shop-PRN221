@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using WebApp.Models;
-using WebApp.Repository;
-using WebApp.RepositoryInterface;
+using DataObject.Models;
+using DataAccess.Repository;
+using DataAccess.RepositoryInterface;
 
-namespace WebApp.Pages.Categories
+namespace DataAccess.Pages.Categories
 {
     public class DetailsModel : PageModel
     {

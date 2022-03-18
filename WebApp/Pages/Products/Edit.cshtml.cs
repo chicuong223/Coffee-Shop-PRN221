@@ -8,24 +8,22 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using WebApp.Models;
-using WebApp.RepositoryInterface;
-using WebApp.Utilities;
+using DataObject.Models;
+using DataAccess.RepositoryInterface;
+using DataAccess.Utilities;
 
-namespace WebApp.Pages.Products
+namespace DataAccess.Pages.Products
 {
     public class EditModel : PageModel
     {
-        private readonly IBaseRepository<Product> _context;
-        private readonly IBaseRepository<Category> _categoryRepository;
+        private readonly IRepoWrapper _context;
         private readonly IWebHostEnvironment _environment;
 
-        public EditModel(IBaseRepository<Product> context
+        public EditModel(IRepoWrapper context
             , IBaseRepository<Category> categoryRepository
             , IWebHostEnvironment environment)
         {
             _context = context;
-            _categoryRepository = categoryRepository;
             _environment = environment;
         }
 
@@ -39,7 +37,7 @@ namespace WebApp.Pages.Products
                 return NotFound();
             }
 
-            Product = await _context.GetByID(id, true);
+            Product = await _context.Products.GetByID(id, true);
             //Product = await _context.Products
             //    .Include(p => p.Category).FirstOrDefaultAsync(m => m.Id == id);
 
@@ -47,7 +45,7 @@ namespace WebApp.Pages.Products
             {
                 return NotFound();
             }
-            ViewData["CategoryId"] = new SelectList(await _categoryRepository.GetAll(ca => ca.Status == true), "Id", "CategoryName");
+            ViewData["CategoryId"] = new SelectList(await _context.Categories.GetAll(ca => ca.Status == true), "Id", "CategoryName");
             return Page();
         }
 
@@ -70,7 +68,7 @@ namespace WebApp.Pages.Products
                     Product.ImageURL = image.FileName;
                 }
                 //await _context.SaveChangesAsync();
-                await _context.Update(Product);
+                await _context.Products.Update(Product);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -89,7 +87,7 @@ namespace WebApp.Pages.Products
 
         private bool ProductExists(int id)
         {
-            return _context.GetByID(id, false) != null;
+            return _context.Products.GetByID(id, false) != null;
         }
     }
 }

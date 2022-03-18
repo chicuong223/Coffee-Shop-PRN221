@@ -8,11 +8,11 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using WebApp.Models;
-using WebApp.Repository;
-using WebApp.RepositoryInterface;
+using DataObject.Models;
+using DataAccess.Repository;
+using DataAccess.RepositoryInterface;
 
-namespace WebApp
+namespace DataAccess
 {
     public class Startup
     {

@@ -5,16 +5,16 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using WebApp.Models;
-using WebApp.RepositoryInterface;
+using DataObject.Models;
+using DataAccess.RepositoryInterface;
 
-namespace WebApp.Pages.Products
+namespace DataAccess.Pages.Products
 {
     public class DeleteModel : PageModel
     {
-        private readonly IBaseRepository<Product> _context;
+        private readonly IRepoWrapper _context;
 
-        public DeleteModel(IBaseRepository<Product> context)
+        public DeleteModel(IRepoWrapper context)
         {
             _context = context;
         }
@@ -32,7 +32,7 @@ namespace WebApp.Pages.Products
             //Product = await _context.Products
             //    .Include(p => p.Category).FirstOrDefaultAsync(m => m.Id == id);
 
-            Product = await _context.GetByID(id);
+            Product = await _context.Products.GetByID(id);
 
             if (Product == null)
             {
@@ -50,7 +50,7 @@ namespace WebApp.Pages.Products
 
             //Product = await _context.Products.FindAsync(id);
 
-            Product = await _context.GetByID(id.Value);
+            Product = await _context.Products.GetByID(id.Value);
 
             if (Product != null)
             {
@@ -61,7 +61,7 @@ namespace WebApp.Pages.Products
                 }
                 //_context.Products.Remove(Product);
                 //await _context.SaveChangesAsync();
-                await _context.Delete(Product.Id);
+                await _context.Products.Delete(Product.Id);
             }
 
             return RedirectToPage("./Index");
