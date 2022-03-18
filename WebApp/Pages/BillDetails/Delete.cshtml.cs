@@ -6,14 +6,15 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using DataObject.Models;
+using DataAccess.RepositoryInterface;
 
 namespace WebApp.Pages.BillDetails
 {
     public class DeleteModel : PageModel
     {
-        private readonly CoffeeShopDBContext _context;
+        private readonly IRepoWrapper _context;
 
-        public DeleteModel(CoffeeShopDBContext context)
+        public DeleteModel(IRepoWrapper context)
         {
             _context = context;
         }
@@ -28,9 +29,7 @@ namespace WebApp.Pages.BillDetails
                 return NotFound();
             }
 
-            BillDetail = await _context.BillDetails
-                .Include(b => b.Bill)
-                .Include(b => b.Product).FirstOrDefaultAsync(m => m.BillId == id);
+            BillDetail = await _context.BillDetails.GetByID(id);
 
             if (BillDetail == null)
             {
@@ -46,12 +45,11 @@ namespace WebApp.Pages.BillDetails
                 return NotFound();
             }
 
-            BillDetail = await _context.BillDetails.FindAsync(id);
+            BillDetail = await _context.BillDetails.GetByID(id, false);
 
             if (BillDetail != null)
             {
-                _context.BillDetails.Remove(BillDetail);
-                await _context.SaveChangesAsync();
+                await _context.BillDetails.Delete(BillDetail);
             }
 
             return RedirectToPage("./Index");

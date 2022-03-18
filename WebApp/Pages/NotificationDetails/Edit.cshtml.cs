@@ -7,14 +7,15 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DataObject.Models;
+using DataAccess.RepositoryInterface;
 
 namespace WebApp.Pages.NotificationDetails
 {
     public class EditModel : PageModel
     {
-        private readonly CoffeeShopDBContext _context;
+        private readonly IRepoWrapper _context;
 
-        public EditModel(CoffeeShopDBContext context)
+        public EditModel(IRepoWrapper context)
         {
             _context = context;
         }
@@ -29,16 +30,14 @@ namespace WebApp.Pages.NotificationDetails
                 return NotFound();
             }
 
-            NotificationDetail = await _context.NotificationDetails
-                .Include(n => n.Notification)
-                .Include(n => n.Product).FirstOrDefaultAsync(m => m.NotificationId == id);
+            NotificationDetail = await _context.NotificationDetails.GetByID(id);
 
             if (NotificationDetail == null)
             {
                 return NotFound();
             }
-           ViewData["NotificationId"] = new SelectList(_context.Notifications, "Id", "Id");
-           ViewData["ProductId"] = new SelectList(_context.Products, "Id", "ProductName");
+           ViewData["NotificationId"] = new SelectList(_context.Notifications.GetAll(null).Result.ToList(), "Id", "Id");
+           ViewData["ProductId"] = new SelectList(_context.Products.GetAll(null).Result.ToList(), "Id", "ProductName");
             return Page();
         }
 
@@ -51,11 +50,10 @@ namespace WebApp.Pages.NotificationDetails
                 return Page();
             }
 
-            _context.Attach(NotificationDetail).State = EntityState.Modified;
 
             try
             {
-                await _context.SaveChangesAsync();
+                await _context.NotificationDetails.Update(NotificationDetail);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -74,7 +72,7 @@ namespace WebApp.Pages.NotificationDetails
 
         private bool NotificationDetailExists(int id)
         {
-            return _context.NotificationDetails.Any(e => e.NotificationId == id);
+            return _context.NotificationDetails.GetByID(id)!=null;
         }
     }
 }

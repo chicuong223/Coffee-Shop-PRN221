@@ -98,14 +98,9 @@ namespace DataAccess.Repository
             return null;
         }
 
-        public Task<IEnumerable<Product>> GetAll()
+        public async Task<IEnumerable<Product>> GetAll(Expression<Func<Product, bool>> expression)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<Product>> GetAll(Expression<Func<Product, bool>> expression)
-        {
-            throw new NotImplementedException();
+            return await _context.Products.Where(expression).ToListAsync();
         }
 
         public Task<Product> GetSingle(Expression<Func<Product, bool>> expression)

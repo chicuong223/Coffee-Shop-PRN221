@@ -7,14 +7,15 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DataObject.Models;
+using DataAccess.RepositoryInterface;
 
 namespace WebApp.Pages.Suppliers
 {
     public class EditModel : PageModel
     {
-        private readonly CoffeeShopDBContext _context;
+        private readonly IRepoWrapper _context;
 
-        public EditModel(CoffeeShopDBContext context)
+        public EditModel(IRepoWrapper context)
         {
             _context = context;
         }
@@ -29,7 +30,7 @@ namespace WebApp.Pages.Suppliers
                 return NotFound();
             }
 
-            Supplier = await _context.Suppliers.FirstOrDefaultAsync(m => m.Id == id);
+            Supplier = await _context.Suppliers.GetByID(id);
 
             if (Supplier == null)
             {
@@ -47,11 +48,9 @@ namespace WebApp.Pages.Suppliers
                 return Page();
             }
 
-            _context.Attach(Supplier).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
+                await _context.Suppliers.Update(Supplier);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -70,7 +69,7 @@ namespace WebApp.Pages.Suppliers
 
         private bool SupplierExists(int id)
         {
-            return _context.Suppliers.Any(e => e.Id == id);
+            return _context.Suppliers.GetByID(id)!=null;
         }
     }
 }

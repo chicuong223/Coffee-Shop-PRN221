@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DataAccess.RepositoryInterface;
 using DataObject.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -11,17 +12,17 @@ namespace WebApp.Pages.BillDetails
 {
     public class CreateModel : PageModel
     {
-        private readonly CoffeeShopDBContext _context;
+        private readonly IRepoWrapper _context;
 
-        public CreateModel(CoffeeShopDBContext context)
+        public CreateModel(IRepoWrapper context)
         {
             _context = context;
         }
 
         public IActionResult OnGet()
         {
-        ViewData["BillId"] = new SelectList(_context.Bills, "Id", "Id");
-        ViewData["ProductId"] = new SelectList(_context.Products, "Id", "ProductName");
+        ViewData["BillId"] = new SelectList(_context.Bills.GetAll(null).Result.ToList(), "Id", "Id");
+        ViewData["ProductId"] = new SelectList(_context.Products.GetAll(null).Result.ToList(), "Id", "ProductName");
             return Page();
         }
 
@@ -36,8 +37,7 @@ namespace WebApp.Pages.BillDetails
                 return Page();
             }
 
-            _context.BillDetails.Add(BillDetail);
-            await _context.SaveChangesAsync();
+            await _context.BillDetails.Create(BillDetail);
 
             return RedirectToPage("./Index");
         }

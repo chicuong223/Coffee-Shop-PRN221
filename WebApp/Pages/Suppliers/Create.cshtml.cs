@@ -6,14 +6,15 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using DataObject.Models;
+using DataAccess.RepositoryInterface;
 
 namespace WebApp.Pages.Suppliers
 {
     public class CreateModel : PageModel
     {
-        private readonly CoffeeShopDBContext _context;
+        private readonly IRepoWrapper _context;
 
-        public CreateModel(CoffeeShopDBContext context)
+        public CreateModel(IRepoWrapper context)
         {
             _context = context;
         }
@@ -34,8 +35,7 @@ namespace WebApp.Pages.Suppliers
                 return Page();
             }
 
-            _context.Suppliers.Add(Supplier);
-            await _context.SaveChangesAsync();
+            await _context.Suppliers.Create(Supplier);
 
             return RedirectToPage("./Index");
         }

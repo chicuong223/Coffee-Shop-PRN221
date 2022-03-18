@@ -5,11 +5,18 @@ using System.Threading.Tasks;
 using DataObject.Models;
 using DataAccess.RepositoryInterface;
 using WebApp.Utilities;
+using System.ComponentModel.DataAnnotations;
 
 namespace WebApp.Pages.Authenticate
 {
     public class LoginModel : PageModel
     {
+        [BindProperty]
+        [Required(ErrorMessage = "This field cannot be empty")]
+        public string username { get; set; }
+        [BindProperty]
+        [Required(ErrorMessage = "This field cannot be empty")]
+        public string password { get; set; }
         private readonly CoffeeShopDBContext _dbContext;
         private readonly IRepoWrapper _context;
 
@@ -24,12 +31,13 @@ namespace WebApp.Pages.Authenticate
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync(string username, string password)
+        public async Task<IActionResult> OnPostAsync()
         {
+            if (!ModelState.IsValid) { return Page(); }
             var admin = _dbContext.Admin();
             string hashedPassword = PasswordUtility.HashPassword(password);
-            ISession session = HttpContext.Session; 
-            if(username.Equals(admin.Username) && hashedPassword.Equals(admin.Password))
+            ISession session = HttpContext.Session;
+            if (username.Equals(admin.Username) && hashedPassword.Equals(admin.Password))
             {
                 session.SetString("Username", admin.Username);
                 session.SetString("Role", "Admin");
@@ -37,7 +45,7 @@ namespace WebApp.Pages.Authenticate
             }
             var staff = await _context.Staffs.GetSingle(s => s.Username.Equals(username) && s.Password.Equals(hashedPassword));
 
-            if(staff == null)
+            if (staff == null)
             {
                 ViewData["BadCredentials"] = "Incorrect Username or Password";
                 return Page();

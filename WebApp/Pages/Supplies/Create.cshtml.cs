@@ -6,22 +6,23 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using DataObject.Models;
+using DataAccess.RepositoryInterface;
 
 namespace WebApp.Pages.Supplies
 {
     public class CreateModel : PageModel
     {
-        private readonly CoffeeShopDBContext _context;
+        private readonly IRepoWrapper _context;
 
-        public CreateModel(CoffeeShopDBContext context)
+        public CreateModel(IRepoWrapper context)
         {
             _context = context;
         }
 
         public IActionResult OnGet()
         {
-        ViewData["ProductId"] = new SelectList(_context.Products, "Id", "ProductName");
-        ViewData["SupplierId"] = new SelectList(_context.Suppliers, "Id", "Id");
+        ViewData["ProductId"] = new SelectList(_context.Products.GetAll(null).Result.ToList(), "Id", "ProductName");
+        ViewData["SupplierId"] = new SelectList(_context.Suppliers.GetAll(null).Result.ToList(), "Id", "Id");
             return Page();
         }
 
@@ -36,8 +37,7 @@ namespace WebApp.Pages.Supplies
                 return Page();
             }
 
-            _context.Supplies.Add(Supply);
-            await _context.SaveChangesAsync();
+            await _context.Supplies.Create(Supply);
 
             return RedirectToPage("./Index");
         }

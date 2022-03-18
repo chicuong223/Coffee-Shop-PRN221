@@ -6,14 +6,15 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using DataObject.Models;
+using DataAccess.RepositoryInterface;
 
 namespace WebApp.Pages.NotificationDetails
 {
     public class DeleteModel : PageModel
     {
-        private readonly CoffeeShopDBContext _context;
+        private readonly IRepoWrapper _context;
 
-        public DeleteModel(CoffeeShopDBContext context)
+        public DeleteModel(IRepoWrapper context)
         {
             _context = context;
         }
@@ -28,9 +29,7 @@ namespace WebApp.Pages.NotificationDetails
                 return NotFound();
             }
 
-            NotificationDetail = await _context.NotificationDetails
-                .Include(n => n.Notification)
-                .Include(n => n.Product).FirstOrDefaultAsync(m => m.NotificationId == id);
+            NotificationDetail = await _context.NotificationDetails.GetByID(id);
 
             if (NotificationDetail == null)
             {
@@ -46,12 +45,11 @@ namespace WebApp.Pages.NotificationDetails
                 return NotFound();
             }
 
-            NotificationDetail = await _context.NotificationDetails.FindAsync(id);
+            NotificationDetail = await _context.NotificationDetails.GetByID(id, false);
 
             if (NotificationDetail != null)
             {
-                _context.NotificationDetails.Remove(NotificationDetail);
-                await _context.SaveChangesAsync();
+                await _context.NotificationDetails.Delete(NotificationDetail);
             }
 
             return RedirectToPage("./Index");

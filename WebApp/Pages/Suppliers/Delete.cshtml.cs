@@ -6,14 +6,15 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using DataObject.Models;
+using DataAccess.RepositoryInterface;
 
 namespace WebApp.Pages.Suppliers
 {
     public class DeleteModel : PageModel
     {
-        private readonly CoffeeShopDBContext _context;
+        private readonly IRepoWrapper _context;
 
-        public DeleteModel(CoffeeShopDBContext context)
+        public DeleteModel(IRepoWrapper context)
         {
             _context = context;
         }
@@ -28,7 +29,7 @@ namespace WebApp.Pages.Suppliers
                 return NotFound();
             }
 
-            Supplier = await _context.Suppliers.FirstOrDefaultAsync(m => m.Id == id);
+            Supplier = await _context.Suppliers.GetByID(id);
 
             if (Supplier == null)
             {
@@ -44,12 +45,11 @@ namespace WebApp.Pages.Suppliers
                 return NotFound();
             }
 
-            Supplier = await _context.Suppliers.FindAsync(id);
+            Supplier = await _context.Suppliers.GetByID(id);
 
             if (Supplier != null)
             {
-                _context.Suppliers.Remove(Supplier);
-                await _context.SaveChangesAsync();
+                await _context.Suppliers.Delete(Supplier);
             }
 
             return RedirectToPage("./Index");

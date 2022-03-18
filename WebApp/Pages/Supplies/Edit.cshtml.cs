@@ -7,14 +7,15 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DataObject.Models;
+using DataAccess.RepositoryInterface;
 
 namespace WebApp.Pages.Supplies
 {
     public class EditModel : PageModel
     {
-        private readonly CoffeeShopDBContext _context;
+        private readonly IRepoWrapper _context;
 
-        public EditModel(CoffeeShopDBContext context)
+        public EditModel(IRepoWrapper context)
         {
             _context = context;
         }
@@ -29,16 +30,14 @@ namespace WebApp.Pages.Supplies
                 return NotFound();
             }
 
-            Supply = await _context.Supplies
-                .Include(s => s.Product)
-                .Include(s => s.Supplier).FirstOrDefaultAsync(m => m.ProductId == id);
+            Supply = await _context.Supplies.GetByID(id, false);
 
             if (Supply == null)
             {
                 return NotFound();
             }
-           ViewData["ProductId"] = new SelectList(_context.Products, "Id", "ProductName");
-           ViewData["SupplierId"] = new SelectList(_context.Suppliers, "Id", "Id");
+           ViewData["ProductId"] = new SelectList(_context.Products.GetAll(null).Result.ToList(), "Id", "ProductName");
+           ViewData["SupplierId"] = new SelectList(_context.Suppliers.GetAll(null).Result.ToList(), "Id", "Id");
             return Page();
         }
 
@@ -51,11 +50,10 @@ namespace WebApp.Pages.Supplies
                 return Page();
             }
 
-            _context.Attach(Supply).State = EntityState.Modified;
 
             try
             {
-                await _context.SaveChangesAsync();
+                await _context.Supplies.Update(Supply);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -74,7 +72,7 @@ namespace WebApp.Pages.Supplies
 
         private bool SupplyExists(int id)
         {
-            return _context.Supplies.Any(e => e.ProductId == id);
+            return _context.Supplies.GetByID(id, false)!=null;
         }
     }
 }

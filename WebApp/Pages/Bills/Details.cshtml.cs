@@ -6,14 +6,15 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using DataObject.Models;
+using DataAccess.RepositoryInterface;
 
 namespace WebApp.Pages.Bills
 {
     public class DetailsModel : PageModel
     {
-        private readonly CoffeeShopDBContext _context;
+        private readonly IRepoWrapper _context;
 
-        public DetailsModel(CoffeeShopDBContext context)
+        public DetailsModel(IRepoWrapper context)
         {
             _context = context;
         }
@@ -27,10 +28,7 @@ namespace WebApp.Pages.Bills
                 return NotFound();
             }
 
-            Bill = await _context.Bills
-                .Include(b => b.StaffUsernameNavigation)
-                .Include(b => b.BillDetails)
-                .Include(b => b.Voucher).FirstOrDefaultAsync(m => m.Id == id);
+            Bill = await _context.Bills.GetByID(id);
 
             if (Bill == null)
             {
