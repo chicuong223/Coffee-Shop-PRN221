@@ -11,8 +11,9 @@ using Microsoft.Extensions.Hosting;
 using DataObject.Models;
 using DataAccess.Repository;
 using DataAccess.RepositoryInterface;
+using WebApp.Middlewares;
 
-namespace DataAccess
+namespace WebApp
 {
     public class Startup
     {
@@ -57,6 +58,8 @@ namespace DataAccess
             app.UseAuthorization();
 
             app.UseSession();
+
+            //app.UseAuthenticationMiddleware();
 
             app.UseEndpoints(endpoints =>
             {

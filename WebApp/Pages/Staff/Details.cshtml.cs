@@ -7,18 +7,18 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using DataObject.Models;
 
-namespace WebApp.Pages.Vouchers
+namespace WebApp.Pages.Staff
 {
     public class DetailsModel : PageModel
     {
-        private readonly CoffeeShopDBContext _context;
+        private readonly DataObject.Models.CoffeeShopDBContext _context;
 
-        public DetailsModel(CoffeeShopDBContext context)
+        public DetailsModel(DataObject.Models.CoffeeShopDBContext context)
         {
             _context = context;
         }
 
-        public Voucher Voucher { get; set; }
+        public DataObject.Models.Staff Staff { get; set; }
 
         public async Task<IActionResult> OnGetAsync(string id)
         {
@@ -27,9 +27,9 @@ namespace WebApp.Pages.Vouchers
                 return NotFound();
             }
 
-            Voucher = await _context.Vouchers.FirstOrDefaultAsync(m => m.Id == id);
+            Staff = await _context.Staff.FirstOrDefaultAsync(m => m.Username == id);
 
-            if (Voucher == null)
+            if (Staff == null)
             {
                 return NotFound();
             }

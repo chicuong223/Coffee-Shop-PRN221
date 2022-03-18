@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using DataObject.Models;
 
-namespace DataAccess.Pages.BillDetails
+namespace WebApp.Pages.BillDetails
 {
     public class IndexModel : PageModel
     {

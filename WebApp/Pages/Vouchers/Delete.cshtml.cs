@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using DataObject.Models;
 
-namespace DataAccess.Pages.Vouchers
+namespace WebApp.Pages.Vouchers
 {
     public class DeleteModel : PageModel
     {

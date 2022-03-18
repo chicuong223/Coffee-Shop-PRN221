@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using DataObject.Models;
 
-namespace DataAccess.Pages.Bills
+namespace WebApp.Pages.Bills
 {
     public class DetailsModel : PageModel
     {
@@ -29,6 +29,7 @@ namespace DataAccess.Pages.Bills
 
             Bill = await _context.Bills
                 .Include(b => b.StaffUsernameNavigation)
+                .Include(b => b.BillDetails)
                 .Include(b => b.Voucher).FirstOrDefaultAsync(m => m.Id == id);
 
             if (Bill == null)

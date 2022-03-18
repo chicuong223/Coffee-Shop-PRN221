@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DataObject.Models;
 
-namespace DataAccess.Pages.NotificationDetails
+namespace WebApp.Pages.NotificationDetails
 {
     public class EditModel : PageModel
     {

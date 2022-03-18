@@ -6,50 +6,50 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using DataObject.Models;
-using DataAccess.RepositoryInterface;
 
-namespace WebApp.Pages.Categories
+namespace WebApp.Pages.Staff
 {
     public class DeleteModel : PageModel
     {
-        private readonly IRepoWrapper _context;
+        private readonly DataObject.Models.CoffeeShopDBContext _context;
 
-        public DeleteModel(IRepoWrapper context)
+        public DeleteModel(DataObject.Models.CoffeeShopDBContext context)
         {
             _context = context;
         }
 
         [BindProperty]
-        public Category Category { get; set; }
+        public DataObject.Models.Staff Staff { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(int? id)
+        public async Task<IActionResult> OnGetAsync(string id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            Category = await _context.Categories.GetByID(id, false);
+            Staff = await _context.Staff.FirstOrDefaultAsync(m => m.Username == id);
 
-            if (Category == null)
+            if (Staff == null)
             {
                 return NotFound();
             }
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync(int? id)
+        public async Task<IActionResult> OnPostAsync(string id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            Category = await _context.Categories.GetByID(id);
+            Staff = await _context.Staff.FindAsync(id);
 
-            if (Category != null)
+            if (Staff != null)
             {
-                await _context.Categories.Delete(Category);
+                _context.Staff.Remove(Staff);
+                await _context.SaveChangesAsync();
             }
 
             return RedirectToPage("./Index");

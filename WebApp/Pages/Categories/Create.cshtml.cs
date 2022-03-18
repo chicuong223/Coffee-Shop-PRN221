@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using DataObject.Models;
 using DataAccess.RepositoryInterface;
 
-namespace DataAccess.Pages.Categories
+namespace WebApp.Pages.Categories
 {
     public class CreateModel : PageModel
     {

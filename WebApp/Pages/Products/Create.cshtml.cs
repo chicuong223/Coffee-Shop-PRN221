@@ -9,9 +9,9 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using DataObject.Models;
 using DataAccess.RepositoryInterface;
-using DataAccess.Utilities;
+using WebApp.Utilities;
 
-namespace DataAccess.Pages.Products
+namespace WebApp.Pages.Products
 {
     public class CreateModel : PageModel
     {
@@ -43,16 +43,23 @@ namespace DataAccess.Pages.Products
                 return Page();
             }
 
-            if(image != null)
+            try
             {
-                await FileUtility.UploadFile(image, _environment);
-                Product.ImageURL = image.FileName;
+                if (image != null)
+                {
+                    await FileUtility.UploadFile(image, _environment);
+                    Product.ImageURL = image.FileName;
+                }
+
+                Product.Status = true;
+
+                await _context.Products.Create(Product);
             }
-
-            Product.Status = true;
-
-            await _context.Products.Create(Product);
-
+            catch(Exception ex)
+            {
+                ViewData["Error"] = ex.Message; 
+                return Page();
+            }
             return RedirectToPage("./Index");
         }
     }

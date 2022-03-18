@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DataObject.Models;
 
-namespace DataAccess.Pages.Supplies
+namespace WebApp.Pages.Supplies
 {
     public class EditModel : PageModel
     {

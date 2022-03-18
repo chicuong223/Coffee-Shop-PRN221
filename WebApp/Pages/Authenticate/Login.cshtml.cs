@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Threading.Tasks;
 using DataObject.Models;
 using DataAccess.RepositoryInterface;
-using DataAccess.Utilities;
+using WebApp.Utilities;
 
-namespace DataAccess.Pages.Authenticate
+namespace WebApp.Pages.Authenticate
 {
     public class LoginModel : PageModel
     {

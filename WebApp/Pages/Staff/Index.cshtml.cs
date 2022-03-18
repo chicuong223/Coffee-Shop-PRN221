@@ -9,7 +9,7 @@ using DataObject.Models;
 using DataAccess.RepositoryInterface;
 using X.PagedList;
 
-namespace WebApp.Pages.Products
+namespace WebApp.Pages.Staff
 {
     public class IndexModel : PageModel
     {
@@ -20,12 +20,11 @@ namespace WebApp.Pages.Products
             _context = context;
         }
 
-        public IPagedList<Product> Products { get;set; }
+        public IPagedList<DataObject.Models.Staff> Staff { get;set; }
 
         public async Task OnGetAsync(int? pageIndex)
         {
-            Products = await _context.Products.GetList(null, true, pageIndex);
-                
+            Staff = await _context.Staffs.GetList(null, false, pageIndex);
         }
     }
 }

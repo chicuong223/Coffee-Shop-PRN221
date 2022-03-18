@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using DataObject.Models;
 
-namespace DataAccess.Pages.Supplies
+namespace WebApp.Pages.Supplies
 {
     public class CreateModel : PageModel
     {

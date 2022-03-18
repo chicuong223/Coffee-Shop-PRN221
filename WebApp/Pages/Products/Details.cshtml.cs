@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using DataObject.Models;
 using DataAccess.RepositoryInterface;
 
-namespace DataAccess.Pages.Products
+namespace WebApp.Pages.Products
 {
     public class DetailsModel : PageModel
     {

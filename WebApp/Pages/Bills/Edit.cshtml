@@ -15,16 +15,6 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Bill.Id" />
             <div class="form-group">
-                <label asp-for="Bill.BillDate" class="control-label"></label>
-                <input asp-for="Bill.BillDate" class="form-control" />
-                <span asp-validation-for="Bill.BillDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Bill.StaffUsername" class="control-label"></label>
-                <select asp-for="Bill.StaffUsername" class="form-control" asp-items="ViewBag.StaffUsername"></select>
-                <span asp-validation-for="Bill.StaffUsername" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="Bill.Discount" class="control-label"></label>
                 <input asp-for="Bill.Discount" class="form-control" />
                 <span asp-validation-for="Bill.Discount" class="text-danger"></span>
@@ -33,11 +23,6 @@
                 <label asp-for="Bill.VoucherId" class="control-label"></label>
                 <select asp-for="Bill.VoucherId" class="form-control" asp-items="ViewBag.VoucherId"></select>
                 <span asp-validation-for="Bill.VoucherId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Bill.Status" class="control-label"></label>
-                <input asp-for="Bill.Status" class="form-control" />
-                <span asp-validation-for="Bill.Status" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />

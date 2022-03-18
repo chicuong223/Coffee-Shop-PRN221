@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 
-namespace DataAccess.Middlewares
+namespace WebApp.Middlewares
 {
     public class AuthenticationMiddleware
     {
@@ -18,12 +18,12 @@ namespace DataAccess.Middlewares
             var path = context.Request.Path;
             if(path.HasValue)
             {
-                if(!path.Value.StartsWith("/Authentication"))
+                if(!path.Value.StartsWith("/Authenticate"))
                 {
                     var session = context.Session.GetString("Username");
                     if(session == null)
                     {
-                        context.Response.Redirect("/Authentication/Login");
+                        context.Response.Redirect("/Authenticate/Login");
                     }
                 }
             }

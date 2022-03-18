@@ -10,9 +10,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DataObject.Models;
 using DataAccess.RepositoryInterface;
-using DataAccess.Utilities;
+using WebApp.Utilities;
 
-namespace DataAccess.Pages.Products
+namespace WebApp.Pages.Products
 {
     public class EditModel : PageModel
     {
@@ -20,7 +20,6 @@ namespace DataAccess.Pages.Products
         private readonly IWebHostEnvironment _environment;
 
         public EditModel(IRepoWrapper context
-            , IBaseRepository<Category> categoryRepository
             , IWebHostEnvironment environment)
         {
             _context = context;

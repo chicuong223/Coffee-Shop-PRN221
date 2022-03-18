@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using DataObject.Models;
 
-namespace DataAccess.Pages.Notifications
+namespace WebApp.Pages.Notifications
 {
     public class DetailsModel : PageModel
     {

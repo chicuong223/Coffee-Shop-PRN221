@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using DataObject.Models;
 
-namespace DataAccess.Pages.NotificationDetails
+namespace WebApp.Pages.NotificationDetails
 {
     public class CreateModel : PageModel
     {

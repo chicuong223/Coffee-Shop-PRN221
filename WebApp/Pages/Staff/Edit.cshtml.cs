@@ -8,35 +8,33 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DataObject.Models;
 
-namespace WebApp.Pages.Notifications
+namespace WebApp.Pages.Staff
 {
     public class EditModel : PageModel
     {
-        private readonly CoffeeShopDBContext _context;
+        private readonly DataObject.Models.CoffeeShopDBContext _context;
 
-        public EditModel(CoffeeShopDBContext context)
+        public EditModel(DataObject.Models.CoffeeShopDBContext context)
         {
             _context = context;
         }
 
         [BindProperty]
-        public Notification Notification { get; set; }
+        public DataObject.Models.Staff Staff { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(int? id)
+        public async Task<IActionResult> OnGetAsync(string id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            Notification = await _context.Notifications
-                .Include(n => n.SenderNavigation).FirstOrDefaultAsync(m => m.Id == id);
+            Staff = await _context.Staff.FirstOrDefaultAsync(m => m.Username == id);
 
-            if (Notification == null)
+            if (Staff == null)
             {
                 return NotFound();
             }
-           ViewData["Sender"] = new SelectList(_context.Staff, "Username", "Username");
             return Page();
         }
 
@@ -49,7 +47,7 @@ namespace WebApp.Pages.Notifications
                 return Page();
             }
 
-            _context.Attach(Notification).State = EntityState.Modified;
+            _context.Attach(Staff).State = EntityState.Modified;
 
             try
             {
@@ -57,7 +55,7 @@ namespace WebApp.Pages.Notifications
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!NotificationExists(Notification.Id))
+                if (!StaffExists(Staff.Username))
                 {
                     return NotFound();
                 }
@@ -70,9 +68,9 @@ namespace WebApp.Pages.Notifications
             return RedirectToPage("./Index");
         }
 
-        private bool NotificationExists(int id)
+        private bool StaffExists(string id)
         {
-            return _context.Notifications.Any(e => e.Id == id);
+            return _context.Staff.Any(e => e.Username == id);
         }
     }
 }
