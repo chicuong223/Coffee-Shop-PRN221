@@ -33,6 +33,7 @@ namespace WebApp
             //services.AddScoped<ICategoryRepository, CategoryRepository>(); 
             services.AddSingleton<IRepoWrapper, RepoWrapper>();
             services.AddDbContext<CoffeeShopDBContext>();
+            services.AddHttpContextAccessor();
 
         }
 

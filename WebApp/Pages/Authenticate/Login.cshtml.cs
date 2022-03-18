@@ -54,5 +54,12 @@ namespace WebApp.Pages.Authenticate
             session.SetString("Role", "Staff");
             return RedirectToPage("../Index");
         }
+
+        public IActionResult OnPostLogout()
+        {
+            ISession session = HttpContext.Session;
+            session.Clear();
+            return Page();
+        }
     }
 }

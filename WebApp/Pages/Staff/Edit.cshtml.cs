@@ -110,6 +110,8 @@ namespace WebApp.Pages.Staff
             {
                 return Page();
             }
+
+            var exists = await _context.Staffs.GetSingle(s => s.Email.Equals(Staff.Email) && !s.Username.Equals(Staff.Username)) != null;
             try
             {
                 if(avatar != null)
@@ -117,13 +119,21 @@ namespace WebApp.Pages.Staff
                     await FileUtility.UploadFile(avatar, _env);
                     Staff.AvatarUrl = avatar.FileName;
                 }
+                Staff.Password = PasswordUtility.HashPassword(Staff.Password);
                 await _context.Staffs.Update(Staff);
+                if (role.Equals("Admin"))
+                {
+                    return RedirectToPage("./Index");
+                }
+                else
+                {
+                    return RedirectToPage("./Details", new { id = username });
+                }
             }
             catch (DbUpdateConcurrencyException)
             {
                 throw;
             }
-            return RedirectToPage("./Index");
         }
 
     }
