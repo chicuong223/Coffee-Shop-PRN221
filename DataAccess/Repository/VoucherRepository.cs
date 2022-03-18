@@ -82,9 +82,9 @@ namespace DataAccess.Repository
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<Voucher>> GetAll(Expression<Func<Voucher, bool>> expression)
+        public async Task<IEnumerable<Voucher>> GetAll(Expression<Func<Voucher, bool>> expression)
         {
-            throw new NotImplementedException();
+            return await _context.Vouchers.Where(expression).ToListAsync();
         }
 
         public Task<Voucher> GetSingle(Expression<Func<Voucher, bool>> expression)

@@ -7,14 +7,15 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DataObject.Models;
+using DataAccess.RepositoryInterface;
 
 namespace DataAccess.Pages.Bills
 {
     public class EditModel : PageModel
     {
-        private readonly CoffeeShopDBContext _context;
+        private readonly IRepoWrapper _context;
 
-        public EditModel(CoffeeShopDBContext context)
+        public EditModel(IRepoWrapper context)
         {
             _context = context;
         }
@@ -29,16 +30,14 @@ namespace DataAccess.Pages.Bills
                 return NotFound();
             }
 
-            Bill = await _context.Bills
-                .Include(b => b.StaffUsernameNavigation)
-                .Include(b => b.Voucher).FirstOrDefaultAsync(m => m.Id == id);
+            Bill = await _context.Bills.GetByID(id);
 
             if (Bill == null)
             {
                 return NotFound();
             }
-           ViewData["StaffUsername"] = new SelectList(_context.Staff, "Username", "Username");
-           ViewData["VoucherId"] = new SelectList(_context.Vouchers, "Id", "Id");
+           ViewData["StaffUsername"] = new SelectList(_context.Staffs.GetAll(null).Result.ToList(), "Username", "Username");
+           ViewData["VoucherId"] = new SelectList(_context.Vouchers.GetAll(null).Result.ToList(), "Id", "Id");
             return Page();
         }
 
@@ -51,11 +50,10 @@ namespace DataAccess.Pages.Bills
                 return Page();
             }
 
-            _context.Attach(Bill).State = EntityState.Modified;
 
             try
             {
-                await _context.SaveChangesAsync();
+                await _context.Bills.Update(Bill);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -74,7 +72,7 @@ namespace DataAccess.Pages.Bills
 
         private bool BillExists(int id)
         {
-            return _context.Bills.Any(e => e.Id == id);
+            return _context.Bills.GetByID(id)!=null;
         }
     }
 }

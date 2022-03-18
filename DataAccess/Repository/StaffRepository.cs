@@ -75,9 +75,9 @@ namespace DataAccess.Repository
             return category;
         }
 
-        public Task<IEnumerable<Staff>> GetAll(Expression<Func<Staff, bool>> expression)
+        public async Task<IEnumerable<Staff>> GetAll(Expression<Func<Staff, bool>> expression)
         {
-            throw new NotImplementedException();
+            return await _context.Staff.Where(expression).ToListAsync();
         }
 
         public async Task<Staff> GetSingle(Expression<Func<Staff, bool>> expression)

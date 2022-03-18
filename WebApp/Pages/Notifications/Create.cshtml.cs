@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DataAccess.RepositoryInterface;
 using DataObject.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -11,16 +12,16 @@ namespace DataAccess.Pages.Notifications
 {
     public class CreateModel : PageModel
     {
-        private readonly CoffeeShopDBContext _context;
+        private readonly IRepoWrapper _context;
 
-        public CreateModel(CoffeeShopDBContext context)
+        public CreateModel(IRepoWrapper context)
         {
             _context = context;
         }
 
         public IActionResult OnGet()
         {
-        ViewData["Sender"] = new SelectList(_context.Staff, "Username", "Username");
+        ViewData["Sender"] = new SelectList(_context.Staffs.GetAll(null).Result.ToList(), "Username", "Username");
             return Page();
         }
 
@@ -35,8 +36,7 @@ namespace DataAccess.Pages.Notifications
                 return Page();
             }
 
-            _context.Notifications.Add(Notification);
-            await _context.SaveChangesAsync();
+            await _context.Notifications.Create(Notification);
 
             return RedirectToPage("./Index");
         }

@@ -7,14 +7,15 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DataObject.Models;
+using DataAccess.RepositoryInterface;
 
 namespace DataAccess.Pages.Notifications
 {
     public class EditModel : PageModel
     {
-        private readonly CoffeeShopDBContext _context;
+        private readonly IRepoWrapper _context;
 
-        public EditModel(CoffeeShopDBContext context)
+        public EditModel(IRepoWrapper context)
         {
             _context = context;
         }
@@ -29,14 +30,13 @@ namespace DataAccess.Pages.Notifications
                 return NotFound();
             }
 
-            Notification = await _context.Notifications
-                .Include(n => n.SenderNavigation).FirstOrDefaultAsync(m => m.Id == id);
+            Notification = await _context.Notifications.GetByID(id);
 
             if (Notification == null)
             {
                 return NotFound();
             }
-           ViewData["Sender"] = new SelectList(_context.Staff, "Username", "Username");
+           ViewData["Sender"] = new SelectList(_context.Staffs.GetAll(null).Result.ToList(), "Username", "Username");
             return Page();
         }
 
@@ -49,11 +49,10 @@ namespace DataAccess.Pages.Notifications
                 return Page();
             }
 
-            _context.Attach(Notification).State = EntityState.Modified;
 
             try
             {
-                await _context.SaveChangesAsync();
+                await _context.Notifications.Update(Notification);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -72,7 +71,7 @@ namespace DataAccess.Pages.Notifications
 
         private bool NotificationExists(int id)
         {
-            return _context.Notifications.Any(e => e.Id == id);
+            return _context.Notifications.GetByID(id, false)!=null;
         }
     }
 }

@@ -6,25 +6,25 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using DataObject.Models;
+using DataAccess.RepositoryInterface;
+using X.PagedList;
 
 namespace DataAccess.Pages.NotificationDetails
 {
     public class IndexModel : PageModel
     {
-        private readonly CoffeeShopDBContext _context;
+        private readonly IRepoWrapper _context;
 
-        public IndexModel(CoffeeShopDBContext context)
+        public IndexModel(IRepoWrapper context)
         {
             _context = context;
         }
 
-        public IList<NotificationDetail> NotificationDetail { get;set; }
+        public IPagedList<NotificationDetail> NotificationDetail { get;set; }
 
-        public async Task OnGetAsync()
+        public async Task OnGetAsync(int? pageIndex)
         {
-            NotificationDetail = await _context.NotificationDetails
-                .Include(n => n.Notification)
-                .Include(n => n.Product).ToListAsync();
+            NotificationDetail = await _context.NotificationDetails.GetList(null, null, pageIndex);
         }
     }
 }

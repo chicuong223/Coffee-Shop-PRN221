@@ -76,14 +76,10 @@ namespace DataAccess.Repository
             return category;
         }
 
-        public Task<IEnumerable<Notification>> GetAll()
-        {
-            throw new NotImplementedException();
-        }
 
-        public Task<IEnumerable<Notification>> GetAll(Expression<Func<Notification, bool>> expression)
+        public async Task<IEnumerable<Notification>> GetAll(Expression<Func<Notification, bool>> expression)
         {
-            throw new NotImplementedException();
+            return await _context.Notifications.Where(expression).ToListAsync();
         }
 
         public Task<Notification> GetSingle(Expression<Func<Notification, bool>> expression)

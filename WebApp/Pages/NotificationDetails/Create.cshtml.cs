@@ -6,22 +6,23 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using DataObject.Models;
+using DataAccess.RepositoryInterface;
 
 namespace DataAccess.Pages.NotificationDetails
 {
     public class CreateModel : PageModel
     {
-        private readonly CoffeeShopDBContext _context;
+        private readonly IRepoWrapper _context;
 
-        public CreateModel(CoffeeShopDBContext context)
+        public CreateModel(IRepoWrapper context)
         {
             _context = context;
         }
 
         public IActionResult OnGet()
         {
-        ViewData["NotificationId"] = new SelectList(_context.Notifications, "Id", "Id");
-        ViewData["ProductId"] = new SelectList(_context.Products, "Id", "ProductName");
+        ViewData["NotificationId"] = new SelectList(_context.Notifications.GetList(null).Result.ToList(), "Id", "Id");
+        ViewData["ProductId"] = new SelectList(_context.Products.GetList(null).Result.ToList(), "Id", "ProductName");
             return Page();
         }
 
@@ -36,8 +37,7 @@ namespace DataAccess.Pages.NotificationDetails
                 return Page();
             }
 
-            _context.NotificationDetails.Add(NotificationDetail);
-            await _context.SaveChangesAsync();
+            await _context.NotificationDetails.Create(NotificationDetail);
 
             return RedirectToPage("./Index");
         }
