@@ -18,6 +18,10 @@ namespace DataAccess.Repository
         {
             var pageNumber = page ?? 1;
             IPagedList<NotificationDetail> list;
+            if (expression == null)
+            {
+                expression = e => true;
+            }
             if (isDeep.HasValue && isDeep.Value)
             {
                 list = await _context.NotificationDetails.Where(expression)

@@ -15,17 +15,15 @@ namespace DataAccess.Repository
     {
         private readonly CoffeeShopDBContext _context = new CoffeeShopDBContext();
 
-        public async Task<IPagedList<Product>> GetList(Expression<Func<Product, bool>> expression, bool? isDeep = false, int? page = 1)
+        public async Task<IPagedList<Product>> GetList(Expression<Func<Product, bool>>? expression, bool? isDeep = false, int? page = 1)
         {
             var pageNumber = page ?? 1;
             IPagedList<Product> list;
-            if(expression == null && isDeep.HasValue && isDeep.Value)
+            if (expression == null)
             {
-                list = await _context.Products
-                   .Include(i => i.Category)
-                   .ToPagedListAsync(pageNumber, 2);
+                expression = e => true;
             }
-            else if (isDeep.HasValue && isDeep.Value)
+            if (isDeep.HasValue && isDeep.Value)
             {
                 list = await _context.Products.Where(expression)
                     .Include(i => i.Category)
