@@ -1,0 +1,66 @@
+﻿@page
+@using X.PagedList.Mvc.Core
+@model WebApp.Pages.Bills.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Bills[0].BillDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Bills[0].Discount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Bills[0].Status)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Bills[0].StaffUsernameNavigation)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Bills[0].Voucher)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.Bills) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.BillDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Discount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StaffUsernameNavigation.Username)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Voucher.Id)
+            </td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+<br />
+Page @(Model.Bills.PageCount < Model.Bills.PageNumber ? 0 : Model.Bills.PageNumber) of @Model.Bills.PageCount
+
+@Html.PagedListPager( Model.Bills, pageIndex => Url.Page("Index", new { pageIndex }) )

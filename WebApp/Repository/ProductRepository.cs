@@ -14,11 +14,17 @@ namespace WebApp.Repository
     {
         private readonly CoffeeShopDBContext _context = new CoffeeShopDBContext();
 
-        public async Task<IPagedList<Product>> GetList(Expression<Func<Product, bool>>? expression, bool? isDeep = false, int? page = 1)
+        public async Task<IPagedList<Product>> GetList(Expression<Func<Product, bool>> expression, bool? isDeep = false, int? page = 1)
         {
             var pageNumber = page ?? 1;
             IPagedList<Product> list;
-            if (isDeep.HasValue && isDeep.Value)
+            if(expression == null && isDeep.HasValue && isDeep.Value)
+            {
+                list = await _context.Products
+                   .Include(i => i.Category)
+                   .ToPagedListAsync(pageNumber, 2);
+            }
+            else if (isDeep.HasValue && isDeep.Value)
             {
                 list = await _context.Products.Where(expression)
                     .Include(i => i.Category)
@@ -63,10 +69,10 @@ namespace WebApp.Repository
 
         public async Task Delete(object key)
         {
-            var category = await _context.Products.FindAsync((int)key);
-            category.Status = false;
-            _context.Entry(category).State = EntityState.Detached;
-            _context.Entry(category).State = EntityState.Modified;
+            var product = await _context.Products.FindAsync((int)key);
+            product.Status = false;
+            _context.Entry(product).State = EntityState.Detached;
+            _context.Entry(product).State = EntityState.Modified;
             await _context.SaveChangesAsync();
         }
 
@@ -75,6 +81,21 @@ namespace WebApp.Repository
             _context.Entry(category).State = EntityState.Modified;
             await _context.SaveChangesAsync();
             return category;
+        }
+
+        public Task<IEnumerable<Product>> GetAll()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<Product>> GetAll(Expression<Func<Product, bool>> expression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Product> GetSingle(Expression<Func<Product, bool>> expression)
+        {
+            throw new NotImplementedException();
         }
     }
 }

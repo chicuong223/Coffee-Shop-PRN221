@@ -30,7 +30,7 @@ namespace WebApp.Pages.Categories
                 return NotFound();
             }
 
-            Category = await _context.Categories.GetByID(id);
+            Category = await _context.Categories.GetByID(id, false);
 
             if (Category == null)
             {
@@ -70,7 +70,7 @@ namespace WebApp.Pages.Categories
 
         private bool CategoryExists(int id)
         {
-            return _context.Categories.GetByID(id)!=null;
+            return _context.Categories.GetByID(id, false)!=null;
         }
     }
 }

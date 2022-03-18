@@ -14,18 +14,19 @@ namespace WebApp.Repository
     {
         private readonly CoffeeShopDBContext _context = new CoffeeShopDBContext();
 
-        public async Task<IPagedList<Category>> GetList(Expression<Func<Category, bool>>? expression, bool? isDeep = false, int? page = 1)
+        public async Task<IPagedList<Category>> GetList(Expression<Func<Category, bool>> expression, bool? isDeep = false, int? page = 1)
         {
             var pageNumber = page ?? 1;
             IPagedList<Category> list;
-            if (isDeep.HasValue && isDeep.Value) {
-                list = await _context.Categories.Where(expression)
-                    .Include(i=>i.Products)
+            if(expression == null)
+            {
+                list = await _context.Categories
                     .ToPagedListAsync(pageNumber, 2);
             }
-            else
+            else if (isDeep.HasValue && isDeep.Value)
             {
                 list = await _context.Categories.Where(expression)
+                    .Include(i => i.Products)
                     .ToPagedListAsync(pageNumber, 2);
             }
             return list;
@@ -43,7 +44,7 @@ namespace WebApp.Repository
             {
                 result = await _context.Categories.FirstOrDefaultAsync(ca => ca.Id == (int)id);
             }
-            return result;
+            return list;
         }
 
         public Task<int> Count(Expression<Func<Category, bool>> expression)
@@ -58,6 +59,14 @@ namespace WebApp.Repository
             return entity;
         }
 
+        public async Task<Category> Update(Category entity)
+        {
+            _context.Entry(entity).State = EntityState.Detached;
+            _context.Entry(entity).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+            return entity;
+        }
+
         public async Task Delete(object key)
         {
             var category = await _context.Categories.FindAsync((int)key);
@@ -67,11 +76,14 @@ namespace WebApp.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task<Category> Update(Category entity)
+        public async Task<IEnumerable<Category>> GetAll(Expression<Func<Category, bool>> expression)
         {
-            _context.Entry(entity).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
-            return entity;
+            return await _context.Categories.Where(expression).ToListAsync();
+        }
+
+        public Task<Category> GetSingle(Expression<Func<Category, bool>> expression)
+        {
+            throw new NotImplementedException();
         }
     }
 }

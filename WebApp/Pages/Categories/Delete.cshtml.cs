@@ -29,7 +29,7 @@ namespace WebApp.Pages.Categories
                 return NotFound();
             }
 
-            Category = await _context.Categories.GetByID(id);
+            Category = await _context.Categories.GetByID(id, false);
 
             if (Category == null)
             {

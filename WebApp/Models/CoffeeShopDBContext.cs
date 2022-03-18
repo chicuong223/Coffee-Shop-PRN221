@@ -87,6 +87,8 @@ namespace WebApp.Models
 
                 entity.Property(e => e.SubTotal).HasColumnType("money");
 
+                entity.Property(e => e.UnitPrice).HasColumnType("money");
+
                 entity.HasOne(d => d.Bill)
                     .WithMany(p => p.BillDetails)
                     .HasForeignKey(d => d.BillId)
@@ -247,6 +249,20 @@ namespace WebApp.Models
             });
 
             OnModelCreatingPartial(modelBuilder);
+        }
+
+        public Admin Admin()
+        {
+            IConfiguration config = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", true, true)
+                .Build();
+            var adminUsername = config["Admin:Username"];
+            var adminPassword = config["Admin:Password"];
+            Admin admin = new Admin();
+            admin.Username = adminUsername;
+            admin.Password = adminPassword;
+            return admin;
         }
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);

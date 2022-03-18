@@ -1,0 +1,54 @@
+﻿@page
+@model WebApp.Pages.Supplies.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Supply[0].SupplyDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Supply[0].Quantity)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Supply[0].Product)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Supply[0].Supplier)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.Supply) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.SupplyDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Quantity)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Product.ProductName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Supplier.Id)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

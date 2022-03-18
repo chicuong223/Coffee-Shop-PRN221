@@ -42,8 +42,8 @@ namespace WebApp.Migrations
                     b.Property<bool?>("Status")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("VoucherId")
-                        .HasColumnType("int")
+                    b.Property<string>("VoucherId")
+                        .HasColumnType("nvarchar(450)")
                         .HasColumnName("VoucherID");
 
                     b.HasKey("Id");
@@ -66,9 +66,13 @@ namespace WebApp.Migrations
                         .HasColumnName("ProductID");
 
                     b.Property<int?>("Quantity")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<decimal?>("SubTotal")
+                        .HasColumnType("money");
+
+                    b.Property<decimal?>("UnitPrice")
                         .HasColumnType("money");
 
                     b.HasKey("BillId", "ProductId")
@@ -88,6 +92,7 @@ namespace WebApp.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("CategoryName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool?>("Status")
@@ -153,6 +158,7 @@ namespace WebApp.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int?>("CategoryId")
+                        .IsRequired()
                         .HasColumnType("int")
                         .HasColumnName("CategoryID");
 
@@ -162,15 +168,19 @@ namespace WebApp.Migrations
                         .HasColumnName("ImageURL");
 
                     b.Property<decimal?>("Price")
+                        .IsRequired()
                         .HasColumnType("money");
 
                     b.Property<string>("ProductName")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<bool?>("Status")
                         .HasColumnType("bit");
 
                     b.Property<int?>("Stock")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -268,27 +278,32 @@ namespace WebApp.Migrations
 
             modelBuilder.Entity("WebApp.Models.Voucher", b =>
                 {
-                    b.Property<int>("Id")
-                        .HasColumnType("int")
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)")
                         .HasColumnName("ID");
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("ExpirationDate")
+                        .IsRequired()
                         .HasColumnType("date");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
                     b.Property<double?>("Percentage")
+                        .IsRequired()
                         .HasColumnType("float");
 
                     b.Property<bool?>("Status")
                         .HasColumnType("bit");
 
                     b.Property<int?>("UsageCount")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -366,7 +381,9 @@ namespace WebApp.Migrations
                     b.HasOne("WebApp.Models.Category", "Category")
                         .WithMany("Products")
                         .HasForeignKey("CategoryId")
-                        .HasConstraintName("FK__Product__Categor__38996AB5");
+                        .HasConstraintName("FK__Product__Categor__38996AB5")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Category");
                 });

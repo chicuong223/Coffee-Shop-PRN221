@@ -20,11 +20,11 @@ namespace WebApp.Pages.Products
             _context = context;
         }
 
-        public IPagedList<Product> Product { get;set; }
+        public IPagedList<Product> Products { get;set; }
 
-        public async Task OnGetAsync()
+        public async Task OnGetAsync(int? pageIndex)
         {
-            Product = await _context.Products.GetList((p => true));
+            Product = await _context.Products.GetList(null, true, pageIndex);
                 
         }
     }

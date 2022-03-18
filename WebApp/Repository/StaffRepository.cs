@@ -74,5 +74,17 @@ namespace WebApp.Repository
             await _context.SaveChangesAsync();
             return category;
         }
+
+        public Task<IEnumerable<Staff>> GetAll(Expression<Func<Staff, bool>> expression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<Staff> GetSingle(Expression<Func<Staff, bool>> expression)
+        {
+            var result = await _context.Staff
+                .SingleOrDefaultAsync(expression) ?? null;
+            return result;
+        }
     }
 }

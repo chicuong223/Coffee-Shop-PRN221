@@ -25,7 +25,7 @@ namespace WebApp.Pages.Categories
 
         public async Task OnGetAsync(int? pageIndex)
         {
-            Categories = await _context.Categories.GetList((i=>true), true, pageIndex);
+            Categories = await _context.Categories.GetList(null, true, pageIndex);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 #nullable disable
 
@@ -13,6 +14,7 @@ namespace WebApp.Models
         }
 
         public int Id { get; set; }
+        [Required(ErrorMessage = "Category Name is required")]
         public string CategoryName { get; set; }
         public bool? Status { get; set; }
 
