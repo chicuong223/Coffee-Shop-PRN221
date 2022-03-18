@@ -5,11 +5,18 @@ using System.Threading.Tasks;
 using DataObject.Models;
 using DataAccess.RepositoryInterface;
 using DataAccess.Utilities;
+using System.ComponentModel.DataAnnotations;
 
 namespace DataAccess.Pages.Authenticate
 {
     public class LoginModel : PageModel
     {
+        [BindProperty]
+        [Required(ErrorMessage ="This field cannot be empty")]
+        public string username { get; set; }
+        [BindProperty]
+        [Required(ErrorMessage = "This field cannot be empty")]
+        public string password { get; set; }    
         private readonly CoffeeShopDBContext _dbContext;
         private readonly IRepoWrapper _context;
 
@@ -24,8 +31,9 @@ namespace DataAccess.Pages.Authenticate
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync(string username, string password)
+        public async Task<IActionResult> OnPostAsync()
         {
+			if (!ModelState.IsValid) { return Page(); }
             var admin = _dbContext.Admin();
             string hashedPassword = PasswordUtility.HashPassword(password);
             ISession session = HttpContext.Session; 
