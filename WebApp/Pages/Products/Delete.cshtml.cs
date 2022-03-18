@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using DataObject.Models;
 using DataAccess.RepositoryInterface;
+using Microsoft.AspNetCore.Http;
 
 namespace WebApp.Pages.Products
 {
@@ -24,6 +25,17 @@ namespace WebApp.Pages.Products
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
+            ISession session = HttpContext.Session;
+            var currentUsername = session.GetString("Username");
+            var role = session.GetString("Role");
+            if (string.IsNullOrEmpty(currentUsername) || string.IsNullOrEmpty(role))
+            {
+                return RedirectToPage("../Authenticate/Login");
+            }
+            if (!role.Equals("Admin"))
+            {
+                return RedirectToPage("../Error");
+            }
             if (id == null)
             {
                 return NotFound();
@@ -43,6 +55,17 @@ namespace WebApp.Pages.Products
 
         public async Task<IActionResult> OnPostAsync(int? id)
         {
+            ISession session = HttpContext.Session;
+            var currentUsername = session.GetString("Username");
+            var role = session.GetString("Role");
+            if (string.IsNullOrEmpty(currentUsername) || string.IsNullOrEmpty(role))
+            {
+                return RedirectToPage("../Authenticate/Login");
+            }
+            if (!role.Equals("Admin"))
+            {
+                return RedirectToPage("../Error");
+            }
             if (id == null)
             {
                 return NotFound();

@@ -11,23 +11,18 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form method="post">
+        <form method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Staff.Username" />
             <div class="form-group">
                 <label asp-for="Staff.Password" class="control-label"></label>
-                <input asp-for="Staff.Password" class="form-control" />
+                <input asp-for="Staff.Password" class="form-control" type="password" />
                 <span asp-validation-for="Staff.Password" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Staff.Email" class="control-label"></label>
                 <input asp-for="Staff.Email" class="form-control" />
                 <span asp-validation-for="Staff.Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Staff.AvatarUrl" class="control-label"></label>
-                <input asp-for="Staff.AvatarUrl" class="form-control" />
-                <span asp-validation-for="Staff.AvatarUrl" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Staff.FullName" class="control-label"></label>
@@ -40,9 +35,8 @@
                 <span asp-validation-for="Staff.Phone" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Staff.Status" class="control-label"></label>
-                <input asp-for="Staff.Status" class="form-control" />
-                <span asp-validation-for="Staff.Status" class="text-danger"></span>
+                <label class="control-label" for="avatar">Avatar</label>
+                <input type="file" name="avatar" accept="image/*" id="avatar" class="form-control"/>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
@@ -56,5 +50,7 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
+}
 }

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DataObject.Models;
 using DataAccess.RepositoryInterface;
+using Microsoft.AspNetCore.Http;
 
 namespace WebApp.Pages.Bills
 {
@@ -25,6 +26,17 @@ namespace WebApp.Pages.Bills
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
+            ISession session = HttpContext.Session;
+            var currentUsername = session.GetString("Username");
+            var role = session.GetString("Role");
+            if (string.IsNullOrEmpty(currentUsername) || string.IsNullOrEmpty(role))
+            {
+                return RedirectToPage("../Authenticate/Login");
+            }
+            if (!role.Equals("Staff"))
+            {
+                return RedirectToPage("../Error");
+            }
             if (id == null)
             {
                 return NotFound();
@@ -36,8 +48,7 @@ namespace WebApp.Pages.Bills
             {
                 return NotFound();
             }
-           ViewData["StaffUsername"] = new SelectList(_context.Staffs.GetAll(null).Result.ToList(), "Username", "Username");
-           ViewData["VoucherId"] = new SelectList(_context.Vouchers.GetAll(null).Result.ToList(), "Id", "Id");
+            ModelState.Clear();
             return Page();
         }
 
@@ -45,6 +56,17 @@ namespace WebApp.Pages.Bills
         // For more details, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
+            ISession session = HttpContext.Session;
+            var currentUsername = session.GetString("Username");
+            var role = session.GetString("Role");
+            if (string.IsNullOrEmpty(currentUsername) || string.IsNullOrEmpty(role))
+            {
+                return RedirectToPage("../Authenticate/Login");
+            }
+            if (!role.Equals("Staff"))
+            {
+                return RedirectToPage("../Error");
+            }
             if (!ModelState.IsValid)
             {
                 return Page();
@@ -72,7 +94,7 @@ namespace WebApp.Pages.Bills
 
         private bool BillExists(int id)
         {
-            return _context.Bills.GetByID(id)!=null;
+            return _context.Bills.GetByID(id, false)!=null;
         }
     }
 }

@@ -59,7 +59,7 @@ namespace WebApp
 
             app.UseSession();
 
-            //app.UseAuthenticationMiddleware();
+            app.UseAuthenticationMiddleware();
 
             app.UseEndpoints(endpoints =>
             {

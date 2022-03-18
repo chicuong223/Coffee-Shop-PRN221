@@ -52,6 +52,10 @@ namespace DataAccess.Repository
             {
                 result = await _context.BillDetails.FirstOrDefaultAsync(ca => ca.BillId == keyObject.BillId && ca.ProductId == keyObject.ProductId);
             }
+            if(result != null)
+            {
+                _context.Entry(result).State = EntityState.Detached;
+            }
             return result;
         }
 
@@ -69,6 +73,15 @@ namespace DataAccess.Repository
 
         public async Task Delete(object key)
         {
+            var keyObject = ((int BillId, int ProductId))key;
+            var detail = await _context.BillDetails
+                .FirstOrDefaultAsync(ca => ca.BillId == keyObject.BillId && ca.ProductId == keyObject.ProductId) ?? null;
+            if(detail != null)
+            {
+                _context.Entry(detail).State = EntityState.Detached;
+                _context.Entry(detail).State = EntityState.Deleted;
+                await _context.SaveChangesAsync();
+            }
             //var category = await _context.BillDetails.FindAsync((int)key);
             //category.Status = false;
             //_context.Entry(category).State = EntityState.Detached;
@@ -78,9 +91,18 @@ namespace DataAccess.Repository
 
         public async Task<BillDetail> Update(BillDetail category)
         {
-            _context.Entry(category).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
-            return category;
+            var updated = await _context.BillDetails.SingleOrDefaultAsync(d => d.BillId == category.BillId && d.ProductId == category.ProductId);
+            if(updated != null)
+            {
+                updated.Quantity = category.Quantity;
+                updated.UnitPrice = category.UnitPrice;
+                updated.SubTotal = category.SubTotal;
+                _context.Entry(updated).State = EntityState.Detached;
+                _context.Entry(updated).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+                return updated;
+            }
+            return null;
         }
 
         public Task<IEnumerable<BillDetail>> GetAll(Expression<Func<BillDetail, bool>> expression)
