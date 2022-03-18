@@ -49,7 +49,7 @@ namespace WebApp.Pages.Suppliers
 
             if (Supplier != null)
             {
-                await _context.Suppliers.Delete(Supplier);
+                await _context.Suppliers.Delete(Supplier.Id);
             }
 
             return RedirectToPage("./Index");
