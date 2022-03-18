@@ -24,7 +24,7 @@ namespace DataAccess.Pages.Supplies
 
         public async Task OnGetAsync(int? pageIndex)
         {
-            Supply = await _context.Supplies.GetList(null, null, pageIndex);
+            Supply = await _context.Supplies.GetList(null, true, pageIndex);
         }
     }
 }
