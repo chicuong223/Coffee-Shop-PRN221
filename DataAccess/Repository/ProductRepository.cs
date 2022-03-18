@@ -100,6 +100,8 @@ namespace DataAccess.Repository
 
         public async Task<IEnumerable<Product>> GetAll(Expression<Func<Product, bool>> expression)
         {
+            if (expression == null)
+                expression = a => true;
             return await _context.Products.Where(expression).ToListAsync();
         }
 

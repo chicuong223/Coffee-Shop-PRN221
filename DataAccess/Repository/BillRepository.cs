@@ -46,6 +46,7 @@ namespace DataAccess.Repository
                 result = await _context.Bills
                     .Include(c => c.Voucher)
                     .Include(i => i.BillDetails)
+                    .ThenInclude(d => d.Product)
                 .FirstOrDefaultAsync(ca => ca.Id == (int)key);
             }
             else

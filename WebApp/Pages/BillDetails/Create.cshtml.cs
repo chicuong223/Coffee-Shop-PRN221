@@ -19,27 +19,55 @@ namespace WebApp.Pages.BillDetails
             _context = context;
         }
 
-        public IActionResult OnGet()
+        public async Task<IActionResult> OnGet([FromQuery(Name = "billid")] int? billId)
         {
-        ViewData["BillId"] = new SelectList(_context.Bills.GetAll(null).Result.ToList(), "Id", "Id");
-        ViewData["ProductId"] = new SelectList(_context.Products.GetAll(null).Result.ToList(), "Id", "ProductName");
+            if (billId == null)
+            {
+                return RedirectToPage("../Error");
+            }
+            var billExists = await _context.Bills.GetByID(billId.Value) != null;
+            if (!billExists)
+            {
+                return RedirectToPage("../Bills/Index");
+            }
+            BillID = billId.Value;
+            ViewData["ProductId"] = new SelectList(_context.Products.GetAll(null).Result.ToList(), "Id", "ProductName");
             return Page();
         }
 
         [BindProperty]
         public BillDetail BillDetail { get; set; }
 
+        public int BillID { get; set; }
+
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(int? billId)
         {
+            Console.WriteLine(billId.Value);
+            Console.WriteLine(ModelState.IsValid);
             if (!ModelState.IsValid)
             {
-                return Page();
+                TempData["Error"] = "Please fill in all fields";
+                return RedirectToPage("./Create", new { billId = billId.Value });
             }
+
+            var product = await _context.Products.GetByID(BillDetail.ProductId);
+            if (product != null)
+            {
+                var detail = await _context.BillDetails.GetByID((billId.Value, product.Id), false);
+                if(detail != null)
+                {
+                    TempData["Error"] = "Product is already in this bill";
+                    return RedirectToPage("./Create", new { billId = billId.Value });
+                }
+                BillDetail.UnitPrice = product.Price;
+                BillDetail.SubTotal = product.Price * BillDetail.Quantity;
+            }
+            BillDetail.BillId = billId.Value;
 
             await _context.BillDetails.Create(BillDetail);
 
-            return RedirectToPage("./Index");
+            return RedirectToPage("../Bills/Details", new { id = BillDetail.BillId });
         }
     }
 }
