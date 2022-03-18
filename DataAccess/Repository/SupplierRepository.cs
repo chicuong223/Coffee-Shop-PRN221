@@ -118,6 +118,10 @@ namespace DataAccess.Repository
         {
             using (CoffeeShopDBContext _context = new CoffeeShopDBContext())
             {
+                if (expression == null)
+                {
+                    expression = e => true;
+                }
                 return await _context.Suppliers.Where(expression).ToListAsync();
             }
         }
