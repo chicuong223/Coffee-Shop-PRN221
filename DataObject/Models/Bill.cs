@@ -9,7 +9,7 @@ namespace DataObject.Models
     {
         public Bill()
         {
-            BillDetails = new HashSet<BillDetail>();
+            BillDetails = new List<BillDetail>();
         }
 
         public int Id { get; set; }
@@ -21,6 +21,6 @@ namespace DataObject.Models
 
         public virtual Staff StaffUsernameNavigation { get; set; }
         public virtual Voucher Voucher { get; set; }
-        public virtual ICollection<BillDetail> BillDetails { get; set; }
+        public virtual IList<BillDetail> BillDetails { get; set; }
     }
 }

@@ -67,10 +67,16 @@ namespace DataAccess.Repository
 
         public async Task<Category> Update(Category entity)
         {
-            _context.Entry(entity).State = EntityState.Detached;
-            _context.Entry(entity).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
-            return entity;
+            var category = await _context.Categories.FindAsync(entity.Id);
+            if(category != null)
+            {
+                category.Status = entity.Status;
+                category.CategoryName = entity.CategoryName;
+                _context.Entry(category).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+                return category;
+            }
+            return null;
         }
 
         public async Task Delete(object key)

@@ -18,6 +18,10 @@ namespace DataAccess.Repository
         {
             var pageNumber = page ?? 1;
             IPagedList<Staff> list;
+            if(expression == null)
+            {
+                expression = a => true;
+            }
             if (isDeep.HasValue && isDeep.Value)
             {
                 list = await _context.Staff.Where(expression)

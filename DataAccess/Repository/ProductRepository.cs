@@ -77,11 +77,25 @@ namespace DataAccess.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task<Product> Update(Product category)
+        public async Task<Product> Update(Product entity)
         {
-            _context.Entry(category).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
-            return category;
+            var product = await _context.Products.FindAsync(entity.Id);
+            if (product != null)
+            {
+                product.Status = entity.Status;
+                product.Stock = entity.Stock;
+                product.Price = entity.Price;
+                product.ProductName = entity.ProductName;
+                product.CategoryId = entity.CategoryId;
+                if(!string.IsNullOrWhiteSpace(entity.ImageURL))
+                {
+                    product.ImageURL = entity.ImageURL;
+                }
+                _context.Entry(product).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+                return product;
+            }
+            return null;
         }
 
         public Task<IEnumerable<Product>> GetAll()
