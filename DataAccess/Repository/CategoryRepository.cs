@@ -21,8 +21,6 @@ namespace DataAccess.Repository
             if(expression == null)
             {
                 expression = a => true;
-                //list = await _context.Categories
-                //    .ToPagedListAsync(pageNumber, 2);
             }
             if (isDeep.HasValue && isDeep.Value)
             {

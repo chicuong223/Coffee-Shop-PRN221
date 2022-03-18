@@ -49,7 +49,7 @@ namespace WebApp.Pages.Vouchers
 
             if (Voucher != null)
             {
-                await _context.Vouchers.Delete(Voucher);
+                await _context.Vouchers.Delete(Voucher.Id);
             }
 
             return RedirectToPage("./Index");

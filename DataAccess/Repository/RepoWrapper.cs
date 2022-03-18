@@ -128,6 +128,16 @@ namespace DataAccess.Repository
             }
         }
 
-        public IBaseRepository<Voucher> Vouchers => throw new NotImplementedException();
+        public IBaseRepository<Voucher> Vouchers
+        {
+            get
+            {
+                if (_vouchers == null)
+                {
+                    _vouchers = new VoucherRepository();
+                }
+                return _vouchers;
+            }
+        }
     }
 }
