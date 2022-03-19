@@ -6,31 +6,30 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using DataObject.Models;
-using DataAccess.RepositoryInterface;
 
-namespace WebApp.Pages.Bills
+namespace WebApp.Pages.Staff
 {
     public class DetailsModel : PageModel
     {
-        private readonly IRepoWrapper _context;
+        private readonly DataObject.Models.CoffeeShopDBContext _context;
 
-        public DetailsModel(IRepoWrapper context)
+        public DetailsModel(DataObject.Models.CoffeeShopDBContext context)
         {
             _context = context;
         }
 
-        public Bill Bill { get; set; }
+        public DataObject.Models.Staff Staff { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(int? id)
+        public async Task<IActionResult> OnGetAsync(string id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            Bill = await _context.Bills.GetByID(id);
+            Staff = await _context.Staff.FirstOrDefaultAsync(m => m.Username == id);
 
-            if (Bill == null)
+            if (Staff == null)
             {
                 return NotFound();
             }

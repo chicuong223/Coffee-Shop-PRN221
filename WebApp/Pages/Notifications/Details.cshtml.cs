@@ -6,14 +6,15 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using DataObject.Models;
+using DataAccess.RepositoryInterface;
 
-namespace DataAccess.Pages.Notifications
+namespace WebApp.Pages.Notifications
 {
     public class DetailsModel : PageModel
     {
-        private readonly CoffeeShopDBContext _context;
+        private readonly IRepoWrapper _context;
 
-        public DetailsModel(CoffeeShopDBContext context)
+        public DetailsModel(IRepoWrapper context)
         {
             _context = context;
         }
@@ -27,8 +28,7 @@ namespace DataAccess.Pages.Notifications
                 return NotFound();
             }
 
-            Notification = await _context.Notifications
-                .Include(n => n.SenderNavigation).FirstOrDefaultAsync(m => m.Id == id);
+            Notification = await _context.Notifications.GetByID(id);
 
             if (Notification == null)
             {

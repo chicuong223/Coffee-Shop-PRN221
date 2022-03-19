@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using DataObject.Models;
 using DataAccess.RepositoryInterface;
 
-namespace DataAccess.Pages.Vouchers
+namespace WebApp.Pages.Vouchers
 {
     public class DetailsModel : PageModel
     {

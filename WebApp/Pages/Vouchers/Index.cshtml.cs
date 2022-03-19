@@ -9,7 +9,7 @@ using DataObject.Models;
 using X.PagedList;
 using DataAccess.RepositoryInterface;
 
-namespace DataAccess.Pages.Vouchers
+namespace WebApp.Pages.Vouchers
 {
     public class IndexModel : PageModel
     {

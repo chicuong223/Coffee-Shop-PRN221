@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using DataObject.Models;
 using DataAccess.RepositoryInterface;
 
-namespace DataAccess.Pages.Vouchers
+namespace WebApp.Pages.Vouchers
 {
     public class DeleteModel : PageModel
     {
@@ -49,7 +49,7 @@ namespace DataAccess.Pages.Vouchers
 
             if (Voucher != null)
             {
-                await _context.Vouchers.Delete(Voucher);
+                await _context.Vouchers.Delete(Voucher.Id);
             }
 
             return RedirectToPage("./Index");

@@ -1,0 +1,74 @@
+﻿@page
+@model WebApp.Pages.Staff.EditModel
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+
+@{
+    ViewData["Title"] = "Edit";
+    var session = HttpContextAccessor.HttpContext.Session;
+    var username = session.GetString("Username");
+    var role = session.GetString("Role");
+}
+
+<h1>Edit</h1>
+
+<h4>Staff</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Staff.Username" />
+            <div class="form-group">
+                <label asp-for="Staff.Password" class="control-label"></label>
+                <input asp-for="Staff.Password" class="form-control" type="password" />
+                <span asp-validation-for="Staff.Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Staff.Email" class="control-label"></label>
+                <input asp-for="Staff.Email" class="form-control" />
+                <span asp-validation-for="Staff.Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Staff.FullName" class="control-label"></label>
+                <input asp-for="Staff.FullName" class="form-control" />
+                <span asp-validation-for="Staff.FullName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Staff.Phone" class="control-label"></label>
+                <input asp-for="Staff.Phone" class="form-control" />
+                <span asp-validation-for="Staff.Phone" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label" for="avatar">Avatar</label>
+                <input type="file" name="avatar" accept="image/*" id="avatar" class="form-control"/>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    @{
+        if(role != null)
+        {
+            if(role.Equals("Admin"))
+            {
+                <a asp-page="./Index">Back to List</a>
+
+            }
+            else if(role.Equals("Staff"))
+            {
+                <a asp-page="./Details" asp-route-id="@Model.Staff.Username">Back</a>
+            }
+        }
+    }
+</div>
+
+@section Scripts {
+    @{
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
+}
+}

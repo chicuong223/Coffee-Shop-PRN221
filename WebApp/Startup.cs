@@ -11,8 +11,9 @@ using Microsoft.Extensions.Hosting;
 using DataObject.Models;
 using DataAccess.Repository;
 using DataAccess.RepositoryInterface;
+using WebApp.Middlewares;
 
-namespace DataAccess
+namespace WebApp
 {
     public class Startup
     {
@@ -32,6 +33,7 @@ namespace DataAccess
             //services.AddScoped<ICategoryRepository, CategoryRepository>(); 
             services.AddSingleton<IRepoWrapper, RepoWrapper>();
             services.AddDbContext<CoffeeShopDBContext>();
+            services.AddHttpContextAccessor();
 
         }
 
@@ -57,6 +59,8 @@ namespace DataAccess
             app.UseAuthorization();
 
             app.UseSession();
+
+            app.UseAuthenticationMiddleware();
 
             app.UseEndpoints(endpoints =>
             {

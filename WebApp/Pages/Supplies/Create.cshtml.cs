@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using DataObject.Models;
 using DataAccess.RepositoryInterface;
 
-namespace DataAccess.Pages.Supplies
+namespace WebApp.Pages.Supplies
 {
     public class CreateModel : PageModel
     {
@@ -19,13 +19,25 @@ namespace DataAccess.Pages.Supplies
             _context = context;
         }
 
-        public IActionResult OnGet()
+        public async Task<IActionResult> OnGet(int? ProductId)
         {
-        ViewData["ProductId"] = new SelectList(_context.Products.GetAll(null).Result.ToList(), "Id", "ProductName");
-        ViewData["SupplierId"] = new SelectList(_context.Suppliers.GetAll(null).Result.ToList(), "Id", "Id");
+            if (ProductId == null)
+            {
+                return NotFound();
+            }
+            Product = await _context.Products.GetByID(ProductId);
+            if (Product == null)
+            {
+                return NotFound();
+            }
+        //ViewData["ProductId"] = new SelectList(_context.Products.GetAll(null).Result.ToList(), "Id", "ProductName");
+        ViewData["SupplierId"] = new SelectList(_context.Suppliers.GetAll(null).Result.ToList(), "Id", "Name");
+            Now = DateTime.Now;
             return Page();
         }
-
+        [BindProperty]
+        public DateTime Now { get; set; }
+        public Product Product { get; set; }
         [BindProperty]
         public Supply Supply { get; set; }
 
@@ -34,9 +46,9 @@ namespace DataAccess.Pages.Supplies
         {
             if (!ModelState.IsValid)
             {
-                return Page();
+                return RedirectToPage("./Create", new { ProductId = Product.Id });
             }
-
+            Supply.SupplyDate = DateTime.Now;
             await _context.Supplies.Create(Supply);
 
             return RedirectToPage("./Index");

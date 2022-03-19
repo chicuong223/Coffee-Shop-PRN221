@@ -12,22 +12,30 @@ namespace DataAccess.Repository
 {
     public class StaffRepository : IBaseRepository<Staff>
     {
-        private readonly CoffeeShopDBContext _context = new CoffeeShopDBContext();
-
         public async Task<IPagedList<Staff>> GetList(Expression<Func<Staff, bool>>? expression, bool? isDeep = false, int? page = 1)
         {
             var pageNumber = page ?? 1;
             IPagedList<Staff> list;
+            if (expression == null)
+            {
+                expression = a => true;
+            }
             if (isDeep.HasValue && isDeep.Value)
             {
-                list = await _context.Staff.Where(expression)
+                using (var context = new CoffeeShopDBContext())
+                {
+                    list = await context.Staff.Where(expression)
                     .Include(i => i.Notifications)
                     .ToPagedListAsync(pageNumber, 2);
+                }
             }
             else
             {
-                list = await _context.Staff.Where(expression)
+                using (var context = new CoffeeShopDBContext())
+                {
+                    list = await context.Staff.Where(expression)
                     .ToPagedListAsync(pageNumber, 2);
+                }
             }
             return list;
         }
@@ -37,54 +45,92 @@ namespace DataAccess.Repository
             Staff result;
             if (isDeep.HasValue && isDeep.Value)
             {
-                result = await _context.Staff.Include(c => c.Notifications)
+                using (var context = new CoffeeShopDBContext())
+                {
+                    result = await context.Staff.Include(c => c.Notifications)
                 .FirstOrDefaultAsync(ca => ca.Username == key.ToString());
+                }
             }
             else
             {
-                result = await _context.Staff.FirstOrDefaultAsync(ca => ca.Username == key.ToString());
+                using (var context = new CoffeeShopDBContext())
+                {
+                    result = await context.Staff.FirstOrDefaultAsync(ca => ca.Username == key.ToString());
+                }
+
             }
             return result;
         }
 
         public Task<int> Count(Expression<Func<Staff, bool>> expression)
         {
-            return _context.Staff.Where(expression).CountAsync();
+            using (var context = new CoffeeShopDBContext())
+            {
+                return context.Staff.Where(expression).CountAsync();
+            }
+
         }
 
         public async Task<Staff> Create(Staff category)
         {
-            _context.Staff.Add(category);
-            await _context.SaveChangesAsync();
-            return category;
+            using (var context = new CoffeeShopDBContext())
+            {
+                context.Staff.Add(category);
+                await context.SaveChangesAsync();
+                return category;
+            }
         }
 
         public async Task Delete(object key)
         {
-            var category = await _context.Staff.FindAsync((int)key);
-            category.Status = false;
-            _context.Entry(category).State = EntityState.Detached;
-            _context.Entry(category).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
+            using (var context = new CoffeeShopDBContext())
+            {
+                var category = await context.Staff.FindAsync((int)key);
+                category.Status = false;
+                context.Entry(category).State = EntityState.Detached;
+                context.Entry(category).State = EntityState.Modified;
+                await context.SaveChangesAsync();
+            }
         }
 
         public async Task<Staff> Update(Staff category)
         {
-            _context.Entry(category).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
-            return category;
+            using(var context = new CoffeeShopDBContext())
+            {
+                var staff = await context.Staff.FindAsync(category.Username);
+                if (staff != null)
+                {
+                    staff.Status = true;
+                    staff.Email = category.Email;
+                    staff.AvatarUrl = category.AvatarUrl;
+                    staff.Phone = category.Phone;
+                    staff.Password = category.Password;
+                    context.Entry(staff).State = EntityState.Detached;
+                    context.Entry(staff).State = EntityState.Modified;
+                    await context.SaveChangesAsync();
+                    return staff;
+                }
+            }
+            return null;
         }
 
-        public Task<IEnumerable<Staff>> GetAll(Expression<Func<Staff, bool>> expression)
+        public async Task<IEnumerable<Staff>> GetAll(Expression<Func<Staff, bool>> expression)
         {
-            throw new NotImplementedException();
+            using (var context = new CoffeeShopDBContext())
+            {
+                return await context.Staff.Where(expression).ToListAsync();
+            }
+
         }
 
         public async Task<Staff> GetSingle(Expression<Func<Staff, bool>> expression)
         {
-            var result = await _context.Staff
-                .SingleOrDefaultAsync(expression) ?? null;
-            return result;
+            using (var context = new CoffeeShopDBContext())
+            {
+                var result = await context.Staff
+                    .SingleOrDefaultAsync(expression) ?? null;
+                return result;
+            }
         }
     }
 }

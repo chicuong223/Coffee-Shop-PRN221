@@ -9,9 +9,9 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using DataObject.Models;
 using DataAccess.RepositoryInterface;
-using DataAccess.Utilities;
+using WebApp.Utilities;
 
-namespace DataAccess.Pages.Products
+namespace WebApp.Pages.Products
 {
     public class CreateModel : PageModel
     {
@@ -27,6 +27,17 @@ namespace DataAccess.Pages.Products
 
         public async Task<IActionResult> OnGetAsync()
         {
+            ISession session = HttpContext.Session;
+            var currentUsername = session.GetString("Username");
+            var role = session.GetString("Role");
+            if (string.IsNullOrEmpty(currentUsername) || string.IsNullOrEmpty(role))
+            {
+                return RedirectToPage("../Authenticate/Login");
+            }
+            if (!role.Equals("Admin"))
+            {
+                return RedirectToPage("../Error");
+            }
             var categories = await _context.Categories.GetAll(ca => ca.Status == true);
             ViewData["CategoryId"] = new SelectList(categories, "Id", "CategoryName");
             return Page();
@@ -38,21 +49,39 @@ namespace DataAccess.Pages.Products
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync(IFormFile image)
         {
+            ISession session = HttpContext.Session;
+            var currentUsername = session.GetString("Username");
+            var role = session.GetString("Role");
+            if (string.IsNullOrEmpty(currentUsername) || string.IsNullOrEmpty(role))
+            {
+                return RedirectToPage("../Authenticate/Login");
+            }
+            if (!role.Equals("Admin"))
+            {
+                return RedirectToPage("../Error");
+            }
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            if(image != null)
+            try
             {
-                await FileUtility.UploadFile(image, _environment);
-                Product.ImageURL = image.FileName;
+                if (image != null)
+                {
+                    await FileUtility.UploadFile(image, _environment);
+                    Product.ImageURL = image.FileName;
+                }
+
+                Product.Status = true;
+
+                await _context.Products.Create(Product);
             }
-
-            Product.Status = true;
-
-            await _context.Products.Create(Product);
-
+            catch(Exception ex)
+            {
+                ViewData["Error"] = ex.Message; 
+                return Page();
+            }
             return RedirectToPage("./Index");
         }
     }

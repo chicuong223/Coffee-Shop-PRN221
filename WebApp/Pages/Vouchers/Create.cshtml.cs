@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using DataObject.Models;
 using DataAccess.RepositoryInterface;
 
-namespace DataAccess.Pages.Vouchers
+namespace WebApp.Pages.Vouchers
 {
     public class CreateModel : PageModel
     {
@@ -23,7 +23,7 @@ namespace DataAccess.Pages.Vouchers
         {
             return Page();
         }
-
+        public string Message { get; set; }
         [BindProperty]
         public Voucher Voucher { get; set; }
 
@@ -34,8 +34,14 @@ namespace DataAccess.Pages.Vouchers
             {
                 return Page();
             }
-
-            await _context.Vouchers.Create(Voucher);
+            try
+            {
+                await _context.Vouchers.Create(Voucher);
+            }catch(Exception e)
+            {
+                Message = "Make sure all inputs are correct";
+                return Page();
+            }
 
             return RedirectToPage("./Index");
         }

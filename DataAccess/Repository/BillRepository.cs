@@ -20,14 +20,14 @@ namespace DataAccess.Repository
             IPagedList<Bill> list;
             if (expression == null)
             {
-                list = await _context.Bills
-                    .ToPagedListAsync(pageNumber, 2);
+                expression = a => true;
             }
-            else if (isDeep.HasValue && isDeep.Value)
+            if (isDeep.HasValue && isDeep.Value)
             {
                 list = await _context.Bills.Where(expression)
                     .Include(i => i.Voucher)
-                    .Include(i=>i.BillDetails)
+                    .Include(i => i.BillDetails)
+                    .Include(i => i.StaffUsernameNavigation)
                     .ToPagedListAsync(pageNumber, 2);
             }
             else
@@ -45,12 +45,18 @@ namespace DataAccess.Repository
             {
                 result = await _context.Bills
                     .Include(c => c.Voucher)
+                    .Include(c => c.StaffUsernameNavigation)
                     .Include(i => i.BillDetails)
-                .FirstOrDefaultAsync(ca => ca.Id == (int)key);
+                    .ThenInclude(d => d.Product)
+                    .SingleOrDefaultAsync(b => b.Id == (int)key) ?? null;
             }
             else
             {
-                result = await _context.Bills.FirstOrDefaultAsync(ca => ca.Id == (int)key);
+                result = await _context.Bills.SingleOrDefaultAsync(ca => ca.Id == (int)key) ?? null;
+            }
+            if(result != null)
+            {
+                _context.Entry(result).State = EntityState.Detached;
             }
             return result;
         }
@@ -78,19 +84,23 @@ namespace DataAccess.Repository
 
         public async Task<Bill> Update(Bill category)
         {
-            _context.Entry(category).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
-            return category;
+            var updated = await _context.Bills.FindAsync(category.Id);
+            if(updated != null)
+            {
+                updated.Discount = category.Discount;
+                updated.VoucherId = category.VoucherId;
+                _context.Entry(updated).State = EntityState.Detached;
+                _context.Entry(updated).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+                return updated;
+            }
+            return null;
         }
 
-        public Task<IEnumerable<Bill>> GetAll()
-        {
-            throw new NotImplementedException();
-        }
 
-        public Task<IEnumerable<Bill>> GetAll(Expression<Func<Bill, bool>> expression)
+        public async Task<IEnumerable<Bill>> GetAll(Expression<Func<Bill, bool>> expression)
         {
-            throw new NotImplementedException();
+            return await _context.Bills.Where(expression).ToListAsync();
         }
 
         public Task<Bill> GetSingle(Expression<Func<Bill, bool>> expression)

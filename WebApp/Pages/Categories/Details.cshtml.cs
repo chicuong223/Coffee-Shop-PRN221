@@ -9,7 +9,7 @@ using DataObject.Models;
 using DataAccess.Repository;
 using DataAccess.RepositoryInterface;
 
-namespace DataAccess.Pages.Categories
+namespace WebApp.Pages.Categories
 {
     public class DetailsModel : PageModel
     {

@@ -9,7 +9,7 @@ using DataObject.Models;
 using DataAccess.RepositoryInterface;
 using Microsoft.AspNetCore.Http;
 
-namespace WebApp.Pages.Bills
+namespace WebApp.Pages.Staff
 {
     public class DeleteModel : PageModel
     {
@@ -21,18 +21,46 @@ namespace WebApp.Pages.Bills
         }
 
         [BindProperty]
-        public Bill Bill { get; set; }
+        public DataObject.Models.Staff Staff { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(int? id)
+        public async Task<IActionResult> OnGetAsync(string id)
         {
             ISession session = HttpContext.Session;
-            var currentUsername = session.GetString("Username");
+            var username = session.GetString("Username");
             var role = session.GetString("Role");
-            if (string.IsNullOrEmpty(currentUsername) || string.IsNullOrEmpty(role))
+            if (username == null || role == null)
             {
                 return RedirectToPage("../Authenticate/Login");
             }
-            if (!role.Equals("Staff"))
+            if(!role.Equals("Admin"))
+            {
+                return RedirectToPage("../Error");
+            }
+           
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            Staff = await _context.Staffs.GetByID(id, false);
+
+            if (Staff == null)
+            {
+                return NotFound();
+            }
+            return Page();
+        }
+
+        public async Task<IActionResult> OnPostAsync(string id)
+        {
+            ISession session = HttpContext.Session;
+            var username = session.GetString("Username");
+            var role = session.GetString("Role");
+            if (username == null || role == null)
+            {
+                return RedirectToPage("../Authenticate/Login");
+            }
+            if (!role.Equals("Admin"))
             {
                 return RedirectToPage("../Error");
             }
@@ -41,39 +69,14 @@ namespace WebApp.Pages.Bills
                 return NotFound();
             }
 
-            Bill = await _context.Bills.GetByID(id);
+            Staff = await _context.Staffs.GetByID(id, false);
 
-            if (Bill == null)
+            if (Staff != null)
             {
-                return NotFound();
-            }
-            return Page();
-        }
-
-        public async Task<IActionResult> OnPostAsync(int? id)
-        {
-            ISession session = HttpContext.Session;
-            var currentUsername = session.GetString("Username");
-            var role = session.GetString("Role");
-            if (string.IsNullOrEmpty(currentUsername) || string.IsNullOrEmpty(role))
-            {
-                return RedirectToPage("../Authenticate/Login");
-            }
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            Bill = await _context.Bills.GetByID(id, false);
-
-            if (Bill != null)
-            {
-                var details = await _context.BillDetails.GetAll(b => b.BillId == id);
-                foreach(var d in details)
-                {
-                    await _context.BillDetails.Delete(d);
-                }
-                await _context.Bills.Delete(Bill);
+                //_context.Staff.Remove(Staff);
+                //await _context.SaveChangesAsync();
+                Staff.Status = false;
+                await _context.Staffs.Update(Staff);
             }
 
             return RedirectToPage("./Index");

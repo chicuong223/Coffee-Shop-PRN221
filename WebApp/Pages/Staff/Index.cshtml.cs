@@ -9,7 +9,7 @@ using DataObject.Models;
 using DataAccess.RepositoryInterface;
 using X.PagedList;
 
-namespace WebApp.Pages.Notifications
+namespace WebApp.Pages.Staff
 {
     public class IndexModel : PageModel
     {
@@ -20,11 +20,11 @@ namespace WebApp.Pages.Notifications
             _context = context;
         }
 
-        public IPagedList<Notification> Notification { get;set; }
+        public IPagedList<DataObject.Models.Staff> Staff { get;set; }
 
         public async Task OnGetAsync(int? pageIndex)
         {
-            Notification = await _context.Notifications.GetList(null, null, pageIndex);
+            Staff = await _context.Staffs.GetList(null, false, pageIndex);
         }
     }
 }

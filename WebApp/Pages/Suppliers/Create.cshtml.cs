@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using DataObject.Models;
 using DataAccess.RepositoryInterface;
 
-namespace DataAccess.Pages.Suppliers
+namespace WebApp.Pages.Suppliers
 {
     public class CreateModel : PageModel
     {

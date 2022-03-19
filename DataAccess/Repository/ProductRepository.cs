@@ -15,17 +15,15 @@ namespace DataAccess.Repository
     {
         private readonly CoffeeShopDBContext _context = new CoffeeShopDBContext();
 
-        public async Task<IPagedList<Product>> GetList(Expression<Func<Product, bool>> expression, bool? isDeep = false, int? page = 1)
+        public async Task<IPagedList<Product>> GetList(Expression<Func<Product, bool>>? expression, bool? isDeep = false, int? page = 1)
         {
             var pageNumber = page ?? 1;
             IPagedList<Product> list;
-            if(expression == null && isDeep.HasValue && isDeep.Value)
+            if (expression == null)
             {
-                list = await _context.Products
-                   .Include(i => i.Category)
-                   .ToPagedListAsync(pageNumber, 2);
+                expression = e => true;
             }
-            else if (isDeep.HasValue && isDeep.Value)
+            if (isDeep.HasValue && isDeep.Value)
             {
                 list = await _context.Products.Where(expression)
                     .Include(i => i.Category)
@@ -77,15 +75,31 @@ namespace DataAccess.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task<Product> Update(Product category)
+        public async Task<Product> Update(Product entity)
         {
-            _context.Entry(category).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
-            return category;
+            var product = await _context.Products.FindAsync(entity.Id);
+            if (product != null)
+            {
+                product.Status = entity.Status;
+                product.Stock = entity.Stock;
+                product.Price = entity.Price;
+                product.ProductName = entity.ProductName;
+                product.CategoryId = entity.CategoryId;
+                if(!string.IsNullOrWhiteSpace(entity.ImageURL))
+                {
+                    product.ImageURL = entity.ImageURL;
+                }
+                _context.Entry(product).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+                return product;
+            }
+            return null;
         }
 
         public async Task<IEnumerable<Product>> GetAll(Expression<Func<Product, bool>> expression)
         {
+            if (expression == null)
+                expression = a => true;
             return await _context.Products.Where(expression).ToListAsync();
         }
 

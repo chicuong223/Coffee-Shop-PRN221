@@ -7,14 +7,16 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DataObject.Models;
+using DataAccess.RepositoryInterface;
+using Microsoft.AspNetCore.Http;
 
-namespace DataAccess.Pages.BillDetails
+namespace WebApp.Pages.BillDetails
 {
     public class EditModel : PageModel
     {
-        private readonly CoffeeShopDBContext _context;
+        private readonly IRepoWrapper _context;
 
-        public EditModel(CoffeeShopDBContext context)
+        public EditModel(IRepoWrapper context)
         {
             _context = context;
         }
@@ -22,23 +24,31 @@ namespace DataAccess.Pages.BillDetails
         [BindProperty]
         public BillDetail BillDetail { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(int? id)
+        public async Task<IActionResult> OnGetAsync(int? billid, int? productid)
         {
-            if (id == null)
+            ISession session = HttpContext.Session;
+            var currentUsername = session.GetString("Username");
+            var role = session.GetString("Role");
+            if (string.IsNullOrEmpty(currentUsername) || string.IsNullOrEmpty(role))
+            {
+                return RedirectToPage("../Authenticate/Login");
+            }
+            if (!role.Equals("Staff"))
+            {
+                return RedirectToPage("../Error");
+            }
+            if (billid == null || productid == null)
             {
                 return NotFound();
             }
 
-            BillDetail = await _context.BillDetails
-                .Include(b => b.Bill)
-                .Include(b => b.Product).FirstOrDefaultAsync(m => m.BillId == id);
+            BillDetail = await _context.BillDetails.GetByID((billid.Value, productid.Value));
 
             if (BillDetail == null)
             {
                 return NotFound();
             }
-           ViewData["BillId"] = new SelectList(_context.Bills, "Id", "Id");
-           ViewData["ProductId"] = new SelectList(_context.Products, "Id", "ProductName");
+            ViewData["ProductId"] = new SelectList(_context.Products.GetAll(null).Result.ToList(), "Id", "ProductName");
             return Page();
         }
 
@@ -46,35 +56,40 @@ namespace DataAccess.Pages.BillDetails
         // For more details, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
+            ISession session = HttpContext.Session;
+            var currentUsername = session.GetString("Username");
+            var role = session.GetString("Role");
+            if (string.IsNullOrEmpty(currentUsername) || string.IsNullOrEmpty(role))
+            {
+                return RedirectToPage("../Authenticate/Login");
+            }
+            if (!role.Equals("Staff"))
+            {
+                return RedirectToPage("../Error");
+            }
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            _context.Attach(BillDetail).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
+                var product = await _context.Products.GetByID(BillDetail.ProductId);
+                if (product == null)
+                {
+                    return RedirectToPage("../Error");
+                }
+                BillDetail.SubTotal = product.Price * BillDetail.Quantity;
+                BillDetail.UnitPrice = product.Price;
+                await _context.BillDetails.Update(BillDetail);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!BillDetailExists(BillDetail.BillId))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                throw;
+
             }
 
-            return RedirectToPage("./Index");
-        }
-
-        private bool BillDetailExists(int id)
-        {
-            return _context.BillDetails.Any(e => e.BillId == id);
+            return RedirectToPage("../Bills/Edit", new { id = BillDetail.BillId });
         }
     }
 }

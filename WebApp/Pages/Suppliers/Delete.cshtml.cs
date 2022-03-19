@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using DataObject.Models;
 using DataAccess.RepositoryInterface;
 
-namespace DataAccess.Pages.Suppliers
+namespace WebApp.Pages.Suppliers
 {
     public class DeleteModel : PageModel
     {
@@ -49,7 +49,7 @@ namespace DataAccess.Pages.Suppliers
 
             if (Supplier != null)
             {
-                await _context.Suppliers.Delete(Supplier);
+                await _context.Suppliers.Delete(Supplier.Id);
             }
 
             return RedirectToPage("./Index");

@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using DataObject.Models;
 using DataAccess.RepositoryInterface;
 
-namespace DataAccess.Pages.Categories
+namespace WebApp.Pages.Categories
 {
     public class EditModel : PageModel
     {
@@ -47,8 +47,6 @@ namespace DataAccess.Pages.Categories
             {
                 return Page();
             }
-
-
             try
             {
                 await _context.Categories.Update(Category);

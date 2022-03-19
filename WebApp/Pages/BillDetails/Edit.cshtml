@@ -13,22 +13,19 @@
     <div class="col-md-4">
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="BillDetail.BillId" />
-            <input type="hidden" asp-for="BillDetail.ProductId" />
+            <input asp-for="BillDetail.BillId" type="hidden"/>
+            <input asp-for="BillDetail.ProductId" type="hidden"/>
+            <div class="form-group">
+                <label asp-for="BillDetail.BillId" class="control-label"></label>
+                <input asp-for="BillDetail.BillId" disabled class="form-control" />
+            </div><div class="form-group">
+                <label asp-for="BillDetail.Product" class="control-label"></label>
+                <input asp-for="BillDetail.ProductId" disabled class="form-control" />
+            </div>
             <div class="form-group">
                 <label asp-for="BillDetail.Quantity" class="control-label"></label>
                 <input asp-for="BillDetail.Quantity" class="form-control" />
                 <span asp-validation-for="BillDetail.Quantity" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="BillDetail.UnitPrice" class="control-label"></label>
-                <input asp-for="BillDetail.UnitPrice" class="form-control" />
-                <span asp-validation-for="BillDetail.UnitPrice" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="BillDetail.SubTotal" class="control-label"></label>
-                <input asp-for="BillDetail.SubTotal" class="form-control" />
-                <span asp-validation-for="BillDetail.SubTotal" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
@@ -38,9 +35,11 @@
 </div>
 
 <div>
-    <a asp-page="./Index">Back to List</a>
+    <a asp-page="../Bills/Details" asp-route-id="@Model.BillDetail.BillId">Back to List</a>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
+}
 }

@@ -9,7 +9,7 @@ using DataObject.Models;
 using DataAccess.RepositoryInterface;
 using X.PagedList;
 
-namespace DataAccess.Pages.Products
+namespace WebApp.Pages.Products
 {
     public class IndexModel : PageModel
     {

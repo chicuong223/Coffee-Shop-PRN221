@@ -18,6 +18,10 @@ namespace DataAccess.Repository
         {
             var pageNumber = page ?? 1;
             IPagedList<Notification> list;
+            if (expression == null)
+            {
+                expression = e => true;
+            }
             if (isDeep.HasValue && isDeep.Value)
             {
                 list = await _context.Notifications.Where(expression)
@@ -76,14 +80,10 @@ namespace DataAccess.Repository
             return category;
         }
 
-        public Task<IEnumerable<Notification>> GetAll()
-        {
-            throw new NotImplementedException();
-        }
 
-        public Task<IEnumerable<Notification>> GetAll(Expression<Func<Notification, bool>> expression)
+        public async Task<IEnumerable<Notification>> GetAll(Expression<Func<Notification, bool>> expression)
         {
-            throw new NotImplementedException();
+            return await _context.Notifications.Where(expression).ToListAsync();
         }
 
         public Task<Notification> GetSingle(Expression<Func<Notification, bool>> expression)

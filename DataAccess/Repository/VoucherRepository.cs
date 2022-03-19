@@ -18,6 +18,10 @@ namespace DataAccess.Repository
         {
             var pageNumber = page ?? 1;
             IPagedList<Voucher> list;
+            if (expression == null)
+            {
+                expression = e => true;
+            }
             if (isDeep.HasValue && isDeep.Value)
             {
                 list = await _context.Vouchers.Where(expression)
@@ -56,6 +60,7 @@ namespace DataAccess.Repository
 
         public async Task<Voucher> Create(Voucher category)
         {
+            //CoffeeShopDBContext _context = new CoffeeShopDBContext();
             _context.Vouchers.Add(category);
             await _context.SaveChangesAsync();
             return category;
@@ -63,28 +68,38 @@ namespace DataAccess.Repository
 
         public async Task Delete(object key)
         {
-            var category = await _context.Vouchers.FindAsync((int)key);
+            var category = await _context.Vouchers.FindAsync((string)key);
             category.Status = false;
             _context.Entry(category).State = EntityState.Detached;
             _context.Entry(category).State = EntityState.Modified;
             await _context.SaveChangesAsync();
         }
 
-        public async Task<Voucher> Update(Voucher category)
+        public async Task<Voucher> Update(Voucher entity)
         {
-            _context.Entry(category).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
-            return category;
+            var voucher = await _context.Vouchers.FindAsync(entity.Id);
+            if (voucher != null)
+            {
+                voucher.Status = entity.Status;
+                voucher.Percentage = entity.Percentage;
+                voucher.Name = entity.Name;
+                voucher.UsageCount = entity.UsageCount;
+                voucher.Description = entity.Description;
+                voucher.ExpirationDate = entity.ExpirationDate;
+                _context.Entry(voucher).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+                return voucher;
+            }
+            return null;
         }
 
-        public Task<IEnumerable<Voucher>> GetAll()
+        public async Task<IEnumerable<Voucher>> GetAll(Expression<Func<Voucher, bool>> expression)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<Voucher>> GetAll(Expression<Func<Voucher, bool>> expression)
-        {
-            throw new NotImplementedException();
+            if (expression == null)
+            {
+                expression = e => true;
+            }
+            return await _context.Vouchers.Where(expression).ToListAsync();
         }
 
         public Task<Voucher> GetSingle(Expression<Func<Voucher, bool>> expression)

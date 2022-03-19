@@ -4,19 +4,19 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Threading.Tasks;
 using DataObject.Models;
 using DataAccess.RepositoryInterface;
-using DataAccess.Utilities;
+using WebApp.Utilities;
 using System.ComponentModel.DataAnnotations;
 
-namespace DataAccess.Pages.Authenticate
+namespace WebApp.Pages.Authenticate
 {
     public class LoginModel : PageModel
     {
         [BindProperty]
-        [Required(ErrorMessage ="This field cannot be empty")]
+        [Required(ErrorMessage = "This field cannot be empty")]
         public string username { get; set; }
         [BindProperty]
         [Required(ErrorMessage = "This field cannot be empty")]
-        public string password { get; set; }    
+        public string password { get; set; }
         private readonly CoffeeShopDBContext _dbContext;
         private readonly IRepoWrapper _context;
 
@@ -33,11 +33,11 @@ namespace DataAccess.Pages.Authenticate
 
         public async Task<IActionResult> OnPostAsync()
         {
-			if (!ModelState.IsValid) { return Page(); }
+            if (!ModelState.IsValid) { return Page(); }
             var admin = _dbContext.Admin();
             string hashedPassword = PasswordUtility.HashPassword(password);
-            ISession session = HttpContext.Session; 
-            if(username.Equals(admin.Username) && hashedPassword.Equals(admin.Password))
+            ISession session = HttpContext.Session;
+            if (username.Equals(admin.Username) && hashedPassword.Equals(admin.Password))
             {
                 session.SetString("Username", admin.Username);
                 session.SetString("Role", "Admin");
@@ -45,7 +45,7 @@ namespace DataAccess.Pages.Authenticate
             }
             var staff = await _context.Staffs.GetSingle(s => s.Username.Equals(username) && s.Password.Equals(hashedPassword));
 
-            if(staff == null)
+            if (staff == null)
             {
                 ViewData["BadCredentials"] = "Incorrect Username or Password";
                 return Page();
@@ -53,6 +53,13 @@ namespace DataAccess.Pages.Authenticate
             session.SetString("Username", staff.Username);
             session.SetString("Role", "Staff");
             return RedirectToPage("../Index");
+        }
+
+        public IActionResult OnPostLogout()
+        {
+            ISession session = HttpContext.Session;
+            session.Clear();
+            return Page();
         }
     }
 }
