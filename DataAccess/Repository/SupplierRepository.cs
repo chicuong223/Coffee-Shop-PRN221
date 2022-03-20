@@ -114,7 +114,7 @@ namespace DataAccess.Repository
         }
 
 
-        public async Task<IEnumerable<Supplier>> GetAll(Expression<Func<Supplier, bool>> expression)
+        public async Task<IEnumerable<Supplier>> GetAll(Expression<Func<Supplier, bool>> expression, bool? isDeep = false)
         {
             using (CoffeeShopDBContext _context = new CoffeeShopDBContext())
             {

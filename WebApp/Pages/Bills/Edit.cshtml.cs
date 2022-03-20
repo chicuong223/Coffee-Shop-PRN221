@@ -48,6 +48,13 @@ namespace WebApp.Pages.Bills
             {
                 return NotFound();
             }
+
+            if(Bill.Status.Value)
+            {
+                TempData["BillError"] = "This bill is already confirmed!";
+                return RedirectToPage("./Details", new { id = Bill.Id });
+            }
+
             ModelState.Clear();
             return Page();
         }

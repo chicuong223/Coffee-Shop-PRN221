@@ -22,12 +22,12 @@ namespace WebApp.Pages.Bills
 
         public IPagedList<Bill> Bills { get;set; }
 
-        public async Task OnGetAsync(int? page)
+        public async Task OnGetAsync(int? pageIndex)
         {
             //Bill = await _context.Bills
             //    .Include(b => b.StaffUsernameNavigation)
             //    .Include(b => b.Voucher).ToListAsync();
-            Bills = await _context.Bills.GetList(null, true, page);
+            Bills = await _context.Bills.GetList(null, true, pageIndex);
         }
     }
 }

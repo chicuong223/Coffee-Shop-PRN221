@@ -73,7 +73,7 @@ namespace WebApp.Pages.Bills
                 {
                     await _context.BillDetails.Delete(d);
                 }
-                await _context.Bills.Delete(Bill);
+                await _context.Bills.Delete(Bill.Id);
             }
 
             return RedirectToPage("./Index");

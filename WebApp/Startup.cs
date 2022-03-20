@@ -62,6 +62,8 @@ namespace WebApp
 
             app.UseAuthenticationMiddleware();
 
+            app.UseMiddleware<BillMiddleware>();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();

@@ -12,9 +12,10 @@
 <div class="row">
     <div class="col-md-4">
         <form method="post">
+            <h4 class="text-danger">@TempData["BillError"]</h4>
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Bill.Id" />
-            <div class="form-group">
+            @*<div class="form-group">
                 <label asp-for="Bill.Discount" class="control-label"></label>
                 <input asp-for="Bill.Discount" class="form-control" />
                 <span asp-validation-for="Bill.Discount" class="text-danger"></span>
@@ -26,7 +27,7 @@
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
+            </div>*@
         </form>
     </div>
 </div>
@@ -80,10 +81,13 @@
     </tbody>
 </table>
 
-
 <div>
-    <a asp-page="./Index">Back to List</a>
+    <a asp-page="./Create" asp-page-handler="Cancel" asp-route-id="@Model.Bill.Id">Cancel</a>
 </div>
+
+<form method="post" asp-page="../Bills/Create" asp-page-handler="Confirm" asp-route-id="@Model.Bill.Id">
+    <button class="btn btn-primary" type="submit">Confirm</button>    
+</form>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

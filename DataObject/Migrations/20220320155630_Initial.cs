@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace DataObject.Migrations
 {
-    public partial class ChangeVoucherIdToString : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -26,11 +26,11 @@ namespace DataObject.Migrations
                 columns: table => new
                 {
                     Username = table.Column<string>(type: "varchar(32)", unicode: false, maxLength: 32, nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    Password = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     AvatarUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    FullName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Phone = table.Column<string>(type: "varchar(14)", unicode: false, maxLength: 14, nullable: true),
+                    FullName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Phone = table.Column<string>(type: "varchar(14)", unicode: false, maxLength: 14, nullable: false),
                     Status = table.Column<bool>(type: "bit", nullable: true)
                 },
                 constraints: table =>
@@ -44,9 +44,9 @@ namespace DataObject.Migrations
                 {
                     ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Phone = table.Column<string>(type: "varchar(14)", unicode: false, maxLength: 14, nullable: true),
-                    Status = table.Column<bool>(type: "bit", nullable: true)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Phone = table.Column<string>(type: "varchar(14)", unicode: false, maxLength: 14, nullable: false),
+                    Status = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -63,7 +63,7 @@ namespace DataObject.Migrations
                     Percentage = table.Column<double>(type: "float", nullable: false),
                     ExpirationDate = table.Column<DateTime>(type: "date", nullable: false),
                     UsageCount = table.Column<int>(type: "int", nullable: false),
-                    Status = table.Column<bool>(type: "bit", nullable: true)
+                    Status = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -121,7 +121,7 @@ namespace DataObject.Migrations
                 {
                     ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    BillDate = table.Column<DateTime>(type: "date", nullable: true),
+                    BillDate = table.Column<DateTime>(type: "datetime", nullable: true),
                     StaffUsername = table.Column<string>(type: "varchar(32)", unicode: false, maxLength: 32, nullable: true),
                     Discount = table.Column<double>(type: "float", nullable: true),
                     VoucherID = table.Column<string>(type: "nvarchar(450)", nullable: true),
@@ -256,8 +256,7 @@ namespace DataObject.Migrations
                 name: "UQ__Staff__A9D1053468E2B7DC",
                 table: "Staff",
                 column: "Email",
-                unique: true,
-                filter: "[Email] IS NOT NULL");
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Supply_SupplierID",

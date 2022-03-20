@@ -81,7 +81,7 @@ namespace DataAccess.Repository
         }
 
 
-        public async Task<IEnumerable<Notification>> GetAll(Expression<Func<Notification, bool>> expression)
+        public async Task<IEnumerable<Notification>> GetAll(Expression<Func<Notification, bool>> expression, bool? isDeep = false)
         {
             return await _context.Notifications.Where(expression).ToListAsync();
         }

@@ -11,6 +11,7 @@ namespace DataObject.Models
         public int BillId { get; set; }
         public int ProductId { get; set; }
         [Required(ErrorMessage = "Quantity is required")]
+        [Range(1, Double.MaxValue, ErrorMessage = "Minimum 1 unit")]
         public int? Quantity { get; set; }
         public decimal? UnitPrice { get; set; }
         public decimal? SubTotal { get; set; }

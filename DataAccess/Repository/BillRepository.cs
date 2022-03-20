@@ -12,8 +12,6 @@ namespace DataAccess.Repository
 {
     public class BillRepository : IBaseRepository<Bill>
     {
-        private readonly CoffeeShopDBContext _context = new CoffeeShopDBContext();
-
         public async Task<IPagedList<Bill>> GetList(Expression<Func<Bill, bool>> expression, bool? isDeep = false, int? page = 1)
         {
             var pageNumber = page ?? 1;
@@ -22,18 +20,30 @@ namespace DataAccess.Repository
             {
                 expression = a => true;
             }
-            if (isDeep.HasValue && isDeep.Value)
+            try
             {
-                list = await _context.Bills.Where(expression)
-                    .Include(i => i.Voucher)
-                    .Include(i => i.BillDetails)
-                    .Include(i => i.StaffUsernameNavigation)
-                    .ToPagedListAsync(pageNumber, 2);
+                using (var context = new CoffeeShopDBContext())
+                {
+                    if (isDeep.HasValue && isDeep.Value)
+                    {
+                        list = await context.Bills.Where(expression)
+                            .Include(i => i.Voucher)
+                            .Include(i => i.BillDetails)
+                            .Include(i => i.StaffUsernameNavigation)
+                            .OrderByDescending(i => i.BillDate)
+                            .ToPagedListAsync(pageNumber, 2);
+                    }
+                    else
+                    {
+                        list = await context.Bills.Where(expression)
+                            .OrderByDescending(i => i.BillDate)
+                            .ToPagedListAsync(pageNumber, 2);
+                    }
+                }
             }
-            else
+            catch
             {
-                list = await _context.Bills.Where(expression)
-                    .ToPagedListAsync(pageNumber, 2);
+                throw;
             }
             return list;
         }
@@ -41,71 +51,150 @@ namespace DataAccess.Repository
         public async Task<Bill> GetByID(object key, bool? isDeep = true)
         {
             Bill result;
-            if (isDeep.HasValue && isDeep.Value)
+            try
             {
-                result = await _context.Bills
-                    .Include(c => c.Voucher)
-                    .Include(c => c.StaffUsernameNavigation)
-                    .Include(i => i.BillDetails)
-                    .ThenInclude(d => d.Product)
-                    .SingleOrDefaultAsync(b => b.Id == (int)key) ?? null;
+                using (var context = new CoffeeShopDBContext())
+                {
+                    if (isDeep.HasValue && isDeep.Value)
+                    {
+                        result = await context.Bills
+                            .Include(c => c.Voucher)
+                            .Include(c => c.StaffUsernameNavigation)
+                            .Include(i => i.BillDetails)
+                            .ThenInclude(d => d.Product)
+                            .SingleOrDefaultAsync(b => b.Id == (int)key) ?? null;
+                    }
+                    else
+                    {
+                        result = await context.Bills.SingleOrDefaultAsync(ca => ca.Id == (int)key) ?? null;
+                    }
+                    if (result != null)
+                    {
+                        context.Entry(result).State = EntityState.Detached;
+                    }
+                }
+
             }
-            else
+            catch
             {
-                result = await _context.Bills.SingleOrDefaultAsync(ca => ca.Id == (int)key) ?? null;
+                throw;
             }
-            if(result != null)
-            {
-                _context.Entry(result).State = EntityState.Detached;
-            }
+
             return result;
         }
 
         public Task<int> Count(Expression<Func<Bill, bool>> expression)
         {
-            return _context.Bills.Where(expression).CountAsync();
+            try
+            {
+                using (var context = new CoffeeShopDBContext())
+                {
+                    return context.Bills.Where(expression).CountAsync();
+                }
+            }
+            catch
+            {
+                throw;
+            }
         }
 
-        public async Task<Bill> Create(Bill category)
+        public async Task<Bill> Create(Bill bill)
         {
-            _context.Bills.Add(category);
-            await _context.SaveChangesAsync();
-            return category;
+            try
+            {
+                using (var context = new CoffeeShopDBContext())
+                {
+                    context.Bills.Add(bill);
+                    await context.SaveChangesAsync();
+                    return bill;
+                }
+            }
+            catch
+            {
+                throw;
+            }
         }
 
         public async Task Delete(object key)
         {
-            var category = await _context.Bills.FindAsync((int)key);
-            category.Status = false;
-            _context.Entry(category).State = EntityState.Detached;
-            _context.Entry(category).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
+            try
+            {
+                using (var context = new CoffeeShopDBContext())
+                {
+                    var bill = await context.Bills.FindAsync((int)key);
+                    bill.Status = false;
+                    context.Entry(bill).State = EntityState.Detached;
+                    context.Entry(bill).State = EntityState.Deleted;
+                    await context.SaveChangesAsync();
+                }
+            }
+            catch
+            {
+                throw;
+            }
         }
 
-        public async Task<Bill> Update(Bill category)
+        public async Task<Bill> Update(Bill bill)
         {
-            var updated = await _context.Bills.FindAsync(category.Id);
-            if(updated != null)
+            try
             {
-                updated.Discount = category.Discount;
-                updated.VoucherId = category.VoucherId;
-                _context.Entry(updated).State = EntityState.Detached;
-                _context.Entry(updated).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
-                return updated;
+                using (var context = new CoffeeShopDBContext())
+                {
+                    var updated = await context.Bills.FindAsync(bill.Id);
+                    Console.WriteLine(updated == null);
+                    if (updated != null)
+                    {
+                        updated.Discount = bill.Discount;
+                        updated.VoucherId = bill.VoucherId;
+                        updated.Status = bill.Status;
+                        context.Entry(updated).State = EntityState.Detached;
+                        context.Entry(updated).State = EntityState.Modified;
+                        await context.SaveChangesAsync();
+                        return updated;
+                    }
+                }
             }
+            catch
+            {
+                throw;
+            }
+
             return null;
         }
 
 
-        public async Task<IEnumerable<Bill>> GetAll(Expression<Func<Bill, bool>> expression)
+        public async Task<IEnumerable<Bill>> GetAll(Expression<Func<Bill, bool>> expression, bool? isDeep = false)
         {
-            return await _context.Bills.Where(expression).ToListAsync();
+            if (expression == null)
+            {
+                expression = a => true;
+            }
+            try
+            {
+                using (var context = new CoffeeShopDBContext())
+                {
+                    return await context.Bills.Where(expression).ToListAsync();
+                }
+            }
+            catch
+            {
+                throw;
+            }
         }
 
-        public Task<Bill> GetSingle(Expression<Func<Bill, bool>> expression)
+        public async Task<Bill> GetSingle(Expression<Func<Bill, bool>> expression)
         {
-            throw new NotImplementedException();
+            try
+            {
+                using (var context = new CoffeeShopDBContext())
+                {
+                    return await context.Bills.SingleOrDefaultAsync(expression);
+                }
+            }
+            catch
+            {
+                throw;
+            }
         }
     }
 }

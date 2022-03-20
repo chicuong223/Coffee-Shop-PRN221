@@ -59,7 +59,7 @@ namespace WebApp.Pages.Authenticate
         {
             ISession session = HttpContext.Session;
             session.Clear();
-            return Page();
+            return RedirectToPage("./Login");
         }
     }
 }

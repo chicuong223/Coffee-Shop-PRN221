@@ -86,7 +86,7 @@ namespace DataAccess.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<Category>> GetAll(Expression<Func<Category, bool>> expression)
+        public async Task<IEnumerable<Category>> GetAll(Expression<Func<Category, bool>> expression, bool? isDeep = false)
         {
             return await _context.Categories.Where(expression).ToListAsync();
         }

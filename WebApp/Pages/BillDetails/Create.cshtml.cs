@@ -43,7 +43,7 @@ namespace WebApp.Pages.BillDetails
                 return RedirectToPage("../Bills/Index");
             }
             BillID = billId.Value;
-            ViewData["ProductId"] = new SelectList(_context.Products.GetAll(null).Result.ToList(), "Id", "ProductName");
+            ViewData["ProductId"] = new SelectList(_context.Products.GetAll(p => p.Status.Value == true).Result.ToList(), "Id", "ProductName");
             return Page();
         }
 
@@ -68,27 +68,55 @@ namespace WebApp.Pages.BillDetails
             }
             if (!ModelState.IsValid)
             {
-                TempData["Error"] = "Please fill in all fields";
+                TempData["DetailError"] = "Please fill in all fields";
                 return RedirectToPage("./Create", new { billId = billId.Value });
             }
 
             var product = await _context.Products.GetByID(BillDetail.ProductId);
-            if (product != null)
+            if (product == null)
             {
-                var detail = await _context.BillDetails.GetByID((billId.Value, product.Id), false);
-                if(detail != null)
-                {
-                    TempData["Error"] = "Product is already in this bill";
-                    return RedirectToPage("./Create", new { billId = billId.Value });
-                }
+                TempData["DetailError"] = "This product is not available";
+                return RedirectToPage("./Create", new { billid = billId.Value });
+            }
+            var detail = await _context.BillDetails.GetByID((billId.Value, product.Id), false);
+            if (detail != null)
+            {
+                BillDetail.Quantity += detail.Quantity;
+
                 BillDetail.UnitPrice = product.Price;
                 BillDetail.SubTotal = product.Price * BillDetail.Quantity;
+                BillDetail.BillId = billId.Value;
+
+                //check quantity vs unit in stock
+                var quantity = product.Stock;
+                if (quantity == 0 || BillDetail.Quantity > quantity)
+                {
+                    TempData["DetailError"] = $"This product only has {quantity} units in stock";
+                    return RedirectToPage("./Create", new { billid = billId.Value });
+                }
+                await _context.BillDetails.Update(BillDetail);
             }
-            BillDetail.BillId = billId.Value;
+            else
+            {
+                BillDetail.UnitPrice = product.Price;
+                BillDetail.SubTotal = product.Price * BillDetail.Quantity;
+                BillDetail.BillId = billId.Value;
 
-            await _context.BillDetails.Create(BillDetail);
+                //check quantity vs unit in stock
+                var quantity = product.Stock;
+                if (quantity == 0 || BillDetail.Quantity > quantity)
+                {
+                    TempData["DetailError"] = $"This product only has {quantity} units in stock";
+                    return RedirectToPage("./Create", new { billid = billId.Value });
+                }
+                await _context.BillDetails.Create(BillDetail);
+            }
 
-            return RedirectToPage("../Bills/Details", new { id = BillDetail.BillId });
+            //update stock of products
+            product.Stock -= BillDetail.Quantity;
+            await _context.Products.Update(product);
+
+            return RedirectToPage("../Bills/Edit", new { id = BillDetail.BillId });
         }
     }
 }

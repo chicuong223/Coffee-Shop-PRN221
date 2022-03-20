@@ -93,7 +93,7 @@ namespace DataAccess.Repository
             return null;
         }
 
-        public async Task<IEnumerable<Voucher>> GetAll(Expression<Func<Voucher, bool>> expression)
+        public async Task<IEnumerable<Voucher>> GetAll(Expression<Func<Voucher, bool>> expression, bool? isDeep = false)
         {
             if (expression == null)
             {

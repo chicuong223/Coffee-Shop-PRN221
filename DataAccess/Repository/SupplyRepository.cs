@@ -84,12 +84,7 @@ namespace DataAccess.Repository
             return category;
         }
 
-        public Task<IEnumerable<Supply>> GetAll()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<Supply>> GetAll(Expression<Func<Supply, bool>> expression)
+        public Task<IEnumerable<Supply>> GetAll(Expression<Func<Supply, bool>> expression, bool? isDeep = false)
         {
             throw new NotImplementedException();
         }

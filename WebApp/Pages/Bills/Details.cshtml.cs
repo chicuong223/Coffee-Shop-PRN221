@@ -21,6 +21,8 @@ namespace WebApp.Pages.Bills
 
         public Bill Bill { get; set; }
 
+        public IList<BillDetail> Details { get; set; }
+
         public async Task<IActionResult> OnGetAsync(int? id)
         {
             if (id == null)
@@ -34,6 +36,9 @@ namespace WebApp.Pages.Bills
             {
                 return NotFound();
             }
+
+            Details = (await _context.BillDetails.GetAll(detail => detail.BillId == id, true)).ToList();
+
             return Page();
         }
     }

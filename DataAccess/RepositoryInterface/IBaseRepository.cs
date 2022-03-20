@@ -15,7 +15,7 @@ namespace DataAccess.RepositoryInterface
         public Task<T> Update(T t);
         public Task<T> Create(T t);
         public Task Delete(object key);
-        public Task<IEnumerable<T>> GetAll(Expression<Func<T, bool>>? expression);
+        public Task<IEnumerable<T>> GetAll(Expression<Func<T, bool>> expression, bool? isDeep = false);
         public Task<T> GetSingle(Expression<Func<T, bool>> expression);
     }
 }

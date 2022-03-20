@@ -39,6 +39,10 @@ namespace WebApp.Pages.Products
                 return RedirectToPage("../Error");
             }
             var categories = await _context.Categories.GetAll(ca => ca.Status == true);
+            foreach(var category in categories)
+            {
+                Console.WriteLine(category.Id);
+            }
             ViewData["CategoryId"] = new SelectList(categories, "Id", "CategoryName");
             return Page();
         }

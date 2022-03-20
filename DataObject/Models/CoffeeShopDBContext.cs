@@ -55,7 +55,7 @@ namespace DataObject.Models
                     .ValueGeneratedOnAdd()
                     .HasColumnName("ID");
 
-                entity.Property(e => e.BillDate).HasColumnType("date");
+                entity.Property(e => e.BillDate).HasColumnType("datetime");
 
                 entity.Property(e => e.StaffUsername)
                     .HasMaxLength(32)

@@ -1,9 +1,14 @@
 ﻿@page
 @using X.PagedList.Mvc.Core
 @model Pages.Bills.IndexModel
+@using Microsoft.AspNetCore.Http;
+@inject IHttpContextAccessor HttpContextAccessor;
 
 @{
     ViewData["Title"] = "Index";
+    var session = HttpContextAccessor.HttpContext.Session;
+    var username = session.GetString("Username");
+    var role = session.GetString("Role");
 }
 
 <h1>Index</h1>
@@ -33,30 +38,41 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.Bills) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.BillDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Discount)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StaffUsernameNavigation.Username)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Voucher.Id)
-            </td>
-            <td>
-                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model.Bills)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BillDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Discount)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Status)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StaffUsernameNavigation.Username)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Voucher.Id)
+                </td>
+                <td>
+                    @{
+                        if (!item.Status.Value)
+                        {
+                            <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a>
+                        }
+                    }
+                    <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                    @{
+                        if (role != null && role.Equals("Admin"))
+                                        {
+                            <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+                        }
+                    }
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
 

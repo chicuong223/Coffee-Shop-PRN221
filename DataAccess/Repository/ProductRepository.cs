@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using DataObject.Models;
 using DataAccess.RepositoryInterface;
 using X.PagedList;
-using DataObject.Models;
 
 namespace DataAccess.Repository
 {
@@ -96,10 +95,12 @@ namespace DataAccess.Repository
             return null;
         }
 
-        public async Task<IEnumerable<Product>> GetAll(Expression<Func<Product, bool>> expression)
+        public async Task<IEnumerable<Product>> GetAll(Expression<Func<Product, bool>> expression, bool? isDeep = false)
         {
             if (expression == null)
+            {
                 expression = a => true;
+            }
             return await _context.Products.Where(expression).ToListAsync();
         }
 

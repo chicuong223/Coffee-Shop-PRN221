@@ -85,12 +85,55 @@ namespace WebApp.Pages.Bills
                 }
             }
             
-            Bill.Status = true;
+            Bill.Status = false;
             Bill.StaffUsername = currentUsername;
             Bill.BillDate = DateTime.Now;
 
             await _context.Bills.Create(Bill);
 
+            return RedirectToPage("./Edit", new {id = Bill.Id});
+        }
+
+        public async Task<IActionResult> OnPostConfirm(int? id)
+        {
+
+            if(id == null)
+            {
+                return NotFound();
+            }
+            Bill = await _context.Bills.GetByID(id, false);
+            if(Bill == null)
+            {
+                return NotFound();
+            }    
+            var billDetails = await _context.BillDetails.GetAll(b => b.BillId == id);
+
+            if (billDetails == null || billDetails.Count() <= 0)
+            {
+                TempData["BillError"] = "Please insert at least 1 product";
+                return RedirectToPage("./Edit", new {id = id});
+            }
+
+            Bill.Status = true;
+            await _context.Bills.Update(Bill);
+            return RedirectToPage("./Index");
+        }
+
+        public async Task<IActionResult> OnGetCancel(int? id)
+        {
+            var details = await _context.BillDetails.GetAll(d => d.BillId == id, true);
+            
+            //restore product stock
+            //then delete bill detail
+            foreach(var detail in details)
+            {
+                var product = detail.Product;
+                Console.WriteLine(product.Id);
+                product.Stock += detail.Quantity;
+                await _context.Products.Update(detail.Product);
+                await _context.BillDetails.Delete((detail.BillId, detail.ProductId));
+            }
+            await _context.Bills.Delete(id);
             return RedirectToPage("./Index");
         }
     }

@@ -105,9 +105,25 @@ namespace DataAccess.Repository
             return null;
         }
 
-        public Task<IEnumerable<BillDetail>> GetAll(Expression<Func<BillDetail, bool>> expression)
+        public async Task<IEnumerable<BillDetail>> GetAll(Expression<Func<BillDetail, bool>> expression, bool? isDeep = false)
         {
-            throw new NotImplementedException();
+            if(expression == null)
+            {
+                expression = a => true;
+            }
+            IEnumerable<BillDetail> result = new List<BillDetail>();
+            if(isDeep.HasValue && isDeep.Value)
+            {
+                result = await _context.BillDetails
+                    .Include(detail => detail.Product)
+                    .Where(expression).ToListAsync();
+            }
+            else
+            {
+                result = await _context.BillDetails
+                    .Where(expression).ToListAsync();
+            }
+            return result;
         }
 
         public Task<BillDetail> GetSingle(Expression<Func<BillDetail, bool>> expression)

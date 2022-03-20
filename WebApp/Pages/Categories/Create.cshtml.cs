@@ -34,7 +34,7 @@ namespace WebApp.Pages.Categories
             {
                 return Page();
             }
-
+            Category.Status = true;
             await _context.Categories.Create(Category);
 
             return RedirectToPage("./Index");
