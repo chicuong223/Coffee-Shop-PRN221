@@ -23,6 +23,14 @@ namespace WebApp.Pages.Bills
 
         public IPagedList<Bill> Bills { get;set; }
 
+        [BindProperty(SupportsGet = true)]
+        [DataType(DataType.Date)]
+        public DateTime? From { get; set; }
+
+        [BindProperty(SupportsGet = true)]
+        [DataType(DataType.Date)]
+        public DateTime? To { get; set; }
+
         public async Task OnGetAsync(int? pageIndex)
         {
             //Bill = await _context.Bills
@@ -30,7 +38,7 @@ namespace WebApp.Pages.Bills
             //    .Include(b => b.Voucher).ToListAsync();
             if (From != null && To != null)
             {
-                Bills = await _context.Bills.GetList((b => b.BillDate >= From && b.BillDate <= To), true, pageIndex);
+                Bills = await _context.Bills.GetList((b => b.BillDate >= From && b.BillDate <= To.Value.AddDays(1)), true, pageIndex);
             }
             else if (From != null)
             {
@@ -38,20 +46,13 @@ namespace WebApp.Pages.Bills
             }
             else if (To != null)
             {
-                Bills = await _context.Bills.GetList((b => b.BillDate <= To), true, pageIndex);
+                Bills = await _context.Bills.GetList((b => b.BillDate <= To.Value.AddDays(1)), true, pageIndex);
             }
             else
             {
                 Bills = await _context.Bills.GetList(null, true, pageIndex);
             }
         }
-        [BindProperty(SupportsGet =true)]
-        [DataType(DataType.Date)]
-        public DateTime? To { get; set; }
-
-        [BindProperty(SupportsGet =true)]
-        [DataType(DataType.Date)]
-        public DateTime? From { get; set; }
-       
+        
     }
 }
