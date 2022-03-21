@@ -12,7 +12,7 @@ namespace DataAccess.Repository
 {
     public class BillDetailRepository : IBaseRepository<BillDetail>
     {
-        private readonly CoffeeShopDBContext _context = new CoffeeShopDBContext();
+        //private readonly CoffeeShopDBContext _context = new CoffeeShopDBContext();
 
         public async Task<IPagedList<BillDetail>> GetList(Expression<Func<BillDetail, bool>>? expression, bool? isDeep = false, int? page = 1)
         {
@@ -22,65 +22,80 @@ namespace DataAccess.Repository
             {
                 expression = e => true;
             }
-            if (isDeep.HasValue && isDeep.Value)
+            using (var _context = new CoffeeShopDBContext())
             {
-                list = await _context.BillDetails.Where(expression)
-                    .Include(i => i.Bill)
-                    .Include(i => i.Product)
-                    .ToPagedListAsync(pageNumber, 2);
+                if (isDeep.HasValue && isDeep.Value)
+                {
+                    list = await _context.BillDetails.Where(expression)
+                        .Include(i => i.Bill)
+                        .Include(i => i.Product)
+                        .ToPagedListAsync(pageNumber, 2);
+                }
+                else
+                {
+                    list = await _context.BillDetails.Where(expression)
+                        .ToPagedListAsync(pageNumber, 2);
+                }
+                return list;
             }
-            else
-            {
-                list = await _context.BillDetails.Where(expression)
-                    .ToPagedListAsync(pageNumber, 2);
-            }
-            return list;
         }
 
         public async Task<BillDetail> GetByID(object key, bool? isDeep = true)
         {
             var keyObject = ((int BillId, int ProductId))key;
             BillDetail result;
-            if (isDeep.HasValue && isDeep.Value)
+            using (var _context = new CoffeeShopDBContext())
             {
-                result = await _context.BillDetails
-                    .Include(c => c.Bill)
-                    .Include(i => i.Product)
-                .FirstOrDefaultAsync(ca => ca.BillId == keyObject.BillId && ca.ProductId == keyObject.ProductId);
+                if (isDeep.HasValue && isDeep.Value)
+                {
+                    result = await _context.BillDetails
+                        .Include(c => c.Bill)
+                        .Include(i => i.Product)
+                    .FirstOrDefaultAsync(ca => ca.BillId == keyObject.BillId && ca.ProductId == keyObject.ProductId);
+                }
+                else
+                {
+                    result = await _context.BillDetails.FirstOrDefaultAsync(ca => ca.BillId == keyObject.BillId && ca.ProductId == keyObject.ProductId);
+                }
+                if (result != null)
+                {
+                    _context.Entry(result).State = EntityState.Detached;
+                }
+                return result;
             }
-            else
-            {
-                result = await _context.BillDetails.FirstOrDefaultAsync(ca => ca.BillId == keyObject.BillId && ca.ProductId == keyObject.ProductId);
-            }
-            if(result != null)
-            {
-                _context.Entry(result).State = EntityState.Detached;
-            }
-            return result;
         }
 
         public Task<int> Count(Expression<Func<BillDetail, bool>> expression)
         {
-            return _context.BillDetails.Where(expression).CountAsync();
+            using (var _context = new CoffeeShopDBContext())
+            {
+                return _context.BillDetails.Where(expression).CountAsync();
+            }
         }
 
         public async Task<BillDetail> Create(BillDetail category)
         {
-            _context.BillDetails.Add(category);
-            await _context.SaveChangesAsync();
-            return category;
+            using (var _context = new CoffeeShopDBContext())
+            {
+                _context.BillDetails.Add(category);
+                await _context.SaveChangesAsync();
+                return category;
+            }
         }
 
         public async Task Delete(object key)
         {
             var keyObject = ((int BillId, int ProductId))key;
-            var detail = await _context.BillDetails
-                .FirstOrDefaultAsync(ca => ca.BillId == keyObject.BillId && ca.ProductId == keyObject.ProductId) ?? null;
-            if(detail != null)
+            using (var _context = new CoffeeShopDBContext())
             {
-                _context.Entry(detail).State = EntityState.Detached;
-                _context.Entry(detail).State = EntityState.Deleted;
-                await _context.SaveChangesAsync();
+                var detail = await _context.BillDetails
+                .FirstOrDefaultAsync(ca => ca.BillId == keyObject.BillId && ca.ProductId == keyObject.ProductId) ?? null;
+                if (detail != null)
+                {
+                    _context.Entry(detail).State = EntityState.Detached;
+                    _context.Entry(detail).State = EntityState.Deleted;
+                    await _context.SaveChangesAsync();
+                }
             }
             //var category = await _context.BillDetails.FindAsync((int)key);
             //category.Status = false;
@@ -91,18 +106,21 @@ namespace DataAccess.Repository
 
         public async Task<BillDetail> Update(BillDetail category)
         {
-            var updated = await _context.BillDetails.SingleOrDefaultAsync(d => d.BillId == category.BillId && d.ProductId == category.ProductId);
-            if(updated != null)
+            using (var _context = new CoffeeShopDBContext())
             {
-                updated.Quantity = category.Quantity;
-                updated.UnitPrice = category.UnitPrice;
-                updated.SubTotal = category.SubTotal;
-                _context.Entry(updated).State = EntityState.Detached;
-                _context.Entry(updated).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
-                return updated;
+                var updated = await _context.BillDetails.SingleOrDefaultAsync(d => d.BillId == category.BillId && d.ProductId == category.ProductId);
+                if (updated != null)
+                {
+                    updated.Quantity = category.Quantity;
+                    updated.UnitPrice = category.UnitPrice;
+                    updated.SubTotal = category.SubTotal;
+                    _context.Entry(updated).State = EntityState.Detached;
+                    _context.Entry(updated).State = EntityState.Modified;
+                    await _context.SaveChangesAsync();
+                    return updated;
+                }
+                return null;
             }
-            return null;
         }
 
         public async Task<IEnumerable<BillDetail>> GetAll(Expression<Func<BillDetail, bool>> expression, bool? isDeep = false)
@@ -112,18 +130,21 @@ namespace DataAccess.Repository
                 expression = a => true;
             }
             IEnumerable<BillDetail> result = new List<BillDetail>();
-            if(isDeep.HasValue && isDeep.Value)
+            using (var _context = new CoffeeShopDBContext())
             {
-                result = await _context.BillDetails
-                    .Include(detail => detail.Product)
-                    .Where(expression).ToListAsync();
+                if (isDeep.HasValue && isDeep.Value)
+                {
+                    result = await _context.BillDetails
+                        .Include(detail => detail.Product)
+                        .Where(expression).ToListAsync();
+                }
+                else
+                {
+                    result = await _context.BillDetails
+                        .Where(expression).ToListAsync();
+                }
+                return result;
             }
-            else
-            {
-                result = await _context.BillDetails
-                    .Where(expression).ToListAsync();
-            }
-            return result;
         }
 
         public Task<BillDetail> GetSingle(Expression<Func<BillDetail, bool>> expression)
