@@ -190,7 +190,7 @@ namespace DataObject.Models
 
             modelBuilder.Entity<Supply>(entity =>
             {
-                entity.HasKey(e => new { e.ProductId, e.SupplierId })
+                entity.HasKey(e => new { e.ProductId, e.SupplierId, e.SupplyDate })
                     .HasName("PK__Supply__EA10D413C91BF00F");
 
                 entity.ToTable("Supply");
@@ -199,7 +199,7 @@ namespace DataObject.Models
 
                 entity.Property(e => e.SupplierId).HasColumnName("SupplierID");
 
-                entity.Property(e => e.SupplyDate).HasColumnType("date");
+                entity.Property(e => e.SupplyDate).HasColumnType("datetime");
 
                 entity.HasOne(d => d.Product)
                     .WithMany(p => p.Supplies)
