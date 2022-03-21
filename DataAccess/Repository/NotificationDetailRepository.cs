@@ -79,7 +79,28 @@ namespace DataAccess.Repository
 
         public async Task Delete(object key)
         {
-            //var category = await _context.NotificationDetails.FindAsync((int)key);
+            try
+            {
+                using (var context = new CoffeeShopDBContext())
+                {
+                    var id = ((int notificationId, int productId))key;
+                    var detail = await context.NotificationDetails
+                        .FirstOrDefaultAsync(d => d.NotificationId == id.notificationId
+                            && d.ProductId == id.productId) ?? null;
+                    Console.WriteLine(detail == null);
+                    if (detail != null)
+                    {
+                        context.Entry(detail).State = EntityState.Detached;
+                        context.NotificationDetails.Remove(detail);
+                        await context.SaveChangesAsync();
+                    }
+                }
+            }
+            catch
+            {
+                throw;
+            }
+
             //category. = false;
             //_context.Entry(category).State = EntityState.Detached;
             //_context.Entry(category).State = EntityState.Modified;
@@ -101,9 +122,33 @@ namespace DataAccess.Repository
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<NotificationDetail>> GetAll(Expression<Func<NotificationDetail, bool>> expression, bool? isDeep = false)
+        public async Task<IEnumerable<NotificationDetail>> GetAll(Expression<Func<NotificationDetail, bool>> expression, bool? isDeep = false)
         {
-            throw new NotImplementedException();
+            IEnumerable<NotificationDetail> result = new List<NotificationDetail>();
+            try
+            {
+                using (var context = new CoffeeShopDBContext())
+                {
+                    if (isDeep.HasValue && isDeep.Value)
+                    {
+                        result = await context.NotificationDetails
+                            .Include(detail => detail.Notification)
+                            .Include(detail => detail.Product)
+                            .Where(expression)
+                            .ToListAsync();
+                    }
+                    else
+                    {
+                        result = await context.NotificationDetails.Where(expression).ToListAsync();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                if (ex.InnerException != null) throw new Exception(ex.InnerException.Message);
+                throw new Exception(ex.Message);
+            }
+            return result;
         }
     }
 }

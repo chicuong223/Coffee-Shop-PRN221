@@ -71,7 +71,7 @@ namespace WebApp.Pages.Bills
                 var details = await _context.BillDetails.GetAll(b => b.BillId == id);
                 foreach(var d in details)
                 {
-                    await _context.BillDetails.Delete(d);
+                    await _context.BillDetails.Delete((d.BillId, d.ProductId));
                 }
                 await _context.Bills.Delete(Bill.Id);
             }

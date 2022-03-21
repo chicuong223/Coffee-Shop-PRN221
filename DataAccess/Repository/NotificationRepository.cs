@@ -14,7 +14,7 @@ namespace DataAccess.Repository
     {
         //private readonly CoffeeShopDBContext _context = new CoffeeShopDBContext();
 
-        public async Task<IPagedList<Notification>> GetList(Expression<Func<Notification, bool>>? expression, bool? isDeep = false, int? page = 1)
+        public async Task<IPagedList<Notification>> GetList(Expression<Func<Notification, bool>> expression, bool? isDeep = false, int? page = 1)
         {
             var pageNumber = page ?? 1;
             IPagedList<Notification> list;
@@ -27,7 +27,7 @@ namespace DataAccess.Repository
                 if (isDeep.HasValue && isDeep.Value)
                 {
                     list = await _context.Notifications.Where(expression)
-                        .Include(i => i.NotificationDetails)
+                        .Include(i => i.SenderNavigation)
                         .ToPagedListAsync(pageNumber, 2);
                 }
                 else
@@ -83,7 +83,7 @@ namespace DataAccess.Repository
                 var category = await _context.Notifications.FindAsync((int)key);
                 category.IsRead = true;
                 _context.Entry(category).State = EntityState.Detached;
-                _context.Entry(category).State = EntityState.Modified;
+                _context.Entry(category).State = EntityState.Deleted;
                 await _context.SaveChangesAsync();
             }
         }

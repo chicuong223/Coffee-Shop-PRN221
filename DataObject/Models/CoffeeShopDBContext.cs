@@ -39,6 +39,7 @@ namespace DataObject.Models
                     .AddJsonFile("appsettings.json");
                 var config = builder.Build();
                 optionsBuilder.UseSqlServer(config.GetConnectionString("CoffeeShopDB"));
+                optionsBuilder.EnableSensitiveDataLogging();
             }
         }
 
@@ -120,7 +121,7 @@ namespace DataObject.Models
                     .ValueGeneratedOnAdd()
                     .HasColumnName("ID");
 
-                entity.Property(e => e.NotificationDate).HasColumnType("date");
+                entity.Property(e => e.NotificationDate).HasColumnType("datetime");
 
                 entity.Property(e => e.Sender)
                     .HasMaxLength(32)

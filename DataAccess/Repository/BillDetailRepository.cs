@@ -89,7 +89,7 @@ namespace DataAccess.Repository
             using (var _context = new CoffeeShopDBContext())
             {
                 var detail = await _context.BillDetails
-                .FirstOrDefaultAsync(ca => ca.BillId == keyObject.BillId && ca.ProductId == keyObject.ProductId) ?? null;
+                    .FirstOrDefaultAsync(ca => ca.BillId == keyObject.BillId && ca.ProductId == keyObject.ProductId) ?? null;
                 if (detail != null)
                 {
                     _context.Entry(detail).State = EntityState.Detached;

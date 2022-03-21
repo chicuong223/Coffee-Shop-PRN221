@@ -34,6 +34,8 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <a asp-page="/Bills/Index" class="nav-link">Bills</a>
+                        <a asp-page="/Products/Index" class="nav-link">Products</a>
+                        <a asp-page="/Notifications/Index" class="nav-link">Notifications</a>
                         @{
                             if (role != null)
                             {
@@ -44,7 +46,6 @@
                                 else if (role.Equals("Admin"))
                                 {
                                     <a asp-page="/Staff/Index" class="nav-link">Staff</a>
-                                    <a asp-page="/Products/Index" class="nav-link">Products</a>
                                     <a asp-page="/Categories/Index" class="nav-link">Categories</a>
                                     <a asp-page="/Suppliers/Index" class="nav-link">Suppliers</a>
                                     <a asp-page="/Supplies/Index" class="nav-link">Supplies</a>

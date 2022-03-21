@@ -14,7 +14,8 @@ namespace DataObject.Models
 
         public int Id { get; set; }
         public string Sender { get; set; }
-        public bool? IsRead { get; set; }
+        public bool IsRead { get; set; }
+        public bool IsSent { get; set; }
         public DateTime? NotificationDate { get; set; }
 
         public virtual Staff SenderNavigation { get; set; }

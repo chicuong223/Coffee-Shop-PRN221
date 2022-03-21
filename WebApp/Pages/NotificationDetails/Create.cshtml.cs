@@ -19,10 +19,21 @@ namespace WebApp.Pages.NotificationDetails
             _context = context;
         }
 
-        public IActionResult OnGet()
+        public async Task<IActionResult> OnGetAsync(int? notiid)
         {
-        ViewData["NotificationId"] = new SelectList(_context.Notifications.GetList(null).Result.ToList(), "Id", "Id");
-        ViewData["ProductId"] = new SelectList(_context.Products.GetList(null).Result.ToList(), "Id", "ProductName");
+            if(notiid == null)
+            {
+                return NotFound();
+            }
+            var notification = await _context.Notifications.GetByID(notiid, false);
+            if(notification == null)
+            {
+                return NotFound();
+            }
+            NotificationDetail = new NotificationDetail();
+            NotificationDetail.NotificationId = notification.Id;
+
+            ViewData["ProductId"] = new SelectList(_context.Products.GetList(null).Result.ToList(), "Id", "ProductName");
             return Page();
         }
 
@@ -39,7 +50,7 @@ namespace WebApp.Pages.NotificationDetails
 
             await _context.NotificationDetails.Create(NotificationDetail);
 
-            return RedirectToPage("./Index");
+            return RedirectToPage("../Notifications/Create", new {id = NotificationDetail.NotificationId});
         }
     }
 }

@@ -24,7 +24,7 @@ namespace WebApp.Pages.Notifications
 
         public async Task OnGetAsync(int? pageIndex)
         {
-            Notification = await _context.Notifications.GetList(null, null, pageIndex);
+            Notification = await _context.Notifications.GetList(null, true, pageIndex);
         }
     }
 }

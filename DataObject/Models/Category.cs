@@ -16,7 +16,7 @@ namespace DataObject.Models
         public int Id { get; set; }
         [Required(ErrorMessage = "Category Name is required")]
         public string CategoryName { get; set; }
-        public bool? Status { get; set; }
+        public bool Status { get; set; }
 
         public virtual IList<Product> Products { get; set; }
     }

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DataObject.Models;
 using DataAccess.RepositoryInterface;
+using Microsoft.AspNetCore.Http;
 
 namespace WebApp.Pages.Notifications
 {
@@ -36,7 +37,23 @@ namespace WebApp.Pages.Notifications
             {
                 return NotFound();
             }
-           ViewData["Sender"] = new SelectList(_context.Staffs.GetAll(null).Result.ToList(), "Username", "Username");
+
+            if(Notification.IsSent)
+            {
+                TempData["NotificationError"] = "This notification is already sent";
+                return RedirectToPage("./Details", new { id = Notification.Id });
+            }
+
+            ISession session = HttpContext.Session;
+            var username = session.GetString("Username");
+            if (username != null)
+            {
+                if(!username.Equals(Notification.Sender))
+                {
+                    TempData["NotificationError"] = "You cannot modify this notification";
+                    return RedirectToPage("./Index");
+                }
+            }
             return Page();
         }
 
@@ -49,6 +66,22 @@ namespace WebApp.Pages.Notifications
                 return Page();
             }
 
+            if (Notification.IsSent)
+            {
+                TempData["NotificationError"] = "This notification is already sent";
+                return RedirectToPage("./Details", new { id = Notification.Id });
+            }
+
+            ISession session = HttpContext.Session;
+            var username = session.GetString("Username");
+            if (username != null)
+            {
+                if (!username.Equals(Notification.Sender))
+                {
+                    TempData["NotificationError"] = "You cannot modify this notification";
+                    return RedirectToPage("./Index");
+                }
+            }
 
             try
             {

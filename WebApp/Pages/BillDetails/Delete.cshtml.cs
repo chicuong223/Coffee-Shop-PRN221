@@ -72,6 +72,12 @@ namespace WebApp.Pages.BillDetails
 
             if (BillDetail != null)
             {
+                //restock the product
+                var product = await _context.Products.GetByID(BillDetail.ProductId);
+                product.Stock += BillDetail.Quantity;
+                await _context.Products.Update(product);
+
+                //delete the bill detail
                 await _context.BillDetails.Delete((billid.Value, productid.Value));
             }
 

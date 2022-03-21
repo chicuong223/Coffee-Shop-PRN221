@@ -21,6 +21,8 @@ namespace WebApp.Pages.Notifications
 
         public Notification Notification { get; set; }
 
+        public IList<NotificationDetail> Details { get; set; }
+
         public async Task<IActionResult> OnGetAsync(int? id)
         {
             if (id == null)
@@ -34,6 +36,7 @@ namespace WebApp.Pages.Notifications
             {
                 return NotFound();
             }
+            Details = (await _context.NotificationDetails.GetAll(d => d.NotificationId == id, true)).ToList();
             return Page();
         }
     }

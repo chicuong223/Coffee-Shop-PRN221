@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using DataObject.Models;
 using DataAccess.RepositoryInterface;
+using Microsoft.AspNetCore.Http;
 
 namespace WebApp.Pages.Notifications
 {
@@ -24,6 +25,11 @@ namespace WebApp.Pages.Notifications
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
+            if (!isAdmin())
+            {
+                return RedirectToPage("./Index");
+            }
+
             if (id == null)
             {
                 return NotFound();
@@ -40,6 +46,11 @@ namespace WebApp.Pages.Notifications
 
         public async Task<IActionResult> OnPostAsync(int? id)
         {
+            if(!isAdmin())
+            {
+                return RedirectToPage("./Index");
+            }
+
             if (id == null)
             {
                 return NotFound();
@@ -49,10 +60,23 @@ namespace WebApp.Pages.Notifications
 
             if (Notification != null)
             {
-                await _context.Notifications.Delete(Notification);
+                var details = await _context.NotificationDetails.GetAll(d => d.NotificationId == Notification.Id);
+                foreach(var detail in details)
+                {
+                    await _context.NotificationDetails.Delete((detail.NotificationId, detail.ProductId));
+                }
+                await _context.Notifications.Delete(Notification.Id);
             }
 
             return RedirectToPage("./Index");
+        }
+
+        private bool isAdmin()
+        {
+            ISession session = HttpContext.Session;
+            var username = session.GetString("Username");
+            var role = session.GetString("Role");
+            return (!string.IsNullOrWhiteSpace(role) && role.Equals("Admin"));
         }
     }
 }
