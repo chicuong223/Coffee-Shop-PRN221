@@ -2,77 +2,100 @@
 @inject IHttpContextAccessor HttpContextAccessor
 
 @{
-    var session = HttpContextAccessor.HttpContext.Session;
-    var username = session.GetString("Username");
-    var role = session.GetString("Role");
+	var session = HttpContextAccessor.HttpContext.Session;
+	var username = session.GetString("Username");
+	var role = session.GetString("Role");
 }
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>コーヒー Store</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
-          rel="stylesheet"
-          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
-          crossorigin="anonymous" />
-    <script src="https://kit.fontawesome.com/5f6f019500.js"
-            crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="~/css/site.css" />
-    <link rel="stylesheet" href="~/css/Paging.css" />
-    <link rel="stylesheet" href="~/css/global.css" />
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>コーヒー Store</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+		  rel="stylesheet"
+		  integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+		  crossorigin="anonymous" />
+	<link rel="stylesheet" href="~/css/site.css" />
+	<link rel="stylesheet" href="~/css/Paging.css" />
+	<link rel="stylesheet" href="~/css/global.css" />
+	<link rel="stylesheet" href="~/css/navbar.css" />
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index">WebApp</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <a asp-page="/Bills/Index" class="nav-link">Bills</a>
-                        <a asp-page="/Products/Index" class="nav-link">Products</a>
-                        <a asp-page="/Notifications/Index" class="nav-link">Notifications</a>
-                        @{
-                            if (role != null)
-                            {
-                                if (role.Equals("Staff"))
-                                {
-                                    <a asp-page="/Staff/Details" class="nav-link" asp-route-id="@username">View Profile</a>
-                                }
-                                else if (role.Equals("Admin"))
-                                {
-                                    <a asp-page="/Staff/Index" class="nav-link">Staff</a>
-                                    <a asp-page="/Categories/Index" class="nav-link">Categories</a>
-                                    <a asp-page="/Suppliers/Index" class="nav-link">Suppliers</a>
-                                    <a asp-page="/Supplies/Index" class="nav-link">Supplies</a>
-                                }
-                            }
-                        }
-                    </ul>
-                    <ul class="nav navbar-nav navbar-right">
-                        <li>
-                            <form method="post" asp-page="/Authenticate/Login" asp-page-handler="Logout">
-                                <input type="submit" class="btn btn-danger" value="Logout" />
-                            </form>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-            crossorigin="anonymous"></script>
+	<div class="navbar-container">
+		<ul class="navbar">
+			<li class="list-item header">
+				<a href="#">
+					<span class="icon"><ion-icon name="storefront-outline"></ion-icon></span>
+					<span class="title">コーヒー</span>
+				</a>
+			</li>
+			<li class="list-item">
+				<a href="#">
+					<span class="icon"><ion-icon name="home-outline"></ion-icon></span>
+					<span class="title">Home</span>
+				</a>
+			</li>
+			<li class="list-item active">
+				<a href="#">
+					<span class="icon"><ion-icon name="grid-outline"></ion-icon></span>
+					<span class="title">Stock</span>
+				</a>
+			</li>
+			<li class="list-item">
+				<a href="#">
+					<span class="icon">
+						<ion-icon name="receipt-outline"></ion-icon>
+					</span>
+					<span class="title">Bills</span>
+				</a>
+			</li>
+			<li class="list-item">
+				<a href="#">
+					<span class="icon">
+						<ion-icon name="people-outline"></ion-icon>
+					</span>
+					<span class="title">Employees</span>
+				</a>
+			</li>
+			<li class="list-item">
+				<a href="#">
+					<span class="icon"><ion-icon name="file-tray-stacked-outline"></ion-icon></span>
+					<span class="title">Products</span>
+				</a>
+			</li>
+			<li class="list-item">
+				<a href="#">
+					<span class="icon">
+						<ion-icon name="log-out-outline"></ion-icon>
+					</span>
+					<span class="title">Log out</span>
+				</a>
+			</li>
 
-    @await RenderSectionAsync("Scripts", required: false)
+		</ul>
+	</div>
+	<div class="container-fluid main-container">
+		<main role="main" class="main container-fluid p-0">
+			@RenderBody()
+		</main>
+	</div>
+	<script defer>
+		const toggle = document.querySelector('.navbar-toggle');
+		toggle.addEventListener('click', () => {
+			document.querySelector('.navbar-toggle').classList.toggle('active');
+			document.querySelector('.navbar-container').classList.toggle('active');
+			document.querySelector('.main-container').classList.toggle('active');
+		})
+	</script>
+	<script type="module"
+			src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+	<script nomodule
+			src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+			integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+			crossorigin="anonymous"></script>
+
+	@await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
