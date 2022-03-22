@@ -35,8 +35,12 @@ namespace WebApp.Pages.Supplies
             Now = DateTime.Now;
             return Page();
         }
+        [BindProperty(SupportsGet =true)]
+        public string Message { get; set; }
+
         [BindProperty]
         public DateTime Now { get; set; }
+
         public Product Product { get; set; }
         [BindProperty]
         public Supply Supply { get; set; }
@@ -48,10 +52,21 @@ namespace WebApp.Pages.Supplies
             {
                 return RedirectToPage("./Create", new { ProductId = Product.Id });
             }
-            Supply.SupplyDate = DateTime.Now;
-            await _context.Supplies.Create(Supply);
+            //Supply.SupplyDate = DateTime.Now;
+            Product = await _context.Products.GetByID(Supply.ProductId);
+            try
+            {
+                await _context.Supplies.Create(Supply);
+            }catch(Exception e)
+            {
+                return RedirectToPage("./Create", new { ProductId = Product.Id , Message=$"Just added more {Product.ProductName}, please wait a minute!"});
+            }
 
-            return RedirectToPage("./Index");
+            
+            Product.Stock += Supply.Quantity;
+            await _context.Products.Update(Product);
+
+            return RedirectToPage("../Products/Index");
         }
     }
 }
