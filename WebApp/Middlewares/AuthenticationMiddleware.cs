@@ -29,7 +29,11 @@ namespace WebApp.Middlewares
                     {
                         var role = context.Session.GetString("Role");
                         if (path.Value.ToLower().StartsWith("/Supplies".ToLower())
-                            || path.Value.ToLower().StartsWith("/Suppliers".ToLower()))
+                            || path.Value.ToLower().StartsWith("/Suppliers".ToLower())
+                            || path.Value.ToLower().StartsWith("/Vouchers".ToLower())
+                            || path.Value.ToLower().StartsWith("/Staff/Create".ToLower())
+                            || path.Value.ToLower().StartsWith("/Staff/Delete".ToLower())
+                        )
                         {
                             if (!role.Equals("Admin"))
                             {
