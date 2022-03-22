@@ -20,7 +20,7 @@ namespace WebApp.Pages.BillDetails
             _context = context;
         }
 
-        public async Task<IActionResult> OnGet([FromQuery(Name = "billid")] int? billId)
+        public async Task<IActionResult> OnGet([FromQuery(Name = "billid")] int? billId, [FromQuery(Name = "productid")] int? productId)
         {
             ISession session = HttpContext.Session;
             var currentUsername = session.GetString("Username");
@@ -42,9 +42,15 @@ namespace WebApp.Pages.BillDetails
             {
                 return RedirectToPage("../Bills/Index");
             }
-            BillID = billId.Value;
-            ViewData["ProductId"] = new SelectList(_context.Products.GetAll(p => p.Status.Value == true).Result.ToList(), "Id", "ProductName");
-            return Page();
+            var product = await _context.Products.GetByID(productId.Value);
+            BillDetail billDetail = new BillDetail();
+            billDetail.BillId = billId.Value;
+            billDetail.ProductId = productId.Value;
+            billDetail.Quantity = 1;
+            billDetail.UnitPrice = product.Price;
+            billDetail.SubTotal = billDetail.Quantity * billDetail.UnitPrice;
+            await _context.BillDetails.Create(billDetail);
+            return RedirectToPage("../Index") ;
         }
 
         [BindProperty]

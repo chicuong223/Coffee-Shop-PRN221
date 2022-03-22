@@ -1,10 +1,217 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+	ViewData["Title"] = "Home page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<head>
+	<link rel="stylesheet" href="~/css/home.css" />
+</head>
+
+<div class="row row-container">
+	<div class="col-8 p-4">
+		<div class="row">
+			<div class="col d-flex">
+				<a class="navbar-toggle">
+					<ion-icon class="open" name="menu-outline"></ion-icon>
+					<ion-icon class="close" name="close-outline"></ion-icon>
+				</a>
+				<div id="header" class="ms-4">
+					<h5 class="title">コーヒー Coffee</h5>
+					<div class="subtitle">
+						Coffee related products and equipments
+					</div>
+				</div>
+				<div class="d-flex search-container flex-grow-1">
+					<form class="">
+						<div class="input-group">
+							<input class="form-control"
+								   type="search"
+								   placeholder="Search"
+								   aria-label="Search" />
+							<button class="btn" type="submit">
+								<ion-icon name="search-outline"></ion-icon>
+							</button>
+						</div>
+					</form>
+				</div>
+			</div>
+			<div class="col-12 mt-4">
+				<ul class="nav nav-pills categories">
+					<li class="nav-item">
+						<a class="nav-link active" aria-current="page" href="#">All products</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="#">Powdered coffee</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="#">Coffee beans</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="#">Equipments</a>
+					</li>
+				</ul>
+			</div>
+			<div class="col-12 mt-4">
+				<div class="row gx-5 gy-4 prod-container">
+					@foreach (var item in Model.Products)
+					{
+						<div class="col-md-4">
+							<div class="card product">
+								<img src="~/image/@item.ImageURL"
+								 class="card-img-top"
+								 alt="..." />
+								<div class="card-body text-center">
+									<h5 class="card-title fw-bold">@item.ProductName</h5>
+									<p class="card-text d-flex flex-column">
+										<span>@item.Price</span>
+										<span>@item.Stock availabe in stock</span>
+									</p>
+									@{
+										if(Model.ActiveBill != null) {
+											<a asp-page="/BillDetails/Create" asp-route-billid="@Model.ActiveBill.Id" asp-route-productid="@item.Id" class="btn btn-primary">Add to order</a>
+										}
+										else {
+											<a class="btn btn-primary readonly" data-bs-toggle="tooltip" data-bs-placement="top" title="Please create a bill first!">Add to order</a>
+										}
+									}
+								</div>
+							</div>
+						</div>
+					}
+					<div class="col-12">
+						<nav aria-label="Page navigation">
+							<ul class="pagination justify-content-center">
+								<li class="page-item">
+									<a class="page-link" href="#" aria-label="Previous">
+										<span aria-hidden="true">&laquo;</span>
+									</a>
+								</li>
+								<li class="page-item active">
+									<a class="page-link" href="#">1</a>
+								</li>
+								<li class="page-item">
+									<a class="page-link" href="#">2</a>
+								</li>
+								<li class="page-item">
+									<a class="page-link" href="#">3</a>
+								</li>
+								<li class="page-item">
+									<a class="page-link" href="#" aria-label="Next">
+										<span aria-hidden="true">&raquo;</span>
+									</a>
+								</li>
+							</ul>
+						</nav>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-4 order-container p-0">
+		@{
+			if (Model.ActiveBill == null)
+			{
+				<div class="empty-container">
+					<img src="~/image/background.png" alt="" srcset="" class="empty" />
+					<h5 class="text-center w-100 fw-bold">
+						You don't have any active order right now
+						<a asp-page="/Bills/Create">
+							<button class="btn mt-2 create" type="button">
+								Create a new order
+							</button>
+						</a>
+					</h5>
+				</div>
+			}
+			else
+			{
+				<div class="row p-4 flex-column">
+					<div class="col-12 flex-grow-1">
+						<h5 class="fw-bold">Orders #1</h5>
+						<table class="table table-order text-center">
+							<thead>
+								<tr>
+									<th style="width: 50%" scope="col">Item</th>
+									<th scope="col">Qty</th>
+									<th style="width: 20%" scope="col">Price</th>
+									<th scope="col">Action</th>
+								</tr>
+							</thead>
+							<tbody>
+								@{
+									if (Model.BillDetails.Count() == 0)
+									{
+										<tr >
+										<td colspan="4" class="text-danger text-center fw-bold mt-5">This bill doesn't have any item!</td></tr>
+									}
+									else
+									{
+										foreach (var detail in Model.BillDetails)
+										{
+											<tr>
+												<td>
+													<div class="d-flex align-items-center">
+														<img src="~/image/@detail.Product.ImageURL"
+															 width="56"
+															 height="56"
+															 alt="product-logo"
+															 srcset=""
+															 class="rounded-circle border" />
+														<div class="prod-info">
+															<span class="ms-1">@detail.Product.ProductName</span>
+															<div class="text-start ms-1">@detail.UnitPrice</div>
+														</div>
+													</div>
+												</td>
+												<td><input type="number" class="qty" value="@detail.Quantity" /></td>
+												<td class="prod-price">@detail.SubTotal</td>
+												<td>
+													<button type="button" class="btn delete" onclick="document.getElementById('form').submit();">
+														<form asp-page="/BillDetails/Delete" method="post" id="form">
+															<input type="hidden" asp-for="@detail.BillId" name="billid"/>
+															<input type="hidden" asp-for="@detail.ProductId" name="productid"/>
+															<ion-icon name="trash-outline"></ion-icon>
+														</form>
+													</button>
+												</td>
+											</tr>
+										}
+									}
+								}
+							</tbody>
+						</table>
+					</div>
+
+					<div class="col-12 checkout">
+						<hr />
+						<form method="post" class="d-flex gap-2">
+							<div class="input-group input-group-lg">
+								<span class="input-group-text" id="basic-addon1">
+									<ion-icon name="pricetags-outline"></ion-icon>
+								</span>
+								<input type="text"
+							   	class="form-control"
+							   	placeholder="Enter the voucher's code here"
+							   	aria-label="Username"
+							   	aria-describedby="basic-addon1" />
+							</div>
+							<button class="btn btn-default apply-voucher">Apply</button>
+						</form>
+						<hr />
+						<div class="d-flex">
+							<button class="btn btn-primary flex-fill">
+								Cancel order
+							</button>
+							<button class="btn btn-default flex-fill">
+								Update order
+							</button>
+							<button class="btn btn-default flex-fill">Checkout</button>
+						</div>
+					</div>
+				</div>
+			}
+		}
+
+	</div>
 </div>

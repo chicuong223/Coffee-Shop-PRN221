@@ -21,11 +21,11 @@ namespace WebApp.Pages.Products
         }
 
         public IPagedList<Product> Products { get;set; }
+        
 
         public async Task OnGetAsync(int? pageIndex)
         {
             Products = await _context.Products.GetList(null, true, pageIndex);
-                
         }
     }
 }

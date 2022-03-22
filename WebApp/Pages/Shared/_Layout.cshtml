@@ -16,9 +16,8 @@
 		  rel="stylesheet"
 		  integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
 		  crossorigin="anonymous" />
-	<link rel="stylesheet" href="~/css/site.css" />
-	<link rel="stylesheet" href="~/css/Paging.css" />
 	<link rel="stylesheet" href="~/css/global.css" />
+	<link rel="stylesheet" href="~/css/paging.css" />
 	<link rel="stylesheet" href="~/css/navbar.css" />
 </head>
 <body>
@@ -30,47 +29,66 @@
 					<span class="title">コーヒー</span>
 				</a>
 			</li>
+			@{
+				if (role != null && role.Equals("Admin"))
+				{
+					<li class="list-item">
+						<a href="#">
+							<span class="icon">
+								<ion-icon name="receipt-outline"></ion-icon>
+							</span>
+							<span class="title">Bills</span>
+						</a>
+					</li>
+					<li class="list-item">
+						<a href="#">
+							<span class="icon">
+								<ion-icon name="people-outline"></ion-icon>
+							</span>
+							<span class="title">Employees</span>
+						</a>
+					</li>
+					<li class="list-item">
+						<a href="#">
+							<span class="icon"><ion-icon name="file-tray-stacked-outline"></ion-icon></span>
+							<span class="title">Products</span>
+						</a>
+					</li>
+					<li class="list-item">
+						<a href="#">
+							<span class="icon"><ion-icon name="notifications-outline"></ion-icon></span>
+							<span class="title">Notifications</span>
+						</a>
+					</li>
+				}
+				else
+				{
+					<li class="list-item">
+						<a asp-page="/Index">
+							<span class="icon"><ion-icon name="home-outline"></ion-icon></span>
+							<span class="title">Home</span>
+						</a>
+					</li>
+					<li class="list-item">
+						<a href="#">
+							<span class="icon"><ion-icon name="grid-outline"></ion-icon></span>
+							<span class="title">Stock</span>
+						</a>
+					</li>
+				}
+			}
+
 			<li class="list-item">
-				<a href="#">
-					<span class="icon"><ion-icon name="home-outline"></ion-icon></span>
-					<span class="title">Home</span>
-				</a>
-			</li>
-			<li class="list-item active">
-				<a href="#">
-					<span class="icon"><ion-icon name="grid-outline"></ion-icon></span>
-					<span class="title">Stock</span>
-				</a>
-			</li>
-			<li class="list-item">
-				<a href="#">
-					<span class="icon">
-						<ion-icon name="receipt-outline"></ion-icon>
-					</span>
-					<span class="title">Bills</span>
-				</a>
-			</li>
-			<li class="list-item">
-				<a href="#">
-					<span class="icon">
-						<ion-icon name="people-outline"></ion-icon>
-					</span>
-					<span class="title">Employees</span>
-				</a>
-			</li>
-			<li class="list-item">
-				<a href="#">
-					<span class="icon"><ion-icon name="file-tray-stacked-outline"></ion-icon></span>
-					<span class="title">Products</span>
-				</a>
-			</li>
-			<li class="list-item">
-				<a href="#">
-					<span class="icon">
-						<ion-icon name="log-out-outline"></ion-icon>
-					</span>
-					<span class="title">Log out</span>
-				</a>
+				<form style="width: 100%;" id="logout-submit" method="post" asp-page="/Authenticate/Login" asp-page-handler="Logout">
+					<a href="#" onclick="document.getElementById('logout-submit').submit();">
+
+						<span class="icon">
+							<ion-icon name="log-out-outline"></ion-icon>
+						</span>
+						<span class="title">Log out</span>
+
+					</a>
+				</form>
 			</li>
 
 		</ul>
@@ -80,14 +98,7 @@
 			@RenderBody()
 		</main>
 	</div>
-	<script defer>
-		const toggle = document.querySelector('.navbar-toggle');
-		toggle.addEventListener('click', () => {
-			document.querySelector('.navbar-toggle').classList.toggle('active');
-			document.querySelector('.navbar-container').classList.toggle('active');
-			document.querySelector('.main-container').classList.toggle('active');
-		})
-	</script>
+
 	<script type="module"
 			src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
 	<script nomodule
@@ -95,7 +106,18 @@
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
 			integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
 			crossorigin="anonymous"></script>
-
+	<script defer>
+		const toggle = document.querySelector('.navbar-toggle');
+		toggle.addEventListener('click', () => {
+			document.querySelector('.navbar-toggle').classList.toggle('active');
+			document.querySelector('.navbar-container').classList.toggle('active');
+			document.querySelector('.main-container').classList.toggle('active');
+		});
+		var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+		var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+			return new bootstrap.Tooltip(tooltipTriggerEl)
+		})
+	</script>
 	@await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

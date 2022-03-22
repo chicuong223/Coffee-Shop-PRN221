@@ -28,12 +28,12 @@ namespace DataAccess.Repository
                 {
                     list = await _context.Products.Where(expression)
                         .Include(i => i.Category)
-                        .ToPagedListAsync(pageNumber, 2);
+                        .ToPagedListAsync(pageNumber, 6);
                 }
                 else
                 {
                     list = await _context.Products.Where(expression)
-                        .ToPagedListAsync(pageNumber, 2);
+                        .ToPagedListAsync(pageNumber, 6);
                 }
                 return list;
             }

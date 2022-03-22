@@ -20,21 +20,23 @@ namespace WebApp.Middlewares
         public async Task Invoke(HttpContext context)
         {
             var bills = (await _repo.Bills.GetAll(b => b.Status.Value == false)).ToList();
-            foreach (var bill in bills)
-            {
-                var time = DateTime.Now - bill.BillDate;
-                var minutes = time.Value.TotalMinutes;
-                if (minutes >= 30)
+            if(bills.Count() >  0)
+			{
+                foreach (var bill in bills)
                 {
-                    var billDetails = await _repo.BillDetails.GetAll(b => b.BillId == bill.Id);
-                    foreach (var detail in billDetails)
+                    var time = DateTime.Now - bill.BillDate;
+                    var minutes = time.Value.TotalMinutes;
+                    if (minutes >= 30)
                     {
-                        await _repo.BillDetails.Delete((detail.BillId, detail.ProductId));
+                        var billDetails = await _repo.BillDetails.GetAll(b => b.BillId == bill.Id);
+                        foreach (var detail in billDetails)
+                        {
+                            await _repo.BillDetails.Delete((detail.BillId, detail.ProductId));
+                        }
+                        await _repo.Bills.Delete(bill.Id);
                     }
-                    await _repo.Bills.Delete(bill.Id);
                 }
             }
-
             await _next(context);
         }
     }

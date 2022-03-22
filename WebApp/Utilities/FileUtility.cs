@@ -9,7 +9,7 @@ namespace WebApp.Utilities
     {
         public static async Task UploadFile(IFormFile file, IWebHostEnvironment environment)
         {
-            var baseDirectory = Path.Combine(environment.WebRootPath, "Images");
+            var baseDirectory = Path.Combine(environment.WebRootPath, "image");
             if (!Directory.Exists(baseDirectory))
             {
                 Directory.CreateDirectory(baseDirectory);

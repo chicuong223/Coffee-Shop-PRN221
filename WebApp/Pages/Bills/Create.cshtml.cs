@@ -20,7 +20,7 @@ namespace WebApp.Pages.Bills
             _context = context;
         }
 
-        public IActionResult OnGet()
+        public async Task<IActionResult> OnGetAsync()
         {
             ISession session = HttpContext.Session;
             var currentUsername = session.GetString("Username");
@@ -35,7 +35,13 @@ namespace WebApp.Pages.Bills
             }
             //ViewData["StaffUsername"] = new SelectList(_context.Staff, "Username", "Username");
             //ViewData["VoucherId"] = new SelectList(await _context.Vouchers.GetAll(null), "Id", "Id");
-            return Page();
+            Bill bill = new Bill();
+            bill.Status = false;
+            bill.StaffUsername = currentUsername;
+            bill.BillDate = DateTime.Now;
+            await _context.Bills.Create(bill);
+
+            return RedirectToPage("../Index");
         }
 
         [BindProperty]
@@ -91,7 +97,7 @@ namespace WebApp.Pages.Bills
 
             await _context.Bills.Create(Bill);
 
-            return RedirectToPage("./Edit", new {id = Bill.Id});
+            return RedirectToPage("../Index");
         }
 
         public async Task<IActionResult> OnPostConfirm(int? id)

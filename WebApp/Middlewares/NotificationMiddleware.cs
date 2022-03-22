@@ -1,6 +1,7 @@
 ﻿using DataAccess.RepositoryInterface;
 using Microsoft.AspNetCore.Http;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace WebApp.Middlewares
@@ -17,23 +18,27 @@ namespace WebApp.Middlewares
         public async Task Invoke(HttpContext context)
         {
             var notifications = await _repo.Notifications.GetAll(noti => noti.IsSent == false);
-            foreach (var notification in notifications)
-            {
-                if(notification.IsSent == false)
+            if(notifications.Count() > 0)
+			{
+                foreach (var notification in notifications)
                 {
-                    var time = DateTime.Now - notification.NotificationDate;
-                    var minutes = time.Value.TotalMinutes;
-                    if(minutes >= 30)
+                    if (notification.IsSent == false)
                     {
-                        var details = await _repo.NotificationDetails.GetAll(detail => detail.NotificationId == notification.Id);
-                        foreach(var detail in details)
+                        var time = DateTime.Now - notification.NotificationDate;
+                        var minutes = time.Value.TotalMinutes;
+                        if (minutes >= 30)
                         {
-                            await _repo.NotificationDetails.Delete((detail.NotificationId, detail.ProductId));
+                            var details = await _repo.NotificationDetails.GetAll(detail => detail.NotificationId == notification.Id);
+                            foreach (var detail in details)
+                            {
+                                await _repo.NotificationDetails.Delete((detail.NotificationId, detail.ProductId));
+                            }
+                            await _repo.Notifications.Delete(notification.Id);
                         }
-                        await _repo.Notifications.Delete(notification.Id);
                     }
                 }
             }
+            
             await _next(context);
         }
     }

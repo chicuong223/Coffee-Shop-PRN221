@@ -81,7 +81,7 @@ namespace WebApp.Pages.BillDetails
                 await _context.BillDetails.Delete((billid.Value, productid.Value));
             }
 
-            return RedirectToPage("../Bills/Edit", new { id = BillDetail.BillId });
+            return RedirectToPage("../Index" );
         }
     }
 }

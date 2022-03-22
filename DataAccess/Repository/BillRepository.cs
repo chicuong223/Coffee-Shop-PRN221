@@ -188,7 +188,7 @@ namespace DataAccess.Repository
             {
                 using (var context = new CoffeeShopDBContext())
                 {
-                    return await context.Bills.SingleOrDefaultAsync(expression);
+                    return await context.Bills.FirstOrDefaultAsync(expression);
                 }
             }
             catch
