@@ -68,7 +68,7 @@ namespace WebApp.Pages.Staff
 
             if (!allowed)
             {
-                return RedirectToAction("../Error");
+                return RedirectToAction("../Unauthorized");
             }
 
             return Page();
@@ -102,7 +102,7 @@ namespace WebApp.Pages.Staff
 
             if(!allowed)
             {
-                return RedirectToAction("../Error");
+                return RedirectToAction("../Unauthorized");
             }
 
 

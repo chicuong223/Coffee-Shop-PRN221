@@ -31,11 +31,11 @@ namespace WebApp.Pages.BillDetails
             }
             if (!role.Equals("Staff"))
             {
-                return RedirectToPage("../Error");
+                return RedirectToPage("../Unauthorized");
             }
             if (billId == null)
             {
-                return RedirectToPage("../Error");
+                return RedirectToPage("../Unauthorized");
             }
             var billExists = await _context.Bills.GetByID(billId.Value) != null;
             if (!billExists)
@@ -64,7 +64,7 @@ namespace WebApp.Pages.BillDetails
             }
             if (!role.Equals("Staff"))
             {
-                return RedirectToPage("../Error");
+                return RedirectToPage("../Unauthorized");
             }
             if (!ModelState.IsValid)
             {

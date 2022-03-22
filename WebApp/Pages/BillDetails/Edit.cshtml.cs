@@ -35,7 +35,7 @@ namespace WebApp.Pages.BillDetails
             }
             if (!role.Equals("Staff"))
             {
-                return RedirectToPage("../Error");
+                return RedirectToPage("../Unauthorized");
             }
             if (billid == null || productid == null)
             {
@@ -65,7 +65,7 @@ namespace WebApp.Pages.BillDetails
             }
             if (!role.Equals("Staff"))
             {
-                return RedirectToPage("../Error");
+                return RedirectToPage("../Unauthorized");
             }
             if (!ModelState.IsValid)
             {
@@ -77,7 +77,7 @@ namespace WebApp.Pages.BillDetails
                 var product = await _context.Products.GetByID(BillDetail.ProductId);
                 if (product == null)
                 {
-                    return RedirectToPage("../Error");
+                    return RedirectToPage("../Unauthorized");
                 }
                 BillDetail.SubTotal = product.Price * BillDetail.Quantity;
                 BillDetail.UnitPrice = product.Price;

@@ -22,14 +22,14 @@ namespace WebApp.Pages.NotificationDetails
         [BindProperty]
         public NotificationDetail NotificationDetail { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(int? id)
+        public async Task<IActionResult> OnGetAsync(int? notiId, int? productId)
         {
-            if (id == null)
+            if (notiId == null || productId == null)
             {
                 return NotFound();
             }
 
-            NotificationDetail = await _context.NotificationDetails.GetByID(id);
+            NotificationDetail = await _context.NotificationDetails.GetByID((notiId.Value, productId.Value), true);
 
             if (NotificationDetail == null)
             {
@@ -38,21 +38,20 @@ namespace WebApp.Pages.NotificationDetails
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync(int? id)
+        public async Task<IActionResult> OnPostAsync(int? notiId, int? productId)
         {
-            if (id == null)
+            if (notiId == null || productId == null)
             {
                 return NotFound();
             }
 
-            NotificationDetail = await _context.NotificationDetails.GetByID(id, false);
+            NotificationDetail = await _context.NotificationDetails.GetByID((notiId.Value, productId.Value), false);
 
             if (NotificationDetail != null)
             {
-                await _context.NotificationDetails.Delete(NotificationDetail);
+                await _context.NotificationDetails.Delete((NotificationDetail.NotificationId, NotificationDetail.ProductId));
             }
-
-            return RedirectToPage("./Index");
+            return RedirectToPage("../Notifications/Create", new { id = NotificationDetail.NotificationId });
         }
     }
 }

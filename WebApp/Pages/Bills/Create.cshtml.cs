@@ -31,7 +31,7 @@ namespace WebApp.Pages.Bills
             }
             if (!role.Equals("Staff"))
             {
-                return RedirectToPage("../Error");
+                return RedirectToPage("../Unauthorized");
             }
             //ViewData["StaffUsername"] = new SelectList(_context.Staff, "Username", "Username");
             //ViewData["VoucherId"] = new SelectList(await _context.Vouchers.GetAll(null), "Id", "Id");
@@ -53,7 +53,7 @@ namespace WebApp.Pages.Bills
             }
             if(!role.Equals("Staff"))
             {
-                return RedirectToPage("../Error");
+                return RedirectToPage("../Unauthorized");
             }
             if (!ModelState.IsValid)
             {

@@ -35,7 +35,7 @@ namespace WebApp.Pages.Bills
             }
             if (!role.Equals("Staff"))
             {
-                return RedirectToPage("../Error");
+                return RedirectToPage("../Unauthorized");
             }
             if (id == null)
             {
@@ -72,7 +72,7 @@ namespace WebApp.Pages.Bills
             }
             if (!role.Equals("Staff"))
             {
-                return RedirectToPage("../Error");
+                return RedirectToPage("../Unauthorized");
             }
             if (!ModelState.IsValid)
             {

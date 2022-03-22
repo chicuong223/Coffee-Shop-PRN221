@@ -2,12 +2,11 @@
 @model Pages.Notifications.CreateModel
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Add a Notification";
 }
 
-<h1>Create</h1>
+<h1>Add Notification</h1>
 
-<h4>Notification</h4>
 <hr />
 
 <!-- Display notification details -->
@@ -30,23 +29,26 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.Details) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Quantity)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Notification.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Product.ProductName)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-            </td>
-        </tr>
-}
+        @foreach (var item in Model.Details)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Quantity)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Notification.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Product.ProductName)
+                </td>
+                <td>
+                    @*<a asp-page="../NotificationDetails/Edit" asp-route-notiId="@item.NotificationId" asp-route-productId="@item.ProductId">Edit</a>*@
+                    <a asp-page="../NotificationDetails/Delete" asp-route-notiId="@item.NotificationId" asp-route-productId="@item.ProductId">Delete</a>
+                    @*@Html.ActionLink("Edit", "../NotificationDetails/Edit", new { notiId = item.NotificationId, productId = item.ProductId }) |
+                        @Html.ActionLink("Delete", "Delete", new { notiId = item.NotificationId, productId = item.ProductId })*@
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
 
@@ -56,7 +58,7 @@
         <form method="post">
             <h4 class="text-danger">@TempData["NotificationError"]</h4>
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Notification.Id"/>
+            <input type="hidden" asp-for="Notification.Id" />
             <div class="form-group">
                 <input type="submit" value="Send" class="btn btn-primary" />
             </div>
@@ -69,5 +71,7 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
+}
 }

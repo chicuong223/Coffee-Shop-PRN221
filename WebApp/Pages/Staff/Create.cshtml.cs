@@ -42,7 +42,7 @@ namespace WebApp.Pages.Staff
             }
             if(!role.Equals("Admin"))
             {
-                return RedirectToPage("../Error");
+                return RedirectToPage("../Unauthorized");
             }
 
             if (!ModelState.IsValid)

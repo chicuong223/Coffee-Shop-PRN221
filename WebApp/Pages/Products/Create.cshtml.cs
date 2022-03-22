@@ -36,7 +36,7 @@ namespace WebApp.Pages.Products
             }
             if (!role.Equals("Admin"))
             {
-                return RedirectToPage("../Error");
+                return RedirectToPage("../Unauthorized");
             }
             var categories = await _context.Categories.GetAll(ca => ca.Status == true);
             foreach(var category in categories)
@@ -62,7 +62,7 @@ namespace WebApp.Pages.Products
             }
             if (!role.Equals("Admin"))
             {
-                return RedirectToPage("../Error");
+                return RedirectToPage("../Unauthorized");
             }
             if (!ModelState.IsValid)
             {

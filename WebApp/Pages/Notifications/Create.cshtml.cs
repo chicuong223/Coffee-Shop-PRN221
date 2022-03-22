@@ -32,7 +32,7 @@ namespace WebApp.Pages.Notifications
             }
             if (role.Trim().Equals("Admin"))
             {
-                return RedirectToPage("../Error");
+                return RedirectToPage("../Unauthorized");
             }
 
             if (id == null)
@@ -52,7 +52,7 @@ namespace WebApp.Pages.Notifications
                 Notification = await _context.Notifications.GetByID(id, false);
             }
 
-            Details = (await _context.NotificationDetails.GetAll(detail => detail.NotificationId == Notification.Id)).ToList();
+            Details = (await _context.NotificationDetails.GetAll(detail => detail.NotificationId == Notification.Id, true)).ToList();
 
             return Page();
         }

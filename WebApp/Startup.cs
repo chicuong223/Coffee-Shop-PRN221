@@ -64,6 +64,8 @@ namespace WebApp
 
             app.UseMiddleware<BillMiddleware>();
 
+            app.UseMiddleware<NotificationMiddleware>();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();

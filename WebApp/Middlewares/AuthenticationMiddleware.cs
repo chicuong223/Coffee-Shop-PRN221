@@ -16,14 +16,26 @@ namespace WebApp.Middlewares
         public async Task Invoke(HttpContext context)
         {
             var path = context.Request.Path;
-            if(path.HasValue)
+            if (path.HasValue)
             {
-                if(!path.Value.StartsWith("/Authenticate"))
+                if (!path.Value.StartsWith("/Authenticate"))
                 {
                     var session = context.Session.GetString("Username");
-                    if(session == null)
+                    if (session == null)
                     {
                         context.Response.Redirect("/Authenticate/Login");
+                    }
+                    else
+                    {
+                        var role = context.Session.GetString("Role");
+                        if (path.Value.ToLower().StartsWith("/Supplies".ToLower())
+                            || path.Value.ToLower().StartsWith("/Suppliers".ToLower()))
+                        {
+                            if (!role.Equals("Admin"))
+                            {
+                                context.Response.Redirect("/Unauthorized");
+                            }
+                        }
                     }
                 }
             }

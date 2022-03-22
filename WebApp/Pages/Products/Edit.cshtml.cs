@@ -40,7 +40,7 @@ namespace WebApp.Pages.Products
             }
             if (!role.Equals("Admin"))
             {
-                return RedirectToPage("../Error");
+                return RedirectToPage("../Unauthorized");
             }
             if (id == null)
             {
@@ -72,7 +72,7 @@ namespace WebApp.Pages.Products
             }
             if (!role.Equals("Admin"))
             {
-                return RedirectToPage("../Error");
+                return RedirectToPage("../Unauthorized");
             }
             if (!ModelState.IsValid)
             {

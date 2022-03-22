@@ -50,7 +50,7 @@ namespace WebApp.Pages.Bills
             }
             else
             {
-                Bills = await _context.Bills.GetList(null, true, pageIndex);
+                Bills = await _context.Bills.GetList(b => b.Status.Value == true, true, pageIndex);
             }
         }
         

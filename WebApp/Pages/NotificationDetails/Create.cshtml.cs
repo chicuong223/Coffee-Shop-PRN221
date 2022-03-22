@@ -45,10 +45,19 @@ namespace WebApp.Pages.NotificationDetails
         {
             if (!ModelState.IsValid)
             {
-                return Page();
+                return RedirectToPage("./Create", new {notiid = NotificationDetail.NotificationId});
             }
 
-            await _context.NotificationDetails.Create(NotificationDetail);
+            var detail = await _context.NotificationDetails.GetByID((NotificationDetail.NotificationId, NotificationDetail.ProductId));
+            if (detail != null)
+            {
+                detail.Quantity = NotificationDetail.Quantity;
+                await _context.NotificationDetails.Update(detail);
+            }
+            else
+            {
+                await _context.NotificationDetails.Create(NotificationDetail);
+            }
 
             return RedirectToPage("../Notifications/Create", new {id = NotificationDetail.NotificationId});
         }

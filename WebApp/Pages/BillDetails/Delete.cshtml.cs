@@ -34,7 +34,7 @@ namespace WebApp.Pages.BillDetails
             }
             if (!role.Equals("Staff"))
             {
-                return RedirectToPage("../Error");
+                return RedirectToPage("../Unauthorized");
             }
             if (billid == null || productid == null)
             {
@@ -61,7 +61,7 @@ namespace WebApp.Pages.BillDetails
             }
             if (!role.Equals("Staff"))
             {
-                return RedirectToPage("../Error");
+                return RedirectToPage("../Unauthorized");
             }
             if (billid == null || productid == null)
             {
