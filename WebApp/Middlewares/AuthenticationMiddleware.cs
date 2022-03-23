@@ -37,9 +37,16 @@ namespace WebApp.Middlewares
                         {
                             if (!role.Equals("Admin"))
                             {
-                                context.Response.Redirect("/Unauthorized");
+                                context.Response.Redirect("/Error");
                             }
                         }
+                        else if(path.Value.ToLower().StartsWith("/Index".ToLower()))
+						{
+                            if (!role.Equals("Staff"))
+							{
+                                context.Response.Redirect("/Error");
+                            }
+						}
                     }
                 }
             }

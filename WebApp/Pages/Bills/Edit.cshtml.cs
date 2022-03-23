@@ -61,7 +61,7 @@ namespace WebApp.Pages.Bills
 
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see https://aka.ms/RazorPagesCRUD.
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(int billId)
         {
             ISession session = HttpContext.Session;
             var currentUsername = session.GetString("Username");
@@ -82,7 +82,8 @@ namespace WebApp.Pages.Bills
 
             try
             {
-                await _context.Bills.Update(Bill);
+                Bill bill = await _context.Bills.GetByID(billId);   
+                await _context.Bills.Update(bill);
             }
             catch (DbUpdateConcurrencyException)
             {

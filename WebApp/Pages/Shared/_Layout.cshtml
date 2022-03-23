@@ -33,7 +33,7 @@
 				if (role != null && role.Equals("Admin"))
 				{
 					<li class="list-item">
-						<a href="#">
+						<a asp-page="/Bills/Index">
 							<span class="icon">
 								<ion-icon name="receipt-outline"></ion-icon>
 							</span>
@@ -41,7 +41,7 @@
 						</a>
 					</li>
 					<li class="list-item">
-						<a href="#">
+						<a asp-page="/Staff/Index">
 							<span class="icon">
 								<ion-icon name="people-outline"></ion-icon>
 							</span>
@@ -49,13 +49,13 @@
 						</a>
 					</li>
 					<li class="list-item">
-						<a href="#">
+						<a asp-page="/Products/Index">
 							<span class="icon"><ion-icon name="file-tray-stacked-outline"></ion-icon></span>
 							<span class="title">Products</span>
 						</a>
 					</li>
 					<li class="list-item">
-						<a href="#">
+						<a asp-page="/Notifications/Index">
 							<span class="icon"><ion-icon name="notifications-outline"></ion-icon></span>
 							<span class="title">Notifications</span>
 						</a>
@@ -70,7 +70,7 @@
 						</a>
 					</li>
 					<li class="list-item">
-						<a href="#">
+						<a asp-page="/Stock">
 							<span class="icon"><ion-icon name="grid-outline"></ion-icon></span>
 							<span class="title">Stock</span>
 						</a>
@@ -116,7 +116,12 @@
 		var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
 		var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
 			return new bootstrap.Tooltip(tooltipTriggerEl)
-		})
+		});
+		var toastElList = [].slice.call(document.querySelectorAll('.toast'));
+		var toastList = toastElList.map(function (toastEl) {
+			toastEl.show();
+			return new bootstrap.Toast(toastEl, option)
+		});
 	</script>
 	@await RenderSectionAsync("Scripts", required: false)
 </body>

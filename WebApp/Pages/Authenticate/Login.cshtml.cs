@@ -41,7 +41,7 @@ namespace WebApp.Pages.Authenticate
             {
                 session.SetString("Username", admin.Username);
                 session.SetString("Role", "Admin");
-                return RedirectToPage("../Index");
+                return RedirectToPage("../Products/Index");
             }
             var staff = await _context.Staffs.GetSingle(s => s.Username.Equals(username) && s.Password.Equals(hashedPassword));
 

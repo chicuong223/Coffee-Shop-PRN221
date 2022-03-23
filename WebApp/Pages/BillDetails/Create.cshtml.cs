@@ -43,14 +43,26 @@ namespace WebApp.Pages.BillDetails
                 return RedirectToPage("../Bills/Index");
             }
             var product = await _context.Products.GetByID(productId.Value);
-            BillDetail billDetail = new BillDetail();
-            billDetail.BillId = billId.Value;
-            billDetail.ProductId = productId.Value;
-            billDetail.Quantity = 1;
-            billDetail.UnitPrice = product.Price;
-            billDetail.SubTotal = billDetail.Quantity * billDetail.UnitPrice;
-            await _context.BillDetails.Create(billDetail);
-            return RedirectToPage("../Index") ;
+            var details = await _context.BillDetails.GetByID((billId.Value, productId.Value));
+            if(details == null)
+            {
+                BillDetail billDetail = new BillDetail();
+                billDetail.BillId = billId.Value;
+                billDetail.ProductId = productId.Value;
+                billDetail.Quantity = 1;
+                billDetail.UnitPrice = product.Price;
+                billDetail.SubTotal = billDetail.Quantity * billDetail.UnitPrice;
+                await _context.BillDetails.Create(billDetail);
+                product.Stock -= billDetail.Quantity;
+                await _context.Products.Update(product);
+                return RedirectToPage("../Index");
+            }
+            else
+            {
+                TempData["Error"] = "Duplicated product";
+                return RedirectToPage("../Index");
+            }
+            
         }
 
         [BindProperty]
@@ -70,7 +82,7 @@ namespace WebApp.Pages.BillDetails
             }
             if (!role.Equals("Staff"))
             {
-                return RedirectToPage("../Unauthorized");
+                return RedirectToPage("../Error");
             }
             if (!ModelState.IsValid)
             {
@@ -81,8 +93,8 @@ namespace WebApp.Pages.BillDetails
             var product = await _context.Products.GetByID(BillDetail.ProductId);
             if (product == null)
             {
-                TempData["DetailError"] = "This product is not available";
-                return RedirectToPage("./Create", new { billid = billId.Value });
+                TempData["Error"] = "This product is not available";
+                return RedirectToPage("../Index");
             }
             var detail = await _context.BillDetails.GetByID((billId.Value, product.Id), false);
             if (detail != null)

@@ -2,9 +2,9 @@
     height: 100%;
 }
 
-.main .row-container {
-    height: 100%;
-}
+    .main .row-container {
+        height: 100%;
+    }
 
 #header .title {
     font-weight: 600;
@@ -25,17 +25,17 @@
     padding-top: 2px;
 }
 
-.search-container .input-group {
-    height: 48px;
-    width: 270px;
-}
+    .search-container .input-group {
+        height: 48px;
+        width: 270px;
+    }
 
-.search-container .input-group .btn {
-    display: flex;
-    align-items: center;
-    background-color: #71503A;
-    color: white;
-}
+        .search-container .input-group .btn {
+            display: flex;
+            align-items: center;
+            background-color: #71503A;
+            color: white;
+        }
 
 
 
@@ -51,11 +51,11 @@ ul.categories li a.nav-link {
     font-size: 14px;
 }
 
-ul.categories li a.nav-link.active {
-    background-color: #71503A;
-    color: white;
-    box-shadow: #b99785 0px 5px 25px;
-}
+    ul.categories li a.nav-link.active {
+        background-color: #71503A;
+        color: white;
+        box-shadow: #b99785 0px 5px 25px;
+    }
 
 .prod-container {
     max-height: 80vh;
@@ -70,11 +70,11 @@ div.product {
     transition: all .25s ease-out;
 }
 
-div.product:hover {
-    border: 1px solid #71503A;
-    box-shadow: #b99785 0px 7px 25px;
-    transform: scale(1.03);
-}
+    div.product:hover {
+        border: 1px solid #71503A;
+        box-shadow: #b99785 0px 7px 25px;
+        transform: scale(1.03);
+    }
 
 .card-img-top {
     height: 200px;
@@ -89,11 +89,11 @@ div.product a {
     font-size: 14px;
 }
 
-div.product a:hover {
-    background-color: #71503A;
-    border-color: #71503A;
-    box-shadow: #b99785 0px 3px 20px;
-}
+    div.product a:hover {
+        background-color: #71503A;
+        border-color: #71503A;
+        box-shadow: #b99785 0px 3px 20px;
+    }
 
 div.product .card-title {
     font-size: 16px;
@@ -119,9 +119,9 @@ ul.pagination .page-item.active .page-link {
     background-color: #f2f2f2;
 }
 
-.order-container .row {
-    height: 100%;
-}
+    .order-container .row {
+        height: 100%;
+    }
 
 .empty-container {
     height: 100%;
@@ -140,16 +140,17 @@ ul.pagination .page-item.active .page-link {
     z-index: 1;
 }
 
-.empty-container h5 button {
-    display: block;
-    margin: auto;
-    border: 1px solid #71503A;
-    transition: all .25s ease-out;
-}
+    .empty-container h5 button {
+        display: block;
+        margin: auto;
+        border: 1px solid #71503A;
+        transition: all .25s ease-out;
+    }
 
 .table-order {
     table-layout: fixed;
     width: 100%;
+    overflow: auto;
 }
 
 .table.order thead {
@@ -157,26 +158,32 @@ ul.pagination .page-item.active .page-link {
     font-weight: bold;
 }
 
+    .table.order thead th {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+
 td {
     overflow: hidden;
     white-space: nowrap;
 }
 
-td .prod-info, td.prod-price {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
+    td .prod-info, td.prod-price {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
 
-td .prod-info span {
-    font-weight: bold;
-    font-size: 14px;
-}
+        td .prod-info span {
+            font-weight: bold;
+            font-size: 14px;
+        }
 
-td .prod-info div {
-    font-size: 12px;
-    color: #909aa0;
-}
+        td .prod-info div {
+            font-size: 12px;
+            color: #909aa0;
+        }
 
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
@@ -198,7 +205,7 @@ td .qty {
 
 td .btn.delete {
     border-color: #71503A;
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
     margin: 0 auto;
@@ -208,13 +215,30 @@ td .btn.delete {
     transition: all .25s;
 }
 
-td .btn.delete:hover, .apply-voucher:hover {
-    background-color: #71503A;
-    color: white;
-    box-shadow: 0px 5px 15px;
-}
+    td .btn.delete:hover, .apply-voucher:hover {
+        background-color: #71503A;
+        color: white;
+        box-shadow: 0px 5px 15px;
+    }
 
 .apply-voucher {
     border-color: #71503A;
     transition: all .25s;
 }
+
+.action-btn-container {
+    gap: 8px;
+}
+
+.action-btn {
+    border-color: #71503A;
+    font-weight: bold;
+    font-size: 14px;
+    transition: all .5s;
+}
+
+    .action-btn:hover {
+        color: white;
+        background-color: #71503A;
+        box-shadow: #b99785 0px 5px 25px;
+    }

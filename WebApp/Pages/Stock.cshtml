@@ -1,0 +1,101 @@
+﻿@page
+@using X.PagedList.Mvc.Core
+@model StockModel
+@{
+	ViewData["Title"] = "Stock";
+	decimal subTotal = 0;
+}
+
+<head>
+	<link rel="stylesheet" href="~/css/home.css" />
+	<link rel="stylesheet" href="~/css/Paging.css" />
+</head>
+
+<div class="row row-container">
+	<div class="col-12 p-4">
+		<div class="row">
+			<div class="col d-flex">
+				<a class="navbar-toggle">
+					<ion-icon class="open" name="menu-outline"></ion-icon>
+					<ion-icon class="close" name="close-outline"></ion-icon>
+				</a>
+				<div id="header" class="ms-4">
+					<h5 class="title">コーヒー Coffee</h5>
+					<div class="subtitle">
+						Coffee related products and equipments
+					</div>
+				</div>
+				<div class="d-flex search-container flex-grow-1">
+					<form class="">
+						<div class="input-group">
+							<input class="form-control"
+								   type="search"
+								   placeholder="Search"
+								   aria-label="Search" />
+							<button class="btn" type="submit">
+								<ion-icon name="search-outline"></ion-icon>
+							</button>
+						</div>
+					</form>
+				</div>
+			</div>
+			<div class="col-12 mt-4">
+				<h5 class="text-center text-danger">@TempData["Error"]</h5>
+				<ul class="nav nav-pills categories">
+					<li class="nav-item">
+						<a class="nav-link active" aria-current="page" href="#">All products</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" asp-route-categoryid="1">Powdered coffee</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" asp-route-categoryid="2">Coffee beans</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" asp-route-categoryid="3">Equipments</a>
+					</li>
+				</ul>
+			</div>
+			<div class="col-12 mt-4">
+				<div class="row gx-5 gy-4 prod-container">
+					@foreach (var item in Model.Products)
+					{
+						<div class="col-md-4">
+							<div class="card product">
+								<img src="~/image/@item.ImageURL"
+								 class="card-img-top"
+								 alt="..." />
+								<div class="card-body text-center">
+									<h5 class="card-title fw-bold">@item.ProductName</h5>
+									<p class="card-text d-flex flex-column">
+										<span>@item.Price</span>
+										<span>@item.Stock availabe in stock</span>
+									</p>
+									<a asp-page="/Notifications/Create" class="btn btn-primary">Create notification</a>
+								</div>
+							</div>
+						</div>
+					}
+					<div class="col-12">
+						@if(Model.category != null)
+						{
+							@Html.PagedListPager( Model.Products, pageIndex => Url.Page("Index", new { pageIndex, categoryid = Model.category.Id}) )
+						}
+						else
+						{
+							Html.PagedListPager(Model.Products, pageIndex => Url.Page("Index", new { pageIndex}));
+						}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script defer>
+	document.querySelectorAll('.qty').forEach((item) => {
+		item.addEventListener('change', () => {
+			document.getElementById("update-order-btn").classList.remove('disabled');
+		})
+	})
+
+</script>

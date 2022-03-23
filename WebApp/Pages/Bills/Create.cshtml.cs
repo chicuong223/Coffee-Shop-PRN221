@@ -43,6 +43,25 @@ namespace WebApp.Pages.Bills
 
             return RedirectToPage("../Index");
         }
+        public async Task<IActionResult> OnGetRemoveVoucher(int? billId)
+        {
+            if (billId == null)
+            {
+                return NotFound();
+            }
+            var bill = await _context.Bills.GetByID(billId.Value);
+            if (bill == null)
+            {
+                return NotFound();
+            }
+            if (!string.IsNullOrWhiteSpace(bill.VoucherId))
+            {
+                bill.VoucherId = null;
+                bill.Discount = 0;
+                await _context.Bills.Update(bill);
+            }
+            return RedirectToPage("../Index");
+        }
 
         [BindProperty]
         public Bill Bill { get; set; }
@@ -99,8 +118,39 @@ namespace WebApp.Pages.Bills
 
             return RedirectToPage("../Index");
         }
+        public async Task<IActionResult> OnPostApplyVoucher(string voucherId, int? billId)
+		{
+            var voucher = await _context.Vouchers.GetByID(voucherId);
+            if (!string.IsNullOrWhiteSpace(voucherId))
+            {
+                if (voucher == null)
+                {
+                    TempData["Error"] = "Voucher not found";
+                    return RedirectToPage("../Index");
+                }
+                if (voucher.Status == false)
+                {
+                    TempData["Error"] = "Voucher is not valid!";
+                    return RedirectToPage("../Index");
+                }
+                if (voucher.UsageCount <= 0)
+                {
+                    TempData["Error"] = "Voucher is not usable!";
+                    return RedirectToPage("../Index");
+                }
+                if (voucher.ExpirationDate.HasValue && voucher.ExpirationDate.Value.Date < DateTime.Now.Date)
+                {
+                    TempData["Error"] = "Voucher is expired!";
+                    return RedirectToPage("../Index");
+                }
+            }
+            Bill bill = await _context.Bills.GetByID(billId.Value);
+            bill.VoucherId = voucherId;
+            await _context.Bills.Update(bill);
+            return RedirectToPage("../Index");
+        }
 
-        public async Task<IActionResult> OnPostConfirm(int? id)
+        public async Task<IActionResult> OnGetConfirm(int? id)
         {
 
             if(id == null)
@@ -116,13 +166,13 @@ namespace WebApp.Pages.Bills
 
             if (billDetails == null || billDetails.Count() <= 0)
             {
-                TempData["BillError"] = "Please insert at least 1 product";
-                return RedirectToPage("./Edit", new {id = id});
+                TempData["Error"] = "Please insert at least 1 product";
+                return RedirectToPage("../Index");
             }
 
             Bill.Status = true;
             await _context.Bills.Update(Bill);
-            return RedirectToPage("./Index");
+            return RedirectToPage("../Index");
         }
 
         public async Task<IActionResult> OnGetCancel(int? id)
@@ -140,7 +190,7 @@ namespace WebApp.Pages.Bills
                 await _context.BillDetails.Delete((detail.BillId, detail.ProductId));
             }
             await _context.Bills.Delete(id);
-            return RedirectToPage("./Index");
+            return RedirectToPage("../Index");
         }
     }
 }
