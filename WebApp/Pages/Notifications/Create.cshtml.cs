@@ -20,7 +20,7 @@ namespace WebApp.Pages.Notifications
             _context = context;
         }
 
-        public async Task<IActionResult> OnGet(int? id)
+        public async Task<IActionResult> OnGet(int? productid)
         {
             //Get current User
             ISession session = HttpContext.Session;
@@ -34,27 +34,52 @@ namespace WebApp.Pages.Notifications
             {
                 return RedirectToPage("../Unauthorized");
             }
-
-            if (id == null)
+            if(productid == null)
             {
-                //create notifcation into database
-                Notification = new Notification
-                {
-                    IsRead = false,
-                    IsSent = false,
-                    NotificationDate = DateTime.Now,
-                    Sender = username
-                };
-                await _context.Notifications.Create(Notification);
+                return NotFound();
             }
-            else
+            var product = await _context.Products.GetByID(productid.Value, false);
+
+            if(product == null)
             {
-                Notification = await _context.Notifications.GetByID(id, false);
+                return NotFound();
             }
+            Notification = new Notification
+            {
+                IsRead = false,
+                IsSent = true,
+                NotificationDate = DateTime.Now,
+                Sender = username
+            };
+            Notification = await _context.Notifications.Create(Notification);
+            NotificationDetail detail = new NotificationDetail
+            {
+                NotificationId = Notification.Id,
+                ProductId = product.Id,
+                Quantity = product.Stock.Value
+            };
+            await _context.NotificationDetails.Create(detail);
+            return RedirectToPage("../Stock");
+            //if (productid == null)
+            //{
+            //    //create notifcation into database
+            //    Notification = new Notification
+            //    {
+            //        IsRead = false,
+            //        IsSent = false,
+            //        NotificationDate = DateTime.Now,
+            //        Sender = username
+            //    };
+            //    await _context.Notifications.Create(Notification);
+            //}
+            //else
+            //{
+            //    Notification = await _context.Notifications.GetByID(id, false);
+            //}
 
-            Details = (await _context.NotificationDetails.GetAll(detail => detail.NotificationId == Notification.Id, true)).ToList();
+            //Details = (await _context.NotificationDetails.GetAll(detail => detail.NotificationId == Notification.Id, true)).ToList();
 
-            return Page();
+            //return Page();
         }
 
         [BindProperty]

@@ -71,7 +71,9 @@
 										<span>@item.Price</span>
 										<span>@item.Stock availabe in stock</span>
 									</p>
-									<a asp-page="/Notifications/Create" class="btn btn-primary">Create notification</a>
+									<a asp-page="/Notifications/Create" 
+										class="btn btn-primary"
+										asp-route-productid="@item.Id">Create notification</a>
 								</div>
 							</div>
 						</div>
