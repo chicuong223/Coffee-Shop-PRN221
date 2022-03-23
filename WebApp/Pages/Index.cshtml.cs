@@ -21,6 +21,8 @@ namespace WebApp.Pages
         public Voucher voucher { get; set; }
         [BindProperty]
         public IEnumerable<BillDetail> BillDetails { get; set; }
+        [BindProperty(SupportsGet = true)]
+        public string searchString { get; set; }
         public IndexModel(ILogger<IndexModel> logger, IRepoWrapper _context)
         {
             this._context = _context;
@@ -29,14 +31,17 @@ namespace WebApp.Pages
         public Category category { get; set; }
         public async Task<IActionResult> OnGetAsync(int? pageIndex, int? categoryid)
         {
-            
             ISession session = HttpContext.Session;
             var role = session.GetString("Role");
             if(role != null && role.Equals("Admin"))
 			{
                 return RedirectToPage("/Error");
 			}
-            if(categoryid != null)
+            if(!string.IsNullOrEmpty(this.searchString))
+            {
+                Products = await _context.Products.GetList(p => p.ProductName.ToLower().Contains(searchString.ToLower()));
+            }
+            else if(categoryid != null)
 			{
                 category = await _context.Categories.GetByID(categoryid);
                 Products = await _context.Products.GetList(p => p.CategoryId == category.Id, true, pageIndex);

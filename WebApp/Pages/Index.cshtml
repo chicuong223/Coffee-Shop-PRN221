@@ -12,7 +12,7 @@
 </head>
 
 <div class="row row-container">
-	<div class="col-8 p-4">
+	<div class="col-7 p-4">
 		<div class="row">
 			<div class="col d-flex">
 				<a class="navbar-toggle">
@@ -26,12 +26,12 @@
 					</div>
 				</div>
 				<div class="d-flex search-container flex-grow-1">
-					<form class="">
+					<form asp-page="/Index" method="get" class="">
 						<div class="input-group">
 							<input class="form-control"
 								   type="search"
 								   placeholder="Search"
-								   aria-label="Search" />
+								   aria-label="Search" asp-for="@Model.searchString" />
 							<button class="btn" type="submit">
 								<ion-icon name="search-outline"></ion-icon>
 							</button>
@@ -90,6 +90,9 @@
 						{
 							@Html.PagedListPager( Model.Products, pageIndex => Url.Page("Index", new { pageIndex, categoryid = Model.category.Id}) )
 						}
+						else if(Model.searchString != null) {
+							@Html.PagedListPager( Model.Products, pageIndex => Url.Page("Index", new { pageIndex, searchString = Model.searchString}) )
+						}
 						else
 						{
 							Html.PagedListPager(Model.Products, pageIndex => Url.Page("Index", new { pageIndex}));
@@ -99,7 +102,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="col-4 order-container p-0">
+	<div class="col-5 order-container p-0">
 		@{
 			if (Model.ActiveBill == null)
 			{
@@ -124,7 +127,7 @@
 						<table class="table table-order text-center">
 							<thead>
 								<tr>
-									<th style="width: 50%" scope="col">Item</th>
+									<th style="width: 45%" scope="col">Item</th>
 									<th scope="col">Qty</th>
 									<th scope="col">Price</th>
 									<th style="width: 25%" scope="col">Action</th>
