@@ -76,6 +76,7 @@ namespace WebApp.Pages.Products
             }
             if (!ModelState.IsValid)
             {
+                ViewData["CategoryId"] = new SelectList(await _context.Categories.GetAll(ca => ca.Status == true), "Id", "CategoryName");
                 return Page();
             }
 

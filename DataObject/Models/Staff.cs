@@ -18,6 +18,7 @@ namespace DataObject.Models
         [StringLength(32, MinimumLength = 3, ErrorMessage = "Username must be 3 to 32 character long")]
         public string Username { get; set; }
         [Required(ErrorMessage = "Password is required")]
+        [DataType(DataType.Password)]
         [StringLength(256)]
         public string Password { get; set; }
         [Required(ErrorMessage = "Email is required")]

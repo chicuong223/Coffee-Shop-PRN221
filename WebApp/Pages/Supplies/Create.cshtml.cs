@@ -39,7 +39,7 @@ namespace WebApp.Pages.Supplies
         public string Message { get; set; }
 
         [BindProperty]
-        public DateTime Now { get; set; }
+        public DateTime Now { get; set; } = DateTime.Now;
 
         public Product Product { get; set; }
         [BindProperty]
@@ -48,12 +48,14 @@ namespace WebApp.Pages.Supplies
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync()
         {
+            Product = await _context.Products.GetByID(Supply.ProductId);
+
             if (!ModelState.IsValid)
             {
-                return RedirectToPage("./Create", new { ProductId = Product.Id });
+        ViewData["SupplierId"] = new SelectList(_context.Suppliers.GetAll(null).Result.ToList(), "Id", "Name");
+                return Page();
             }
             //Supply.SupplyDate = DateTime.Now;
-            Product = await _context.Products.GetByID(Supply.ProductId);
             try
             {
                 await _context.Supplies.Create(Supply);
