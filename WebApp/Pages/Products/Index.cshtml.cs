@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using DataObject.Models;
 using DataAccess.RepositoryInterface;
 using X.PagedList;
+using Microsoft.AspNetCore.Http;
 
 namespace WebApp.Pages.Products
 {
@@ -23,9 +24,15 @@ namespace WebApp.Pages.Products
         public IPagedList<Product> Products { get;set; }
         
 
-        public async Task OnGetAsync(int? pageIndex)
+        public async Task<IActionResult> OnGetAsync(int? pageIndex)
         {
+            ISession session = HttpContext.Session;
+            var role = session.GetString("Role");
+            if (!string.IsNullOrEmpty(role) && !role.Equals("Admin")) {
+                return RedirectToPage("../Unauthorized");
+            }
             Products = await _context.Products.GetList(null, true, pageIndex);
+            return Page();
         }
     }
 }

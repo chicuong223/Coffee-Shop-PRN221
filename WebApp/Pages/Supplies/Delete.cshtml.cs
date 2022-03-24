@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using DataObject.Models;
 using DataAccess.RepositoryInterface;
+using System;
 
 namespace WebApp.Pages.Supplies
 {
@@ -18,14 +19,14 @@ namespace WebApp.Pages.Supplies
         [BindProperty]
         public Supply Supply { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(int? id)
+        public async Task<IActionResult> OnGetAsync(int? productid, int? supplierid, DateTime? supplydate)
         {
-            if (id == null)
+            if (productid == null || supplierid == null || !supplydate.HasValue)
             {
                 return NotFound();
             }
 
-            Supply = await _context.Supplies.GetByID(id);
+            Supply = await _context.Supplies.GetByID((supplierid, productid, supplydate));
 
             if (Supply == null)
             {

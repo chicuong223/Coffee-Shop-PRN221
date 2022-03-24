@@ -42,7 +42,7 @@
 			<div class="col-12 mt-4">
 				<ul class="nav nav-pills categories">
 					<li class="nav-item">
-						<a class="nav-link active" aria-current="page" href="#">All products</a>
+						<a class="nav-link active" aria-current="page" asp-page="/Index" >All products</a>
 					</li>
 					<li class="nav-item">
 						<a class="nav-link" asp-route-categoryid="1">Powdered coffee</a>
@@ -95,7 +95,7 @@
 						}
 						else
 						{
-							Html.PagedListPager(Model.Products, pageIndex => Url.Page("Index", new { pageIndex }));
+							@Html.PagedListPager(Model.Products, pageIndex => Url.Page("Index", new { pageIndex }))
 						}
 					</div>
 				</div>

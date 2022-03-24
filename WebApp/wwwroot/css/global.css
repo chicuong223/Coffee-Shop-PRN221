@@ -11,7 +11,7 @@ body {
     min-width: 100vw;
     font-family: 'Barlow', 'Roboto';
     position: relative;
-    overflow: hidden;
+    overflow: auto;
 }
 
 ion-icon {

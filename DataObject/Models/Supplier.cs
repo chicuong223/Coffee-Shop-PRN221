@@ -20,6 +20,7 @@ namespace DataObject.Models
         [Required(ErrorMessage = "Supplier Name is required!")]
         public string Name { get; set; }
         [Required(ErrorMessage = "Supplier Phone is required!")]
+        [RegularExpression("[0-9]{10}", ErrorMessage = "Invalid phone number")]
         public string Phone { get; set; }
         [DisplayName("Acitve")]
         public bool Status { get; set; }

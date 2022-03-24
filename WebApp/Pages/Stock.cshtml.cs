@@ -16,10 +16,7 @@ namespace WebApp.Pages
         private readonly ILogger<IndexModel> _logger;
         private readonly IRepoWrapper _context;
         public IPagedList<Product> Products { get; set; }
-        public Bill ActiveBill { get; set; }
-        public Voucher voucher { get; set; }
-        [BindProperty]
-        public IEnumerable<BillDetail> BillDetails { get; set; }
+        public IEnumerable<NotificationDetail> NotiList { get; set; }
         public StockModel(ILogger<IndexModel> logger, IRepoWrapper _context)
         {
             this._context = _context;
@@ -31,6 +28,7 @@ namespace WebApp.Pages
 
             ISession session = HttpContext.Session;
             var role = session.GetString("Role");
+            var username = session.GetString("Username");
             if (role != null && role.Equals("Admin"))
             {
                 return RedirectToPage("/Error");
@@ -45,24 +43,7 @@ namespace WebApp.Pages
             {
                 Products = await _context.Products.GetList(null, true, pageIndex);
             }
-            ActiveBill = await _context.Bills.GetSingle(b => b.Status.Value == false);
-            if (ActiveBill != null)
-            {
-                BillDetails = await _context.BillDetails.GetAll(b => b.BillId == ActiveBill.Id, true);
-                if (ActiveBill.VoucherId != null)
-                {
-                    voucher = await _context.Vouchers.GetByID(ActiveBill.VoucherId);
-                }
-            }
-            return Page();
-        }
-
-        public async Task<IActionResult> OnGetUpdateOrder()
-        {
-            foreach (var item in BillDetails)
-            {
-                Console.WriteLine(item.Quantity);
-            }
+            NotiList = await _context.NotificationDetails.GetAll(noti => noti.Notification.Sender.Equals(username), true);
             return Page();
         }
     }

@@ -44,9 +44,7 @@
                 @Html.DisplayFor(modelItem => item.Supplier.Id)
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                @Html.ActionLink("Delete", "Delete", new { productid = item.ProductId, supplierid = item.SupplierId, supplydate = item.SupplyDate })
             </td>
         </tr>
 }

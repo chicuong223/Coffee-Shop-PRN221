@@ -3,16 +3,15 @@
 @model StockModel
 @{
 	ViewData["Title"] = "Stock";
-	decimal subTotal = 0;
 }
 
 <head>
-	<link rel="stylesheet" href="~/css/home.css" />
+	<link rel="stylesheet" href="~/css/stock.css" />
 	<link rel="stylesheet" href="~/css/Paging.css" />
 </head>
 
 <div class="row row-container">
-	<div class="col-12 p-4">
+	<div class="col-8 p-4">
 		<div class="row">
 			<div class="col d-flex">
 				<a class="navbar-toggle">
@@ -61,7 +60,9 @@
 					@foreach (var item in Model.Products)
 					{
 						<div class="col-md-4">
-							<div class="card product">
+							@if (@item.Status.Value == false)
+						   {
+							   <div class="card product disable">
 								<img src="~/image/@item.ImageURL"
 								 class="card-img-top"
 								 alt="..." />
@@ -71,33 +72,90 @@
 										<span>@item.Price</span>
 										<span>@item.Stock availabe in stock</span>
 									</p>
-									<a asp-page="/Notifications/Create" 
-										class="btn btn-primary"
-										asp-route-productid="@item.Id">Create notification</a>
+									<div class="prod-action-btn d-flex gap-2">
+										<a asp-page="/Products/Delete"
+									   class="btn flex-fill"
+									   asp-route-id="@item.Id">Enable</a>
+									</div>
+
+								</div>
+								</div>
+							}
+							else
+							{
+								<div class="card product">
+								<img src="~/image/@item.ImageURL"
+								 class="card-img-top"
+								 alt="..." />
+								<div class="card-body text-center">
+									<h5 class="card-title fw-bold">@item.ProductName</h5>
+									<p class="card-text d-flex flex-column">
+										<span>@item.Price</span>
+										<span>@item.Stock availabe in stock</span>
+									</p>
+									<div class="prod-action-btn d-flex gap-2">
+										<a asp-page="/Products/Delete"
+									   class="btn flex-fill"
+									   asp-route-id="@item.Id">Disable</a>
+										<a asp-page="/Notifications/Create"
+									   class="btn flex-fill"
+									   asp-route-productid="@item.Id">Notify</a>
+									</div>
+
 								</div>
 							</div>
+							}
 						</div>
 					}
 					<div class="col-12">
-						@if(Model.category != null)
+						@if (Model.category != null)
 						{
 							@Html.PagedListPager( Model.Products, pageIndex => Url.Page("Index", new { pageIndex, categoryid = Model.category.Id}) )
 						}
 						else
 						{
-							Html.PagedListPager(Model.Products, pageIndex => Url.Page("Index", new { pageIndex}));
+							Html.PagedListPager(Model.Products, pageIndex => Url.Page("Index", new { pageIndex }));
 						}
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-</div>
-<script defer>
-	document.querySelectorAll('.qty').forEach((item) => {
-		item.addEventListener('change', () => {
-			document.getElementById("update-order-btn").classList.remove('disabled');
-		})
-	})
+	<div class="col-4 order-container p-0">
+		@{
+			@if (Model.NotiList.Count() <= 0)
+			{
+				<div class="empty-container">
+					<img src="../img/background.png" alt="" srcset="" class="empty" />
+					<h5 class="text-center w-100 fw-bold">
+						You haven't made any notifications yet
+					</h5>
+				</div>
+			}
+			else
+			{
+				<div class="row p-4 flex-column overflow-auto">
+					<div class="col-12 pb-2 order-table-container overflow-auto">
+						<h5 class="fw-bold text-center">Your notifications</h5>
+						@foreach (var item in Model.NotiList)
+						{
+							<div class="card card-noti mt-3 mb-3">
+							<div class="noti card-header d-flex gap-2">
+								<ion-icon name="file-tray-stacked-outline"></ion-icon>
+								<span class="fw-bold">Products &middot; <small>@item.Notification.NotificationDate</small></span>
+							</div>
+							<div class="card-body pt-2 pb-2">
+								<p class="card-text" style="font-size: 14px">
+									You notify the admin that the stock of
+									<b>@item.Product.ProductName</b> only have <b>@item.Product.Stock</b> items left.
+								</p>
+							</div>
+						</div>
+						}
+					</div>
+				</div>
+			}
+		}
 
-</script>
+	</div>
+</div>

@@ -43,7 +43,7 @@ namespace DataAccess.Repository
         public async Task<Supply> GetByID(object key, bool? isDeep = true)
         {
             Supply result;
-            var keyObject = ((int SupplierId, int ProductId))key;
+            var keyObject = ((int SupplierId, int ProductId, DateTime SupplyDate))key;
             using (var _context = new CoffeeShopDBContext())
             {
                 if (isDeep.HasValue && isDeep.Value)
@@ -51,12 +51,12 @@ namespace DataAccess.Repository
                     result = await _context.Supplies
                         .Include(c => c.Supplier)
                         .Include(c => c.Product)
-                        .FirstOrDefaultAsync(ca => ca.SupplierId == keyObject.SupplierId && ca.ProductId == ca.ProductId);
+                        .FirstOrDefaultAsync(ca => ca.SupplierId == keyObject.SupplierId && ca.ProductId == ca.ProductId && ca.SupplyDate == keyObject.SupplyDate);
                 }
                 else
                 {
                     result = await _context.Supplies
-                        .FirstOrDefaultAsync(ca => ca.SupplierId == keyObject.SupplierId && ca.ProductId == ca.ProductId);
+                        .FirstOrDefaultAsync(ca => ca.SupplierId == keyObject.SupplierId && ca.ProductId == ca.ProductId && ca.SupplyDate == keyObject.SupplyDate);
                 }
                 return result;
             }
@@ -82,11 +82,18 @@ namespace DataAccess.Repository
 
         public async Task Delete(object key)
         {
-            //var category = await _context.Supplies.FindAsync((int)key);
-            //category.Status = false;
-            //_context.Entry(category).State = EntityState.Detached;
-            //_context.Entry(category).State = EntityState.Modified;
-            //await _context.SaveChangesAsync();
+            var keyObject = ((int SupplierId, int ProductId, DateTime SupplyDate))key;
+            using (var _context = new CoffeeShopDBContext())
+            {
+                var supply =
+                    await _context.Supplies
+                        .FirstOrDefaultAsync(ca => ca.SupplierId == keyObject.SupplierId && ca.ProductId == ca.ProductId && ca.SupplyDate == keyObject.SupplyDate);
+                if(supply != null)
+				{
+                    _context.Supplies.Remove(supply);
+                    await _context.SaveChangesAsync();
+				}
+            }
         }
 
         public async Task<Supply> Update(Supply category)

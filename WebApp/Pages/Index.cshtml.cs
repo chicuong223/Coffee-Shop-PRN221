@@ -39,17 +39,17 @@ namespace WebApp.Pages
 			}
             if(!string.IsNullOrEmpty(this.searchString))
             {
-                Products = await _context.Products.GetList(p => p.ProductName.ToLower().Contains(searchString.ToLower()));
+                Products = await _context.Products.GetList(p => p.ProductName.ToLower().Contains(searchString.ToLower()) && p.Status.Value == true);
             }
             else if(categoryid != null)
 			{
                 category = await _context.Categories.GetByID(categoryid);
-                Products = await _context.Products.GetList(p => p.CategoryId == category.Id, true, pageIndex);
+                Products = await _context.Products.GetList(p => p.CategoryId == category.Id && p.Status.Value == true, true, pageIndex);
                 ViewData["active-cat"] = category.Id;
             }
             else
 			{
-                Products = await _context.Products.GetList(null, true, pageIndex);
+                Products = await _context.Products.GetList(p => p.Status.Value == true, true, pageIndex);
             }
             ActiveBill = await _context.Bills.GetSingle(b => b.Status.Value == false);
             if (ActiveBill != null)

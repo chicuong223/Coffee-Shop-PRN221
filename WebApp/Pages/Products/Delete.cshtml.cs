@@ -25,17 +25,6 @@ namespace WebApp.Pages.Products
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            ISession session = HttpContext.Session;
-            var currentUsername = session.GetString("Username");
-            var role = session.GetString("Role");
-            if (string.IsNullOrEmpty(currentUsername) || string.IsNullOrEmpty(role))
-            {
-                return RedirectToPage("../Authenticate/Login");
-            }
-            if (!role.Equals("Admin"))
-            {
-                return RedirectToPage("../Unauthorized");
-            }
             if (id == null)
             {
                 return NotFound();
@@ -50,7 +39,16 @@ namespace WebApp.Pages.Products
             {
                 return NotFound();
             }
-            return Page();
+            if (Product.Status == true)
+            {
+                await _context.Products.Delete(Product.Id);
+            }
+            else
+            {
+                Product.Status = true;
+                await _context.Products.Update(Product);
+            }
+            return RedirectToPage("../Stock");
         }
 
         public async Task<IActionResult> OnPostAsync(int? id)

@@ -86,6 +86,4 @@
     </tbody>
 </table>
 
-Page @(Model.Products.PageCount < Model.Products.PageNumber ? 0 : Model.Products.PageNumber) of @Model.Products.PageCount
-
 @Html.PagedListPager( Model.Products, pageIndex => Url.Page("Index", new { pageIndex }) )
