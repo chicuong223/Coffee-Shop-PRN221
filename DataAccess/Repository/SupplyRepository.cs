@@ -29,11 +29,13 @@ namespace DataAccess.Repository
                     list = await _context.Supplies.Where(expression)
                         .Include(i => i.Supplier)
                         .Include(i => i.Product)
+                        .OrderByDescending(i => i.SupplyDate)
                         .ToPagedListAsync(pageNumber, 2);
                 }
                 else
                 {
                     list = await _context.Supplies.Where(expression)
+                        .OrderByDescending(i => i.SupplyDate)
                         .ToPagedListAsync(pageNumber, 2);
                 }
                 return list;

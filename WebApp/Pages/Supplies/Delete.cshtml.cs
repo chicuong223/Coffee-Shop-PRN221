@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using DataObject.Models;
 using DataAccess.RepositoryInterface;
 using System;
+using System.Globalization;
 
 namespace WebApp.Pages.Supplies
 {
@@ -19,14 +20,15 @@ namespace WebApp.Pages.Supplies
         [BindProperty]
         public Supply Supply { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(int? productid, int? supplierid, DateTime? supplydate)
+        public async Task<IActionResult> OnGetAsync(int? productid, int? supplierid, string supplydate)
         {
-            if (productid == null || supplierid == null || !supplydate.HasValue)
-            {
-                return NotFound();
-            }
+            //if (productid == null || supplierid == null || !supplydate.HasValue)
+            //{
+            //    return NotFound();
+            //}
+            DateTime time = DateTime.ParseExact(supplydate, "yyyyMMddHHmmss", CultureInfo.CurrentCulture);
 
-            Supply = await _context.Supplies.GetByID((supplierid, productid, supplydate));
+            Supply = await _context.Supplies.GetByID((supplierid.Value, productid.Value, time), true);
 
             if (Supply == null)
             {
@@ -35,18 +37,25 @@ namespace WebApp.Pages.Supplies
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync(int? id)
+        public async Task<IActionResult> OnPostAsync(int? productid, int? supplierid, string supplydate)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            //if (id == null)
+            //{
+            //    return NotFound();
+            //}
 
-            Supply = await _context.Supplies.GetByID(id, false);
+            //Supply = await _context.Supplies.GetByID(id, false);
+
+            Console.WriteLine(productid);
+            Console.WriteLine(supplierid);
+            Console.WriteLine(supplydate);
+
+            var time = DateTime.ParseExact(supplydate, "yyyyMMddHHmmss", CultureInfo.CurrentCulture);
+            Supply = await _context.Supplies.GetByID((supplierid.Value, productid.Value, time));
 
             if (Supply != null)
             {
-                await _context.Supplies.Delete(Supply);
+                await _context.Supplies.Delete((Supply.SupplierId, Supply.ProductId, Supply.SupplyDate.Value));
             }
 
             return RedirectToPage("./Index");

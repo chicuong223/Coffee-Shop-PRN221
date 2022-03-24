@@ -1,4 +1,5 @@
 ﻿@page
+@using X.PagedList.Mvc.Core
 @model Pages.Supplies.IndexModel
 
 @{
@@ -29,24 +30,35 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.Supply) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.SupplyDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Quantity)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Product.ProductName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Supplier.Id)
-            </td>
-            <td>
-                @Html.ActionLink("Delete", "Delete", new { productid = item.ProductId, supplierid = item.SupplierId, supplydate = item.SupplyDate })
-            </td>
-        </tr>
-}
+        @foreach (var item in Model.Supply)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SupplyDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Quantity)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Product.ProductName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Supplier.Name)
+                </td>
+                <td>
+                    <a asp-page="./Delete"
+                   asp-route-productid="@item.ProductId"
+                   asp-route-supplierid="@item.SupplierId"
+                   asp-route-supplydate="@item.SupplyDate.Value.ToString("yyyyMMddHHmmss")">
+                        Delete
+                    </a>
+                    @*@Html.ActionLink("Delete", "Delete", new { productid = item.ProductId, supplierid = item.SupplierId, supplydate = item.SupplyDate })*@
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
+<br />
+@Html.PagedListPager( Model.Supply, pageIndex => Url.Page("Index", new { pageIndex }) )
+
