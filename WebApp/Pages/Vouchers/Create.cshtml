@@ -38,6 +38,7 @@
                 <label asp-for="Voucher.ExpirationDate" class="control-label"></label>
                 <input asp-for="Voucher.ExpirationDate" class="form-control" />
                 <span asp-validation-for="Voucher.ExpirationDate" class="text-danger"></span>
+                <span class="text-danger">@TempData["Error"]</span>
             </div>
             <div class="form-group">
                 <label asp-for="Voucher.UsageCount" class="control-label"></label>

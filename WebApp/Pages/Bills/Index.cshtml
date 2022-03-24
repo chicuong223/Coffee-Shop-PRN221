@@ -39,10 +39,10 @@
                 @Html.DisplayNameFor(model => model.Bills[0].BillDate)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Bills[0].Discount)
+                @Html.DisplayNameFor(model => model.Bills[0].Discount) (%)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Bills[0].Status)
+                @Html.DisplayNameFor(model => model.Bills[0].Status) 
             </th>
             <th>
                 Staff
@@ -61,7 +61,10 @@
                     @Html.DisplayFor(modelItem => item.BillDate)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Discount)
+                    @if(item.Voucher != null)
+                    {
+                        @Html.DisplayFor(modelItem => item.Voucher.Percentage)
+                    }
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Status)

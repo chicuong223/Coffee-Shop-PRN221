@@ -120,9 +120,13 @@ namespace WebApp.Pages.Bills
         }
         public async Task<IActionResult> OnPostApplyVoucher(string voucherId, int? billId)
 		{
-            var voucher = await _context.Vouchers.GetByID(voucherId);
+            if(billId == null)
+            {
+                return NotFound();
+            }
             if (!string.IsNullOrWhiteSpace(voucherId))
             {
+                var voucher = await _context.Vouchers.GetByID(voucherId);
                 if (voucher == null)
                 {
                     TempData["Error"] = "Voucher not found";
@@ -133,7 +137,7 @@ namespace WebApp.Pages.Bills
                     TempData["Error"] = "Voucher is not valid!";
                     return RedirectToPage("../Index");
                 }
-                if (voucher.UsageCount <= 0)
+                if (voucher.UsageCount.HasValue && voucher.UsageCount.Value <= 0)
                 {
                     TempData["Error"] = "Voucher is not usable!";
                     return RedirectToPage("../Index");
@@ -143,10 +147,17 @@ namespace WebApp.Pages.Bills
                     TempData["Error"] = "Voucher is expired!";
                     return RedirectToPage("../Index");
                 }
+                Bill bill = await _context.Bills.GetByID(billId.Value);
+                bill.VoucherId = voucherId;
+                await _context.Bills.Update(bill);
+                voucher.UsageCount -= 1;
+                await _context.Vouchers.Update(voucher);
             }
-            Bill bill = await _context.Bills.GetByID(billId.Value);
-            bill.VoucherId = voucherId;
-            await _context.Bills.Update(bill);
+            else
+            {
+                TempData["Error"] = "Please enter voucher";
+            }
+            
             return RedirectToPage("../Index");
         }
 

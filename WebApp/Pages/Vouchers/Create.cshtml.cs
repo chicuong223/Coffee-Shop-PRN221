@@ -36,6 +36,11 @@ namespace WebApp.Pages.Vouchers
             }
             try
             {
+                if(Voucher.ExpirationDate <= DateTime.Now)
+                {
+                    TempData["Error"] = "Expiration date must be after today";
+                    return Page();
+                }
                 await _context.Vouchers.Create(Voucher);
             }catch(Exception e)
             {

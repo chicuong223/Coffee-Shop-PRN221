@@ -38,15 +38,15 @@ namespace WebApp.Pages.Bills
             //    .Include(b => b.Voucher).ToListAsync();
             if (From != null && To != null)
             {
-                Bills = await _context.Bills.GetList((b => b.BillDate >= From && b.BillDate <= To.Value.AddDays(1)), true, pageIndex);
+                Bills = await _context.Bills.GetList((b => b.BillDate >= From && b.BillDate <= To.Value.AddDays(1) && b.Status.Value == true), true, pageIndex);
             }
             else if (From != null)
             {
-                Bills = await _context.Bills.GetList((b => b.BillDate >= From), true, pageIndex);
+                Bills = await _context.Bills.GetList((b => b.BillDate >= From && b.Status.Value == true), true, pageIndex);
             }
             else if (To != null)
             {
-                Bills = await _context.Bills.GetList((b => b.BillDate <= To.Value.AddDays(1)), true, pageIndex);
+                Bills = await _context.Bills.GetList((b => b.BillDate <= To.Value.AddDays(1) && b.Status.Value == true), true, pageIndex);
             }
             else
             {

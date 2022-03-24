@@ -43,6 +43,12 @@ namespace WebApp.Pages.BillDetails
                 return RedirectToPage("../Bills/Index");
             }
             var product = await _context.Products.GetByID(productId.Value);
+            if(product.Stock <= 0)
+            {
+                TempData["Error"] = "This product is out of stock";
+                return RedirectToPage("../Index");
+            }
+
             var details = await _context.BillDetails.GetByID((billId.Value, productId.Value));
             if(details == null)
             {

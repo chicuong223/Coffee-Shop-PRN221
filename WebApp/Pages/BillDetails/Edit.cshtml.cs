@@ -79,16 +79,17 @@ namespace WebApp.Pages.BillDetails
                 {
                     return RedirectToPage("../Unauthorized");
                 }
-                if(BillDetail.Quantity > product.Stock)
+                var oldBillDetail = await _context.BillDetails.GetByID((BillDetail.BillId, BillDetail.ProductId));
+                product.Stock += oldBillDetail.Quantity;
+                if (BillDetail.Quantity > product.Stock)
 				{
                     TempData["Error"] = "Invalid quantity please try again";
                     return RedirectToPage("../Index");
 				}
+                product.Stock -= BillDetail.Quantity;
                 BillDetail.SubTotal = product.Price * BillDetail.Quantity;
                 BillDetail.UnitPrice = product.Price;
-                var oldBillDetail = await _context.BillDetails.GetByID((BillDetail.BillId, BillDetail.ProductId));
-                product.Stock += oldBillDetail.Quantity;
-                product.Stock -= BillDetail.Quantity;
+                
                 await _context.Products.Update(product);
                 await _context.BillDetails.Update(BillDetail);
             }
