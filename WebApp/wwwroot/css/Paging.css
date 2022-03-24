@@ -1,4 +1,9 @@
-﻿.pagination {
+﻿.pagination-container {
+    display: flex;
+    justify-content: center;
+}
+
+.pagination {
     display: inline-block;
     padding-left: 0;
     margin: 20px 0;

@@ -40,7 +40,6 @@
 				</div>
 			</div>
 			<div class="col-12 mt-4">
-				<h5 class="text-center text-danger">@TempData["Error"]</h5>
 				<ul class="nav nav-pills categories">
 					<li class="nav-item">
 						<a class="nav-link active" aria-current="page" href="#">All products</a>
@@ -86,16 +85,17 @@
 						</div>
 					}
 					<div class="col-12">
-						@if(Model.category != null)
+						@if (Model.category != null)
 						{
 							@Html.PagedListPager( Model.Products, pageIndex => Url.Page("Index", new { pageIndex, categoryid = Model.category.Id}) )
 						}
-						else if(Model.searchString != null) {
+						else if (Model.searchString != null)
+						{
 							@Html.PagedListPager( Model.Products, pageIndex => Url.Page("Index", new { pageIndex, searchString = Model.searchString}) )
 						}
 						else
 						{
-							Html.PagedListPager(Model.Products, pageIndex => Url.Page("Index", new { pageIndex}));
+							Html.PagedListPager(Model.Products, pageIndex => Url.Page("Index", new { pageIndex }));
 						}
 					</div>
 				</div>
@@ -121,72 +121,74 @@
 			else
 			{
 				<div class="row p-4 flex-column">
-					<div class="col-12 flex-grow-1">
+					<div class="col-12 pb-2 flex-grow-1 order-table-container overflow-hidden">
 						<h5 class="fw-bold">Orders #@Model.ActiveBill.Id</h5>
 						<input type="hidden" value="@Model.ActiveBill.Id" name="billId" />
-						<table class="table table-order text-center">
-							<thead>
-								<tr>
-									<th style="width: 45%" scope="col">Item</th>
-									<th scope="col">Qty</th>
-									<th scope="col">Price</th>
-									<th style="width: 25%" scope="col">Action</th>
-								</tr>
-							</thead>
-							<tbody>
-								@{
-									if (Model.BillDetails.Count() == 0)
-									{
-										<tr>
-											<td colspan="4" class="text-danger text-center fw-bold mt-5">This bill doesn't have any item!</td>
-										</tr>
-									}
-									else
-									{
-										foreach (var detail in Model.BillDetails)
+						<div class="fixed-table-header">
+							<table class="table table-order text-center">
+								<thead>
+									<tr>
+										<th style="width: 45%" scope="col">Item</th>
+										<th scope="col">Qty</th>
+										<th scope="col">Price</th>
+										<th style="width: 25%" scope="col">Action</th>
+									</tr>
+								</thead>
+								<tbody>
+									@{
+										if (Model.BillDetails.Count() == 0)
 										{
-											{
-												subTotal += detail.SubTotal.Value;
-											}
 											<tr>
-												<td>
-													<div class="d-flex align-items-center">
-														<img src="~/image/@detail.Product.ImageURL"
-										 width="56"
-										 height="56"
-										 alt="product-logo"
-										 srcset=""
-										 class="rounded-circle border" />
-														<div class="prod-info">
-															<span class="ms-1">@detail.Product.ProductName</span>
-															<div class="text-start ms-1">@detail.UnitPrice</div>
-														</div>
-													</div>
-												</td>
-												<td><input disabled asp-for="@detail.Quantity" type="number" class="qty" value="@detail.Quantity" /></td>
-												<td class="prod-price">@detail.SubTotal</td>
-												<td>
-													<button type="button" class="btn delete" onclick="document.getElementById('form-edit-@detail.ProductId').submit();">
-														<form asp-page="/BillDetails/Edit" method="get" id="form-edit-@detail.ProductId">
-															<input type="hidden" asp-for="@detail.BillId" name="billid" />
-															<input type="hidden" asp-for="@detail.ProductId" name="productid" />
-															<ion-icon name="create-outline"></ion-icon>
-														</form>
-													</button>
-													<button type="button" class="btn delete" onclick="document.getElementById('form-delete-@detail.ProductId').submit();">
-														<form asp-page="/BillDetails/Delete" method="post" id="form-delete-@detail.ProductId">
-															<input type="hidden" asp-for="@detail.BillId" name="billid" />
-															<input type="hidden" asp-for="@detail.ProductId" name="productid" />
-															<ion-icon name="trash-outline"></ion-icon>
-														</form>
-													</button>
-												</td>
+												<td colspan="4" class="text-danger text-center fw-bold mt-5">This bill doesn't have any item!</td>
 											</tr>
 										}
+										else
+										{
+											foreach (var detail in Model.BillDetails)
+											{
+												{
+													subTotal += detail.SubTotal.Value;
+												}
+												<tr>
+													<td>
+														<div class="d-flex align-items-center">
+															<img src="~/image/@detail.Product.ImageURL"
+											 width="56"
+											 height="56"
+											 alt="product-logo"
+											 srcset=""
+											 class="rounded-circle border" />
+															<div class="prod-info">
+																<span class="ms-1">@detail.Product.ProductName</span>
+																<div class="text-start ms-1">@detail.UnitPrice</div>
+															</div>
+														</div>
+													</td>
+													<td><input disabled asp-for="@detail.Quantity" type="number" class="qty" value="@detail.Quantity" /></td>
+													<td class="prod-price">@detail.SubTotal</td>
+													<td>
+														<button type="button" class="btn delete" onclick="document.getElementById('form-edit-@detail.ProductId').submit();">
+															<form asp-page="/BillDetails/Edit" method="get" id="form-edit-@detail.ProductId">
+																<input type="hidden" asp-for="@detail.BillId" name="billid" />
+																<input type="hidden" asp-for="@detail.ProductId" name="productid" />
+																<ion-icon name="create-outline"></ion-icon>
+															</form>
+														</button>
+														<button type="button" class="btn delete" onclick="document.getElementById('form-delete-@detail.ProductId').submit();">
+															<form asp-page="/BillDetails/Delete" method="post" id="form-delete-@detail.ProductId">
+																<input type="hidden" asp-for="@detail.BillId" name="billid" />
+																<input type="hidden" asp-for="@detail.ProductId" name="productid" />
+																<ion-icon name="trash-outline"></ion-icon>
+															</form>
+														</button>
+													</td>
+												</tr>
+											}
+										}
 									}
-								}
-							</tbody>
-						</table>
+								</tbody>
+							</table>
+						</div>
 					</div>
 
 					<div class="col-12 checkout">
@@ -203,7 +205,7 @@
 							   	aria-label="Username"
 							   	aria-describedby="basic-addon1" name="voucherId" />
 							</div>
-							<a asp-page="/Bills/Create" asp-route-billId="@Model.ActiveBill.Id" asp-page-handler="RemoveVoucher" class="btn btn-default apply-voucher">Remove Voucher</a>
+							<a asp-page="/Bills/Create" asp-route-billId="@Model.ActiveBill.Id" asp-page-handler="RemoveVoucher" class="btn btn-default apply-voucher">Remove</a>
 							<button class="btn btn-default apply-voucher" type="submit">Apply</button>
 						</form>
 						<hr />

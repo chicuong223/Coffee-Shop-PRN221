@@ -11,8 +11,33 @@ body {
     min-width: 100vw;
     font-family: 'Barlow', 'Roboto';
     position: relative;
+    overflow: hidden;
 }
 
 ion-icon {
     font-size: 24px;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+a:hover {
+    color: inherit;
+}
+
+::-webkit-scrollbar {
+    width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    display: none;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #71503A;
+    border-radius: 10px;
 }

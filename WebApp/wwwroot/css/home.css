@@ -97,6 +97,9 @@ div.product a {
 
 div.product .card-title {
     font-size: 16px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 div.product .card-text {
@@ -150,19 +153,26 @@ ul.pagination .page-item.active .page-link {
 .table-order {
     table-layout: fixed;
     width: 100%;
+    height: 100%;
     overflow: auto;
+    border-collapse: separate;
 }
 
-.table.order thead {
-    color: #71503A;
-    font-weight: bold;
-}
-
-    .table.order thead th {
+    .table-order thead {
+        color: #71503A;
+        font-weight: bold;
         position: sticky;
         top: 0;
-        z-index: 1;
+        z-index: 100;
+        background-color: #f2f2f2;
+        border-bottom: 1px solid #71503A;
     }
+
+.table.order thead {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
 
 td {
     overflow: hidden;
@@ -215,6 +225,10 @@ td .btn.delete {
     transition: all .25s;
 }
 
+    td .btn.delete form {
+        display: flex;
+    }
+
     td .btn.delete:hover, .apply-voucher:hover {
         background-color: #71503A;
         color: white;
@@ -222,6 +236,8 @@ td .btn.delete {
     }
 
 .apply-voucher {
+    display: flex;
+    align-items: center;
     border-color: #71503A;
     transition: all .25s;
 }
@@ -242,3 +258,12 @@ td .btn.delete {
         background-color: #71503A;
         box-shadow: #b99785 0px 5px 25px;
     }
+
+.order-table-container {
+    max-height: calc(100% - 245px);
+}
+
+.fixed-table-header {
+    max-height: 100%;
+    overflow-y: auto;
+}
