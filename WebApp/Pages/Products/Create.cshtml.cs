@@ -39,10 +39,6 @@ namespace WebApp.Pages.Products
                 return RedirectToPage("../Unauthorized");
             }
             var categories = await _context.Categories.GetAll(ca => ca.Status == true);
-            foreach(var category in categories)
-            {
-                Console.WriteLine(category.Id);
-            }
             ViewData["CategoryId"] = new SelectList(categories, "Id", "CategoryName");
             return Page();
         }
@@ -66,7 +62,9 @@ namespace WebApp.Pages.Products
             }
             if (!ModelState.IsValid)
             {
-                return Page();
+
+                TempData["Error"] = "Invalid data, please try again!";
+                return RedirectToPage("./Index");
             }
 
             try

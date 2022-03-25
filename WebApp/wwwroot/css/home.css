@@ -252,11 +252,19 @@ td .btn.delete {
     font-size: 14px;
     transition: all .5s;
 }
+.action-btn a{
+    text-decoration: none;
+    color: #71503A;
+}
 
     .action-btn:hover {
         color: white;
         background-color: #71503A;
         box-shadow: #b99785 0px 5px 25px;
+    }
+
+    .action-btn:hover a {
+        color:white;
     }
 
 .order-table-container {

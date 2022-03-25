@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&display=swap');
 
 :root {
-    --primary-1: #56382E;
+    --primary-1: #CE8054;
     --primary-3: #71503A;
     --primary-2: #ffffff;
 }
@@ -11,20 +11,11 @@ body {
     min-width: 100vw;
     font-family: 'Barlow', 'Roboto';
     position: relative;
-    overflow: auto;
+    overflow: hidden;
 }
 
 ion-icon {
     font-size: 24px;
-}
-
-a {
-    text-decoration: none;
-    color: inherit;
-}
-
-a:hover {
-    color: inherit;
 }
 
 ::-webkit-scrollbar {
@@ -32,7 +23,7 @@ a:hover {
 }
 
 /* Track */
-::-webkit-scrollbar-track {
+::-webkit-scrollbar-track:not(.navbar-container) {
     display: none;
 }
 

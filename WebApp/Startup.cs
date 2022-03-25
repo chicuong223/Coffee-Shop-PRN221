@@ -60,7 +60,7 @@ namespace WebApp
 
             app.UseSession();
 
-            //app.UseAuthenticationMiddleware();
+            app.UseAuthenticationMiddleware();
 
             app.UseMiddleware<BillMiddleware>();
 

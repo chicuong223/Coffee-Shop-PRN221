@@ -48,6 +48,12 @@ namespace WebApp.Pages.Products
                 Product.Status = true;
                 await _context.Products.Update(Product);
             }
+            ISession session = HttpContext.Session;
+            var role = session.GetString("Role");
+            if(!string.IsNullOrEmpty(role) && role.Equals("Admin"))
+			{
+                return RedirectToPage("../Products/Index");
+            }
             return RedirectToPage("../Stock");
         }
 

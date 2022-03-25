@@ -5,85 +5,232 @@
 @inject IHttpContextAccessor HttpContextAccessor;
 
 @{
-    ViewData["Title"] = "Index";
-    var session = HttpContextAccessor.HttpContext.Session;
-    string username = session.GetString("Username") ?? "";
-    string role = session.GetString("Role") ?? "";
+	ViewData["Title"] = "Index";
+	var session = HttpContextAccessor.HttpContext.Session;
+	string username = session.GetString("Username") ?? "";
+	string role = session.GetString("Role") ?? "";
 }
 
-<h1>Index</h1>
+<head>
+	<link rel="stylesheet" href="~/css/product.css" />
+	<link rel="stylesheet" href="~/css/Paging.css" />
+</head>
 
-<p>
-    <a asp-page="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Products[0].ProductName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Products[0].Price)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Products[0].Stock)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Products[0].Status)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Products[0].Category)
-            </th>
-            <th>Image</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.Products)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ProductName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Price)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Stock)
-                </td>
-                <td>
-                    @{
-                        if (item.Status == true)
-                        {
-                            <span>Active</span>
-                        }
-                        else
-                        {
-                            <span>Inactive</span>
-                        }
-                    }
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Category.CategoryName)
-                </td>
-                <td>
-                    <img src="~/image/@item.ImageURL" alt="@item.ProductName"
-                     class="img-thumbnail img-fluid" style="max-width:50%;" />
-                </td>
-                <td>
-                    @{
-                        if (role.Equals("Admin"))
-                        {
-                            <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a><span> | </span>
-                            <a asp-page="./Details" asp-route-id="@item.Id">Details</a><span> | </span>
-                            <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a><span> | </span>
-                            <a asp-page="/Supplies/Create" asp-route-ProductId="@item.Id">Add quantity</a>
-                        }
-                    }
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+<div class="row row-container">
+	<div class="col-7 p-4">
+		<div class="row">
+			<div class="col d-flex">
+				<a class="navbar-toggle">
+					<ion-icon class="open" name="menu-outline"></ion-icon>
+					<ion-icon class="close" name="close-outline"></ion-icon>
+				</a>
+				<div id="header" class="ms-4">
+					<h5 class="title">コーヒー Coffee</h5>
+					<div class="subtitle">
+						Coffee related products and equipments
+					</div>
+				</div>
+				<div class="d-flex search-container flex-grow-1">
+					<form class="">
+						<div class="input-group">
+							<input class="form-control"
+								   type="search"
+								   placeholder="Search"
+								   aria-label="Search" />
+							<button class="btn" type="submit">
+								<ion-icon name="search-outline"></ion-icon>
+							</button>
+						</div>
+					</form>
+				</div>
+			</div>
+			<div class="col-12 mt-4">
+				<ul class="nav nav-pills categories">
+					<li class="nav-item">
+						<a class="nav-link active" aria-current="page" href="#">All products</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="#">Powdered coffee</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="#">Coffee beans</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="#">Equipments</a>
+					</li>
+				</ul>
+			</div>
+			<div class="col-12 mt-4">
+				<div class="row gx-5 gy-4 prod-container">
+					<div class="col-md-4">
+						<button type="button"
+								class="btn create-modal d-flex flex-column align-items-center justify-content-center gap-3"
+								data-bs-toggle="modal"
+								data-bs-target="#exampleModal"
+								style="color: #71503a">
+							<ion-icon name="add-outline"></ion-icon>
+							<span class="text-center fw-bold">Add new product</span>
+						</button>
+						<div class="modal fade"
+							 id="exampleModal"
+							 tabindex="-1"
+							 aria-labelledby="exampleModalLabel"
+							 aria-hidden="true">
+							<div class="modal-dialog modal-dialog-centered">
+								<div class="modal-content shadow-lg">
+									<div class="modal-header">
+										<h5 class="modal-title fw-bold"
+											id="exampleModalLabel">
+											Create a new product
+										</h5>
+										<button type="button"
+												class="btn-close"
+												data-bs-dismiss="modal"
+												aria-label="Close"></button>
+									</div>
+									<div class="modal-body">
+										<form id="create-product-form" method="post" enctype="multipart/form-data" asp-page="/Products/Create">
+											<div class="mb-3">
+												<label asp-for="Product.ProductName" class="form-label fw-bold"></label>
+												<input asp-for="Product.ProductName" class="form-control" />
+											</div>
+											<div class="mb-3">
+												<label asp-for="Product.Price" class="form-label fw-bold"></label>
+												<input asp-for="Product.Price" class="form-control" type="number" />
+											</div>
+											<div class="mb-3">
+												<label asp-for="Product.CategoryId" class="form-label fw-bold"></label>
+												<select asp-for="Product.CategoryId" class="form-control" asp-items="ViewBag.CategoryId"></select>
+											</div>
+											<div class="mb-3">
+												<label asp-for="Product.Stock" class="form-label fw-bold"></label>
+												<input asp-for="Product.Stock" class="form-control" />
+											</div>
+											<div class="mb-3">
+												<label asp-for="Product.ImageURL" class="form-label fw-bold"></label>
+												<input class="form-control" type="file" name="image" />
+											</div>
+										</form>
+									</div>
+									<div class="modal-footer">
+										<button type="button"
+												class="btn"
+												data-bs-dismiss="modal">
+											Close
+										</button>
+										<button type="submit" class="btn" form="create-product-form">
+											Create product
+										</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					@foreach (var item in Model.Products)
+					{
+						<div class="col-md-4">
+							<div class="card product disable">
+								<img src="../image/@item.ImageURL"
+								 class="card-img-top"
+								 alt="..." />
+								<div class="card-body text-center">
+									<h5 class="card-title fw-bold">@item.ProductName</h5>
+									<p class="card-text d-flex flex-column">
+										<span>@item.Price</span>
+										<span>@item.Stock products availabe in stock</span>
+									</p>
+									<div class="prod-action-btn d-flex gap-2">
+										<a asp-page="/Products/Index" asp-route-id="@item.Id" class="btn flex-fill">View</a>
+										@if (item.Status == true)
+										{
+											<a asp-page="/Products/Delete" asp-route-id="@item.Id" class="btn flex-fill">Disable</a>
+										}
+										else
+										{
+											<a asp-page="/Products/Delete" asp-route-id="@item.Id" class="btn flex-fill">Enable</a>
+										}
+									</div>
+								</div>
+							</div>
+						</div>
+					}
+					<div class="col-12">
+						@if (Model.category != null)
+						{
+							@Html.PagedListPager( Model.Products, pageIndex => Url.Page("Index", new { pageIndex, categoryid = Model.category.Id}) )
+						}
+						else
+						{
+							Html.PagedListPager(Model.Products, pageIndex => Url.Page("Index", new { pageIndex }));
+						}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-5 order-container p-0" style="position: relative">
+		@if (Model.ProductUpdate == null)
+		{
+			<div class="empty-container">
+				<img src="../img/background.png" alt="" srcset="" class="empty" />
+				<h5 class="text-center w-100 fw-bold">
+					Select a product to view its detail here
+				</h5>
+			</div>
+		}
+		else
+		{
+			<div class="row p-4 flex-column">
+				<div class="col-12 pb-2 flex-grow-1 order-table-container overflow-hidden">
+					<h5 class="fw-bold mb-4">Product's details</h5>
+					<form method="post" enctype="multipart/form-data" asp-page="/Products/Edit">
+						<input type="hidden" asp-for="ProductUpdate.Id" />
+						<div class="mb-3">
+							<label asp-for="ProductUpdate.ProductName" class="form-label fw-bold"></label>
+							<input asp-for="ProductUpdate.ProductName" class="form-control" />
+						</div>
+						<div class="mb-3">
+							<label asp-for="ProductUpdate.Price" class="form-label fw-bold"></label>
+							<input type="number" asp-for="ProductUpdate.Price" class="form-control" />
+						</div>
+						<div class="mb-3">
+							<label asp-for="ProductUpdate.CategoryId" class="form-label fw-bold"></label>
+							<select asp-for="ProductUpdate.CategoryId" class="form-control" asp-items="ViewBag.CategoryId"></select>
+						</div>
+						<div class="mb-3">
+							<label asp-for="ProductUpdate.Stock" class="form-label fw-bold"></label>
+							<input asp-for="ProductUpdate.Stock" class="form-control" />
+						</div>
+						<div class="mb-3">
+							<div class="row">
+								<div class="col-6">
+									<label class="form-label fw-bold">Image</label>
+									<input type="file" name="image" accept="image/*" />
+								</div>
+								<div class="col-6">
+									<div class="fw-bold text-start mb-1">Status</div>
+									<div class="form-check form-check-inline">
+										<input asp-for="ProductUpdate.Status" class="form-check-input" type="radio" value=true id="true" />
+										<label for="true" class="form-check-label">Active</label>
+									</div>
+									<div class="form-check form-check-inline">
+										<input asp-for="ProductUpdate.Status" type="radio" value=false id="false" class="form-check-input" />
+										<label for="false" class="form-check-label">Inactive</label>
+									</div>
+								</div>
+							</div>
+						</div>
+					</form>
+					<div class="btn-action-container d-flex gap-3">
+						<button type="submit" class="btn flex-fill">
+							<a asp-page="/Products/Edit" asp-route-id="@Model.ProductUpdate.Id">Update product</a>
+						</button>
+					</div>
+				</div>
+			</div>
+		}
+
+	</div>
+</div>
 
 @Html.PagedListPager( Model.Products, pageIndex => Url.Page("Index", new { pageIndex }) )

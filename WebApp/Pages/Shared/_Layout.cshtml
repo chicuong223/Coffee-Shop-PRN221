@@ -46,17 +46,19 @@
 	}
 	
 	<div class="navbar-container">
+		<div class="header">
+			<div class="header-group">
+				<ion-icon name="storefront-outline"></ion-icon>
+				<span>コーヒー</span>
+			</div>
+		</div>
 		<ul class="navbar">
-			<li class="list-item header">
-				<a href="#">
-					<span class="icon"><ion-icon name="storefront-outline"></ion-icon></span>
-					<span class="title">コーヒー</span>
-				</a>
-			</li>
 			@{
 				if (role != null && role.Equals("Admin"))
 				{
-					<li class="list-item">
+					<li class="list-item active">
+						<b class="top"></b>
+						<b class="bottom"></b>
 						<a asp-page="/Bills/Index">
 							<span class="icon">
 								<ion-icon name="receipt-outline"></ion-icon>
@@ -65,6 +67,8 @@
 						</a>
 					</li>
 					<li class="list-item">
+						<b class="top"></b>
+						<b class="bottom"></b>
 						<a asp-page="/Staff/Index">
 							<span class="icon">
 								<ion-icon name="people-outline"></ion-icon>
@@ -73,30 +77,40 @@
 						</a>
 					</li>
 					<li class="list-item">
+						<b class="top"></b>
+						<b class="bottom"></b>
 						<a asp-page="/Products/Index">
 							<span class="icon"><ion-icon name="file-tray-stacked-outline"></ion-icon></span>
 							<span class="title">Products</span>
 						</a>
 					</li>
 					<li class="list-item">
+						<b class="top"></b>
+						<b class="bottom"></b>
 						<a asp-page="/Vouchers/Index">
 							<span class="icon"><ion-icon name="pricetags-outline"></ion-icon></span>
 							<span class="title">Vouchers</span>
 						</a>
 					</li>
 					<li class="list-item">
+						<b class="top"></b>
+						<b class="bottom"></b>
 						<a asp-page="/Suppliers/Index">
 							<span class="icon"><ion-icon name="person-add-outline"></ion-icon></span>
 							<span class="title">Supplier</span>
 						</a>
 					</li>
 					<li class="list-item">
+						<b class="top"></b>
+						<b class="bottom"></b>
 						<a asp-page="/Supplies/Index">
 							<span class="icon"><ion-icon name="newspaper-outline"></ion-icon></span>
 							<span class="title">Supplies</span>
 						</a>
 					</li>
 					<li class="list-item">
+						<b class="top"></b>
+						<b class="bottom"></b>
 						<a asp-page="/Notifications/Index">
 							<span class="icon"><ion-icon name="notifications-outline"></ion-icon></span>
 							<span class="title">Notifications</span>
@@ -106,12 +120,16 @@
 				else
 				{
 					<li class="list-item">
+						<b class="top"></b>
+						<b class="bottom"></b>
 						<a asp-page="/Index">
 							<span class="icon"><ion-icon name="home-outline"></ion-icon></span>
 							<span class="title">Home</span>
 						</a>
 					</li>
 					<li class="list-item">
+						<b class="top"></b>
+						<b class="bottom"></b>
 						<a asp-page="/Stock">
 							<span class="icon"><ion-icon name="grid-outline"></ion-icon></span>
 							<span class="title">Stock</span>

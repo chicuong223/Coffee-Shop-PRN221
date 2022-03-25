@@ -77,7 +77,7 @@
 										}
 										else
 										{
-											<a class="btn btn-primary readonly" data-bs-toggle="tooltip" data-bs-placement="top" title="Please create a bill first!">Add to order</a>
+											<a style="cursor: default" class="btn btn-primary readonly" data-bs-toggle="tooltip" data-bs-placement="top" title="Please create a bill first!">Add to order</a>
 										}
 									}
 								</div>
@@ -110,7 +110,7 @@
 					<img src="~/image/background.png" alt="" srcset="" class="empty" />
 					<h5 class="text-center w-100 fw-bold">
 						You don't have any active order right now
-						<a asp-page="/Bills/Create">
+						<a asp-page="/Bills/Create" style="text-decoration: none;">
 							<button class="btn mt-2 create" type="button">
 								Create a new order
 							</button>
