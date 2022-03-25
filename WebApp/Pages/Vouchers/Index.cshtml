@@ -15,6 +15,9 @@
     <thead>
         <tr>
             <th>
+                @Html.DisplayNameFor(model => model.Voucher[0].Id)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Voucher[0].Name)
             </th>
             <th>
@@ -39,6 +42,9 @@
         @foreach (var item in Model.Voucher)
         {
             <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Name)
                 </td>

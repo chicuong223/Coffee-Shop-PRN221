@@ -16,13 +16,14 @@ namespace DataObject.Models
         }
 
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Display(Name = "Supplier ID")]
         public int Id { get; set; }
         [Required(ErrorMessage = "Supplier Name is required!")]
         public string Name { get; set; }
         [Required(ErrorMessage = "Supplier Phone is required!")]
         [RegularExpression("[0-9]{10}", ErrorMessage = "Invalid phone number")]
         public string Phone { get; set; }
-        [DisplayName("Acitve")]
+        [DisplayName("Active")]
         public bool Status { get; set; }
 
         public virtual ICollection<Supply> Supplies { get; set; }

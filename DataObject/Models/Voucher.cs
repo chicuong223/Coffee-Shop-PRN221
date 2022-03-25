@@ -15,6 +15,7 @@ namespace DataObject.Models
         }
 
         [Required(ErrorMessage = "Voucher ID is required!")]
+        [Display(Name = "Code")]
         public string Id { get; set; }
         [Required(ErrorMessage = "Voucher name is required!")]
         public string Name { get; set; }
@@ -25,8 +26,10 @@ namespace DataObject.Models
         public double? Percentage { get; set; }
         [Required(ErrorMessage = "Expiration Date is required!")]
         [DataType(DataType.Date)]
+        [Display(Name = "Expiration Date")]
         public DateTime? ExpirationDate { get; set; }
         [Required(ErrorMessage = "Usage times is required!")]
+        [Display(Name = "Usages Count")]
         public int? UsageCount { get; set; }
 
         [DisplayName("Active")]

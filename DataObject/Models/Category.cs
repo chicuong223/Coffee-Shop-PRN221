@@ -15,6 +15,7 @@ namespace DataObject.Models
 
         public int Id { get; set; }
         [Required(ErrorMessage = "Category Name is required")]
+        [Display(Name = "Name")]
         public string CategoryName { get; set; }
         public bool Status { get; set; }
 

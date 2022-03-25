@@ -24,8 +24,10 @@ namespace DataObject.Models
         [Required(ErrorMessage = "Email is required")]
         [EmailAddress(ErrorMessage = "Invalid Email format")]
         public string Email { get; set; }
+        [Display(Name = "Avatar")]
         public string AvatarUrl { get; set; }
         [Required(ErrorMessage = "Full name is required")]
+        [Display(Name = "Full name")]
         public string FullName { get; set; }
         [Required(ErrorMessage = "Phone number is required")]
         [RegularExpression("[0-9]{10}", ErrorMessage = "Invalid phone number")]
