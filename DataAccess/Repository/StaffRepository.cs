@@ -100,7 +100,7 @@ namespace DataAccess.Repository
                 var staff = await context.Staff.FindAsync(category.Username);
                 if (staff != null)
                 {
-                    staff.Status = true;
+                    staff.Status = category.Status;
                     staff.Email = category.Email;
                     staff.AvatarUrl = category.AvatarUrl;
                     staff.Phone = category.Phone;

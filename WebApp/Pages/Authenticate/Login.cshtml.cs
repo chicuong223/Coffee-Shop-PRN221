@@ -43,11 +43,11 @@ namespace WebApp.Pages.Authenticate
                 session.SetString("Role", "Admin");
                 return RedirectToPage("../Products/Index");
             }
-            var staff = await _context.Staffs.GetSingle(s => s.Username.Equals(username) && s.Password.Equals(hashedPassword));
+            var staff = await _context.Staffs.GetSingle(s => s.Username.Equals(username) && s.Password.Equals(hashedPassword) && s.Status.Value==true);
 
             if (staff == null)
             {
-                ViewData["BadCredentials"] = "Incorrect Username or Password";
+                TempData["Error"] = "Incorrect Username or Password";
                 return Page();
             }
             session.SetString("Username", staff.Username);
