@@ -31,13 +31,13 @@ namespace DataAccess.Repository
                             .Include(i => i.BillDetails)
                             .Include(i => i.StaffUsernameNavigation)
                             .OrderByDescending(i => i.BillDate)
-                            .ToPagedListAsync(pageNumber, 2);
+                            .ToPagedListAsync(pageNumber, 6);
                     }
                     else
                     {
                         list = await context.Bills.Where(expression)
                             .OrderByDescending(i => i.BillDate)
-                            .ToPagedListAsync(pageNumber, 2);
+                            .ToPagedListAsync(pageNumber, 6);
                     }
                 }
             }

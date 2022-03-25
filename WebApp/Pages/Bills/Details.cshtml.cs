@@ -21,6 +21,8 @@ namespace WebApp.Pages.Bills
 
         public Bill Bill { get; set; }
 
+        public decimal Total { get; set; }
+
         public IList<BillDetail> Details { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
@@ -38,6 +40,16 @@ namespace WebApp.Pages.Bills
             }
 
             Details = (await _context.BillDetails.GetAll(detail => detail.BillId == id, true)).ToList();
+
+            Total = 0;
+            foreach(var detail in Details)
+            {
+                Total += detail.SubTotal.Value;
+            }
+            if(Bill.Voucher != null)
+            {
+                Total *= 1 - (decimal)(Bill.Voucher.Percentage.Value / 100);
+            }
 
             return Page();
         }

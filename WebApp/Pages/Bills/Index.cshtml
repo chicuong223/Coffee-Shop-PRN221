@@ -42,51 +42,49 @@
                 @Html.DisplayNameFor(model => model.Bills[0].Discount) (%)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Bills[0].Status) 
-            </th>
-            <th>
                 Staff
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Bills[0].Voucher)
             </th>
+            <th>Total</th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model.Bills)
+        @foreach (var item in Model.BillsTotal)
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.BillDate)
+                    @Html.DisplayFor(modelItem => item.Key.BillDate)
                 </td>
                 <td>
-                    @if(item.Voucher != null)
+                    @if(item.Key.Voucher != null)
                     {
-                        @Html.DisplayFor(modelItem => item.Voucher.Percentage)
+                        @Html.DisplayFor(modelItem => item.Key.Voucher.Percentage)
                     }
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Status)
+                    @Html.DisplayFor(modelItem => item.Key.StaffUsernameNavigation.Username)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.StaffUsernameNavigation.Username)
+                    @Html.DisplayFor(modelItem => item.Key.Voucher.Id)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Voucher.Id)
+                    @Html.DisplayFor(modelItem => item.Value)
                 </td>
                 <td>
                     @{
-                        if (!item.Status.Value)
+                        if (!item.Key.Status.Value)
                         {
-                            <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a>
+                            <a asp-page="./Edit" asp-route-id="@item.Key.Id">Edit</a>
                         }
                     }
-                    <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-page="./Details" asp-route-id="@item.Key.Id">Details</a> |
                     @{
                         if (role != null && role.Equals("Admin"))
                                         {
-                            <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+                            <a asp-page="./Delete" asp-route-id="@item.Key.Id">Delete</a>
                         }
                     }
                 </td>

@@ -22,6 +22,7 @@ namespace WebApp.Pages.Bills
         }
 
         public IPagedList<Bill> Bills { get;set; }
+        public Dictionary<Bill, decimal> BillsTotal { get; set; }
 
         [BindProperty(SupportsGet = true)]
         [DataType(DataType.Date)]
@@ -52,6 +53,29 @@ namespace WebApp.Pages.Bills
             {
                 Bills = await _context.Bills.GetList(b => b.Status.Value == true, true, pageIndex);
             }
+
+            BillsTotal = new Dictionary<Bill, decimal>();
+
+            //Get bill total of each bill
+            foreach (var b in Bills)
+            {
+                Console.WriteLine(b.Id);
+                // get sum of subtotal of bill details
+                decimal total = 0;
+                foreach(var detail in b.BillDetails)
+                {
+                    total += detail.SubTotal.Value;
+                }
+                if(b.Voucher != null)
+                {
+                    total = total * (decimal)(1 - b.Voucher.Percentage / 100);
+                }
+
+
+                //put bill and total into dictionary
+                BillsTotal.Add(b, total);
+            }
+            Console.WriteLine(BillsTotal.Count);
         }
         
     }
